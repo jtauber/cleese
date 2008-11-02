@@ -2,9 +2,11 @@
 
 LDSCRIPT = krnl1m.ld
 NASM     = nasm -f elf
-CC       = gcc -Wall -O2 -nostdinc -fno-builtin
-LD       = ld -T $(LDSCRIPT) -nostdlib
-OBJS     = kstart.o main.o video.o ports.o  
+CC       = toolchain/bin/i386-elf-gcc -Wall -O2 -nostdinc -fno-builtin
+LD       = toolchain/bin/i386-elf-ld -T $(LDSCRIPT) -nostdlib
+NM       = toolchain/bin/i386-elf-nm
+STRIP    = toolchain/bin/i386-elf-strip
+OBJS     = kstart.o main.o video.o ports.o
 
 all: KERNEL.BIN
 
@@ -19,8 +21,8 @@ clean:
 
 KERNEL.BIN: $(OBJS) $(LDSCRIPT)
 	$(LD) -o $@ $(OBJS)
-	nm $@ | sort > kernel.lst
-	strip $@
+	$(NM) $@ | sort > kernel.lst
+	$(STRIP) $@
 
 
 
