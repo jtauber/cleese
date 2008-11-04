@@ -1,0 +1,21 @@
+
+make
+cat boot/grub/stage1 boot/grub/stage2 > grub.img
+hdiutil create -size 5M -fs "MS-DOS" -layout NONE cleese
+
+Open cleese.dmg in the finder and copy KERNEL.BIN and boot to the disk image.
+Unmount the disk image from the finder.
+
+cp cleese.dmg cleese.img
+
+(Assuming you have a custom VM setup in VMWare Fusion) Set the floppy to
+grub.img. Boot it up. You will be dropped in a grub shell. Note the version is
+0.96 (I obtained the newer version of GRUB from ftp://alpha.gnu.org:21//gnu/grub/grub-0.97-i386-pc.tar.gz)
+I am not sure why the version shows 0.96 in VMWare.
+
+Once you have the prompt ready change the floppy to cleese.img. Then type in
+the shell:
+
+    setup (fd0)
+
+It should tell you it was successful at this task. Restart the VM and viola.

@@ -1,0 +1,3 @@
+title   Cleese OS
+        root    (fd0)
+        kernel  /kernel.bin
