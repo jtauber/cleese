@@ -1,4 +1,8 @@
 
+Quick instructions on getting things going. I am assuming a lot is already
+done before even running make. This has only been tested on OS X 10.5.X with
+a custom built toolchain (binutils-2.19/gcc-4.2.4). Buyer beware at this point.
+
 make
 cat boot/grub/stage1 boot/grub/stage2 > grub.img
 hdiutil create -size 5M -fs "MS-DOS" -layout NONE cleese
