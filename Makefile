@@ -10,8 +10,10 @@ OBJS     = kstart.o main.o video.o ports.o
 
 all: KERNEL.BIN
 
+image: cleese.img
+
 clean:
-	-rm -f *.o KERNEL.BIN kernel.lst
+	-rm -f *.o KERNEL.BIN kernel.lst cleese.img
 
 .asm.o:
 	$(NASM) -o $@ $<
@@ -24,7 +26,13 @@ KERNEL.BIN: $(OBJS) $(LDSCRIPT)
 	$(NM) $@ | sort > kernel.lst
 	$(STRIP) $@
 
-
-
+cleese.img: KERNEL.BIN
+	hdiutil create -size 5M -fs "MS-DOS" -layout NONE cleese
+	mv cleese.dmg cleese.img
+	mkdir -p mnt
+	mount_msdos -o nosync `hdid -nomount cleese.img` ./mnt
+	cp -r boot KERNEL.BIN ./mnt
+	umount -f ./mnt
+	rm -r ./mnt
 
 
