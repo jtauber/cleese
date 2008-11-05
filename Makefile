@@ -10,10 +10,10 @@ OBJS     = kstart.o main.o video.o ports.o
 
 all: KERNEL.BIN
 
-image: cleese.img
+images: grub.img cleese.img
 
 clean:
-	-rm -f *.o KERNEL.BIN kernel.lst cleese.img
+	-rm -f *.o  *.img KERNEL.BIN kernel.lst
 
 .asm.o:
 	$(NASM) -o $@ $<
@@ -25,6 +25,9 @@ KERNEL.BIN: $(OBJS) $(LDSCRIPT)
 	$(LD) -o $@ $(OBJS)
 	$(NM) $@ | sort > kernel.lst
 	$(STRIP) $@
+
+grub.img: boot/grub/stage1 boot/grub/stage2
+	cat boot/grub/stage1 boot/grub/stage2 > grub.img
 
 cleese.img: KERNEL.BIN
 	hdiutil create -size 5M -fs "MS-DOS" -layout NONE cleese
