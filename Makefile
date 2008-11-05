@@ -13,7 +13,7 @@ all: KERNEL.BIN
 images: grub.img cleese.img
 
 clean:
-	-rm -f *.o  *.img KERNEL.BIN kernel.lst
+	-rm -f *.o  grub.img KERNEL.BIN kernel.lst
 
 .asm.o:
 	$(NASM) -o $@ $<
@@ -38,4 +38,9 @@ cleese.img: KERNEL.BIN
 	umount -f ./mnt
 	rm -r ./mnt
 
-
+update-image:
+	mkdir -p mnt
+	mount_msdos -o nosync `hdid -nomount cleese.img` ./mnt
+	cp KERNEL.BIN ./mnt
+	umount -f ./mnt
+	rm -r ./mnt
