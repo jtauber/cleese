@@ -1,6 +1,6 @@
 .SUFFIXES: .asm
 
-LDSCRIPT = krnl1m.ld
+LDSCRIPT = kernel.ld
 NASM     = nasm -f elf
 CC       = i386-elf-gcc -Wall -O2 -nostdinc -fno-builtin
 LD       = i386-elf-ld -T $(LDSCRIPT) -nostdlib
