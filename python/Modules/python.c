@@ -1,5 +1,5 @@
 /* Minimal main program -- everything is loaded from the library */
-// 
+
 #include "Python.h"
 // #include <locale.h>
 // 
@@ -14,6 +14,7 @@
 // 	return Py_Main(argc, argv);
 // }
 // #else
+extern int Py_FrozenMain(void);
 int
 main(void) // main(int argc, char **argv)
 {
@@ -67,7 +68,7 @@ main(void) // main(int argc, char **argv)
 // 		}
 // 	}
 // 	setlocale(LC_ALL, oldloc);
-	res = Py_Main(); // res = Py_Main(argc, argv_copy);
+	res = Py_FrozenMain(); // res = Py_Main(argc, argv_copy);
 // 	for (i = 0; i < argc; i++) {
 // 		PyMem_Free(argv_copy2[i]);
 // 	}

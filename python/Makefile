@@ -1,10 +1,10 @@
 all: 1p1
 
-MODULE_OBJS =	\
-				Modules/main.o
+PYTHON_OBJS = 	\
+				Python/frozenmain.o
 
 OBJS =			\
-				$(MODULE_OBJS)
+				$(PYTHON_OBJS)
 
 1p1: Modules/python.o $(OBJS)
 	gcc $(FLAGS) -Wall -o $@ Modules/python.o $(OBJS)
