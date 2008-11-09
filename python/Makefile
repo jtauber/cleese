@@ -1,0 +1,13 @@
+all: 1p1
+
+MODULE_OBJS =	\
+				Modules/main.o
+
+OBJS =			\
+				$(MODULE_OBJS)
+
+1p1: Modules/python.o $(OBJS)
+	gcc $(FLAGS) -Wall -o $@ Modules/python.o $(OBJS)
+
+.c.o:
+	gcc $(FLAGS) -fno-builtin -c -Wall -I./Include -o $@ $<
