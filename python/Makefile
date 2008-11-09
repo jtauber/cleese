@@ -1,7 +1,8 @@
 all: 1p1
 
 PYTHON_OBJS = 	\
-				Python/frozenmain.o
+				Python/frozenmain.o \
+				Python/pythonrun.o
 
 OBJS =			\
 				$(PYTHON_OBJS)

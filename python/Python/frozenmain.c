@@ -73,7 +73,7 @@ Py_FrozenMain(void) // Py_FrozenMain(int argc, char **argv)
 // 	PyInitFrozenExtensions();
 // #endif /* MS_WINDOWS */
 // 	Py_SetProgramName(argv_copy[0]);
-// 	Py_Initialize();
+	Py_Initialize();
 // #ifdef MS_WINDOWS
 // 	PyWinFreeze_ExeInit();
 // #endif
@@ -100,7 +100,7 @@ Py_FrozenMain(void) // Py_FrozenMain(int argc, char **argv)
 // #ifdef MS_WINDOWS
 // 	PyWinFreeze_ExeTerm();
 // #endif
-// 	Py_Finalize();
+	Py_Finalize();
 // 	for (i = 0; i < argc; i++) {
 // 		PyMem_Free(argv_copy2[i]);
 // 	}
