@@ -1,0 +1,32 @@
+#!/usr/bin/env python
+
+# checks that the files here only differ from the "real" python in commented out bits
+
+import sys
+import os
+
+BASE = "../python-30rc2"
+
+for path, dirs, files in os.walk("."):
+    for filename in files:
+        line_num = 0
+        
+        if filename[-2:] not in [".c", ".h"]:
+            continue
+        ours = os.path.join(path, filename)
+        theirs = os.path.join(BASE, path, filename)
+        if not os.access(theirs, os.F_OK):
+            print "no file corresponding: %s" % ours
+            sys.exit(1)
+        for our_line, their_line in zip(open(ours), open(theirs)):
+            line_num += 1
+            if our_line == their_line:
+                pass # we've included their line
+            elif our_line == "// " + their_line:
+                pass # we've commented out their line
+            elif "// " in our_line and our_line.split("// ")[1] == their_line.lstrip():
+                pass # we've changed their line
+            else:
+                print "in file %s (line %d), the following lines are inconsistent:" % (ours, line_num)
+                print our_line, their_line
+                sys.exit(2)
