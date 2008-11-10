@@ -93,7 +93,7 @@
 // # endif
 // 
 // # if defined(Py_UNICODE_WIDE)
-// #  define PY_UNICODE_TYPE Py_UCS4
+#  define PY_UNICODE_TYPE Py_UCS4
 // # endif
 // 
 // #endif
@@ -123,11 +123,11 @@
 // #if SIZEOF_INT >= 4 
 // typedef unsigned int Py_UCS4; 
 // #elif SIZEOF_LONG >= 4
-// typedef unsigned long Py_UCS4; 
+typedef unsigned long Py_UCS4; 
 // #endif
-// 
-// typedef PY_UNICODE_TYPE Py_UNICODE;
-// 
+
+typedef PY_UNICODE_TYPE Py_UNICODE;
+
 // /* --- UCS-2/UCS-4 Name Mangling ------------------------------------------ */
 // 
 // /* Unicode API names are mangled to assure that UCS-2 and UCS-4 builds
@@ -427,22 +427,22 @@
 // 
 // PyAPI_FUNC(int) PyUnicode_ClearFreeList(void);
 // 
-// /* --- Unicode Type ------------------------------------------------------- */
-// 
-// typedef struct {
-//     PyObject_HEAD
-//     Py_ssize_t length;		/* Length of raw Unicode data in buffer */
-//     Py_UNICODE *str;		/* Raw Unicode buffer */
-//     long hash;			/* Hash value; -1 if not set */
-//     int state;			/* != 0 if interned. In this case the two
-//     				 * references from the dictionary to this object
-//     				 * are *not* counted in ob_refcnt. */
-//     PyObject *defenc;		/* (Default) Encoded version as Python
-// 				   string, or NULL; this is used for
-// 				   implementing the buffer protocol */
-// } PyUnicodeObject;
-// 
-// PyAPI_DATA(PyTypeObject) PyUnicode_Type;
+/* --- Unicode Type ------------------------------------------------------- */
+
+typedef struct {
+    PyObject_HEAD
+    Py_ssize_t length;		/* Length of raw Unicode data in buffer */
+    Py_UNICODE *str;		/* Raw Unicode buffer */
+    long hash;			/* Hash value; -1 if not set */
+    int state;			/* != 0 if interned. In this case the two
+    				 * references from the dictionary to this object
+    				 * are *not* counted in ob_refcnt. */
+    PyObject *defenc;		/* (Default) Encoded version as Python
+				   string, or NULL; this is used for
+				   implementing the buffer protocol */
+} PyUnicodeObject;
+
+PyAPI_DATA(PyTypeObject) PyUnicode_Type;
 // PyAPI_DATA(PyTypeObject) PyUnicodeIter_Type;
 // 
 // #define SSTATE_NOT_INTERNED 0
@@ -451,7 +451,7 @@
 // 
 // #define PyUnicode_Check(op) \
 //                  PyType_FastSubclass(Py_TYPE(op), Py_TPFLAGS_UNICODE_SUBCLASS)
-// #define PyUnicode_CheckExact(op) (Py_TYPE(op) == &PyUnicode_Type)
+#define PyUnicode_CheckExact(op) (Py_TYPE(op) == &PyUnicode_Type)
 // 
 // /* Fast access macros */
 // #define PyUnicode_GET_SIZE(op) \

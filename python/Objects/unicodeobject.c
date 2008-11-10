@@ -9309,7 +9309,7 @@ PyObject *PyUnicode_FromString(const char *u)
 // 
 // static PyObject *unicode_iter(PyObject *seq);
 // 
-// PyTypeObject PyUnicode_Type = {
+PyTypeObject PyUnicode_Type = {
 //     PyVarObject_HEAD_INIT(&PyType_Type, 0)
 //     "str", 				/* tp_name */
 //     sizeof(PyUnicodeObject), 		/* tp_size */
@@ -9351,7 +9351,7 @@ PyObject *PyUnicode_FromString(const char *u)
 //     0,					/* tp_alloc */
 //     unicode_new,			/* tp_new */
 //     PyObject_Del,      		/* tp_free */
-// };
+};
 // 
 // /* Initialize the Unicode implementation */
 // 

@@ -37,58 +37,58 @@
 // meaning otherwise.
 // */
 // 
-// /* PyDict_MINSIZE is the minimum size of a dictionary.  This many slots are
-//  * allocated directly in the dict object (in the ma_smalltable member).
-//  * It must be a power of 2, and at least 4.  8 allows dicts with no more
-//  * than 5 active entries to live in ma_smalltable (and so avoid an
-//  * additional malloc); instrumentation suggested this suffices for the
-//  * majority of dicts (consisting mostly of usually-small instance dicts and
-//  * usually-small dicts created to pass keyword arguments).
-//  */
-// #define PyDict_MINSIZE 8
-// 
-// typedef struct {
-// 	/* Cached hash code of me_key.  Note that hash codes are C longs.
-// 	 * We have to use Py_ssize_t instead because dict_popitem() abuses
-// 	 * me_hash to hold a search finger.
-// 	 */
-// 	Py_ssize_t me_hash;
-// 	PyObject *me_key;
-// 	PyObject *me_value;
-// } PyDictEntry;
-// 
-// /*
-// To ensure the lookup algorithm terminates, there must be at least one Unused
-// slot (NULL key) in the table.
-// The value ma_fill is the number of non-NULL keys (sum of Active and Dummy);
-// ma_used is the number of non-NULL, non-dummy keys (== the number of non-NULL
-// values == the number of Active items).
-// To avoid slowing down lookups on a near-full table, we resize the table when
-// it's two-thirds full.
-// */
-// typedef struct _dictobject PyDictObject;
-// struct _dictobject {
-// 	PyObject_HEAD
-// 	Py_ssize_t ma_fill;  /* # Active + # Dummy */
-// 	Py_ssize_t ma_used;  /* # Active */
-// 
-// 	/* The table contains ma_mask + 1 slots, and that's a power of 2.
-// 	 * We store the mask instead of the size because the mask is more
-// 	 * frequently needed.
-// 	 */
-// 	Py_ssize_t ma_mask;
-// 
-// 	/* ma_table points to ma_smalltable for small tables, else to
-// 	 * additional malloc'ed memory.  ma_table is never NULL!  This rule
-// 	 * saves repeated runtime null-tests in the workhorse getitem and
-// 	 * setitem calls.
-// 	 */
-// 	PyDictEntry *ma_table;
-// 	PyDictEntry *(*ma_lookup)(PyDictObject *mp, PyObject *key, long hash);
-// 	PyDictEntry ma_smalltable[PyDict_MINSIZE];
-// };
-// 
-// PyAPI_DATA(PyTypeObject) PyDict_Type;
+/* PyDict_MINSIZE is the minimum size of a dictionary.  This many slots are
+ * allocated directly in the dict object (in the ma_smalltable member).
+ * It must be a power of 2, and at least 4.  8 allows dicts with no more
+ * than 5 active entries to live in ma_smalltable (and so avoid an
+ * additional malloc); instrumentation suggested this suffices for the
+ * majority of dicts (consisting mostly of usually-small instance dicts and
+ * usually-small dicts created to pass keyword arguments).
+ */
+#define PyDict_MINSIZE 8
+
+typedef struct {
+	/* Cached hash code of me_key.  Note that hash codes are C longs.
+	 * We have to use Py_ssize_t instead because dict_popitem() abuses
+	 * me_hash to hold a search finger.
+	 */
+	Py_ssize_t me_hash;
+	PyObject *me_key;
+	PyObject *me_value;
+} PyDictEntry;
+
+/*
+To ensure the lookup algorithm terminates, there must be at least one Unused
+slot (NULL key) in the table.
+The value ma_fill is the number of non-NULL keys (sum of Active and Dummy);
+ma_used is the number of non-NULL, non-dummy keys (== the number of non-NULL
+values == the number of Active items).
+To avoid slowing down lookups on a near-full table, we resize the table when
+it's two-thirds full.
+*/
+typedef struct _dictobject PyDictObject;
+struct _dictobject {
+	PyObject_HEAD
+	Py_ssize_t ma_fill;  /* # Active + # Dummy */
+	Py_ssize_t ma_used;  /* # Active */
+
+	/* The table contains ma_mask + 1 slots, and that's a power of 2.
+	 * We store the mask instead of the size because the mask is more
+	 * frequently needed.
+	 */
+	Py_ssize_t ma_mask;
+
+	/* ma_table points to ma_smalltable for small tables, else to
+	 * additional malloc'ed memory.  ma_table is never NULL!  This rule
+	 * saves repeated runtime null-tests in the workhorse getitem and
+	 * setitem calls.
+	 */
+	PyDictEntry *ma_table;
+	PyDictEntry *(*ma_lookup)(PyDictObject *mp, PyObject *key, long hash);
+	PyDictEntry ma_smalltable[PyDict_MINSIZE];
+};
+
+PyAPI_DATA(PyTypeObject) PyDict_Type;
 // PyAPI_DATA(PyTypeObject) PyDictIterKey_Type;
 // PyAPI_DATA(PyTypeObject) PyDictIterValue_Type;
 // PyAPI_DATA(PyTypeObject) PyDictIterItem_Type;

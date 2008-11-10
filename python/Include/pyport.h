@@ -116,9 +116,9 @@ typedef Py_intptr_t	Py_ssize_t;
 // #else
 // #define PY_SIZE_MAX ((size_t)-1)
 // #endif
-// 
-// /* Largest positive value of type Py_ssize_t. */
-// #define PY_SSIZE_T_MAX ((Py_ssize_t)(((size_t)-1)>>1))
+
+/* Largest positive value of type Py_ssize_t. */
+#define PY_SSIZE_T_MAX ((Py_ssize_t)(((size_t)-1)>>1))
 // /* Smallest negative value of type Py_ssize_t. */
 // #define PY_SSIZE_T_MIN (-PY_SSIZE_T_MAX-1)
 // 
@@ -196,7 +196,7 @@ typedef Py_intptr_t	Py_ssize_t;
 // #define Py_LOCAL_INLINE(type) static inline type
 // #else
 // #define Py_LOCAL(type) static type
-// #define Py_LOCAL_INLINE(type) static type
+#define Py_LOCAL_INLINE(type) static type
 // #endif
 // 
 // /* Py_MEMCPY can be used instead of memcpy in cases where the copied blocks

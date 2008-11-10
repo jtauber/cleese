@@ -8,7 +8,7 @@
 */
 
 #include "Python.h"
-// #include "stringlib/eq.h"
+#include "stringlib/eq.h"
 // 
 // 
 // /* Set a key error with the specified argument, wrapping it in a
@@ -28,115 +28,115 @@
 // /* Define this out if you don't want conversion statistics on exit. */
 // #undef SHOW_CONVERSION_COUNTS
 // 
-// /* See large comment block below.  This must be >= 1. */
-// #define PERTURB_SHIFT 5
-// 
-// /*
-// Major subtleties ahead:  Most hash schemes depend on having a "good" hash
-// function, in the sense of simulating randomness.  Python doesn't:  its most
-// important hash functions (for strings and ints) are very regular in common
-// cases:
-// 
-//   >>> map(hash, (0, 1, 2, 3))
-//   [0, 1, 2, 3]
-//   >>> map(hash, ("namea", "nameb", "namec", "named"))
-//   [-1658398457, -1658398460, -1658398459, -1658398462]
-//   >>>
-// 
-// This isn't necessarily bad!  To the contrary, in a table of size 2**i, taking
-// the low-order i bits as the initial table index is extremely fast, and there
-// are no collisions at all for dicts indexed by a contiguous range of ints.
-// The same is approximately true when keys are "consecutive" strings.  So this
-// gives better-than-random behavior in common cases, and that's very desirable.
-// 
-// OTOH, when collisions occur, the tendency to fill contiguous slices of the
-// hash table makes a good collision resolution strategy crucial.  Taking only
-// the last i bits of the hash code is also vulnerable:  for example, consider
-// the list [i << 16 for i in range(20000)] as a set of keys.  Since ints are 
-// their own hash codes, and this fits in a dict of size 2**15, the last 15 bits
-//  of every hash code are all 0:  they *all* map to the same table index.
-// 
-// But catering to unusual cases should not slow the usual ones, so we just take
-// the last i bits anyway.  It's up to collision resolution to do the rest.  If
-// we *usually* find the key we're looking for on the first try (and, it turns
-// out, we usually do -- the table load factor is kept under 2/3, so the odds
-// are solidly in our favor), then it makes best sense to keep the initial index
-// computation dirt cheap.
-// 
-// The first half of collision resolution is to visit table indices via this
-// recurrence:
-// 
-//     j = ((5*j) + 1) mod 2**i
-// 
-// For any initial j in range(2**i), repeating that 2**i times generates each
-// int in range(2**i) exactly once (see any text on random-number generation for
-// proof).  By itself, this doesn't help much:  like linear probing (setting
-// j += 1, or j -= 1, on each loop trip), it scans the table entries in a fixed
-// order.  This would be bad, except that's not the only thing we do, and it's
-// actually *good* in the common cases where hash keys are consecutive.  In an
-// example that's really too small to make this entirely clear, for a table of
-// size 2**3 the order of indices is:
-// 
-//     0 -> 1 -> 6 -> 7 -> 4 -> 5 -> 2 -> 3 -> 0 [and here it's repeating]
-// 
-// If two things come in at index 5, the first place we look after is index 2,
-// not 6, so if another comes in at index 6 the collision at 5 didn't hurt it.
-// Linear probing is deadly in this case because there the fixed probe order
-// is the *same* as the order consecutive keys are likely to arrive.  But it's
-// extremely unlikely hash codes will follow a 5*j+1 recurrence by accident,
-// and certain that consecutive hash codes do not.
-// 
-// The other half of the strategy is to get the other bits of the hash code
-// into play.  This is done by initializing a (unsigned) vrbl "perturb" to the
-// full hash code, and changing the recurrence to:
-// 
-//     j = (5*j) + 1 + perturb;
-//     perturb >>= PERTURB_SHIFT;
-//     use j % 2**i as the next table index;
-// 
-// Now the probe sequence depends (eventually) on every bit in the hash code,
-// and the pseudo-scrambling property of recurring on 5*j+1 is more valuable,
-// because it quickly magnifies small differences in the bits that didn't affect
-// the initial index.  Note that because perturb is unsigned, if the recurrence
-// is executed often enough perturb eventually becomes and remains 0.  At that
-// point (very rarely reached) the recurrence is on (just) 5*j+1 again, and
-// that's certain to find an empty slot eventually (since it generates every int
-// in range(2**i), and we make sure there's always at least one empty slot).
-// 
-// Selecting a good value for PERTURB_SHIFT is a balancing act.  You want it
-// small so that the high bits of the hash code continue to affect the probe
-// sequence across iterations; but you want it large so that in really bad cases
-// the high-order hash bits have an effect on early iterations.  5 was "the
-// best" in minimizing total collisions across experiments Tim Peters ran (on
-// both normal and pathological cases), but 4 and 6 weren't significantly worse.
-// 
-// Historical: Reimer Behrends contributed the idea of using a polynomial-based
-// approach, using repeated multiplication by x in GF(2**n) where an irreducible
-// polynomial for each table size was chosen such that x was a primitive root.
-// Christian Tismer later extended that to use division by x instead, as an
-// efficient way to get the high bits of the hash code into play.  This scheme
-// also gave excellent collision statistics, but was more expensive:  two
-// if-tests were required inside the loop; computing "the next" index took about
-// the same number of operations but without as much potential parallelism
-// (e.g., computing 5*j can go on at the same time as computing 1+perturb in the
-// above, and then shifting perturb can be done while the table index is being
-// masked); and the PyDictObject struct required a member to hold the table's
-// polynomial.  In Tim's experiments the current scheme ran faster, produced
-// equally good collision statistics, needed less code & used less memory.
-// 
-// Theoretical Python 2.5 headache:  hash codes are only C "long", but
-// sizeof(Py_ssize_t) > sizeof(long) may be possible.  In that case, and if a
-// dict is genuinely huge, then only the slots directly reachable via indexing
-// by a C long can be the first slot in a probe sequence.  The probe sequence
-// will still eventually reach every slot in the table, but the collision rate
-// on initial probes may be much higher than this scheme was designed for.
-// Getting a hash code as fat as Py_ssize_t is the only real cure.  But in
-// practice, this probably won't make a lick of difference for many years (at
-// which point everyone will have terabytes of RAM on 64-bit boxes).
-// */
-// 
-// /* Object used as dummy key to fill deleted entries */
-// static PyObject *dummy = NULL; /* Initialized by first call to newPyDictObject() */
+/* See large comment block below.  This must be >= 1. */
+#define PERTURB_SHIFT 5
+
+/*
+Major subtleties ahead:  Most hash schemes depend on having a "good" hash
+function, in the sense of simulating randomness.  Python doesn't:  its most
+important hash functions (for strings and ints) are very regular in common
+cases:
+
+  >>> map(hash, (0, 1, 2, 3))
+  [0, 1, 2, 3]
+  >>> map(hash, ("namea", "nameb", "namec", "named"))
+  [-1658398457, -1658398460, -1658398459, -1658398462]
+  >>>
+
+This isn't necessarily bad!  To the contrary, in a table of size 2**i, taking
+the low-order i bits as the initial table index is extremely fast, and there
+are no collisions at all for dicts indexed by a contiguous range of ints.
+The same is approximately true when keys are "consecutive" strings.  So this
+gives better-than-random behavior in common cases, and that's very desirable.
+
+OTOH, when collisions occur, the tendency to fill contiguous slices of the
+hash table makes a good collision resolution strategy crucial.  Taking only
+the last i bits of the hash code is also vulnerable:  for example, consider
+the list [i << 16 for i in range(20000)] as a set of keys.  Since ints are 
+their own hash codes, and this fits in a dict of size 2**15, the last 15 bits
+ of every hash code are all 0:  they *all* map to the same table index.
+
+But catering to unusual cases should not slow the usual ones, so we just take
+the last i bits anyway.  It's up to collision resolution to do the rest.  If
+we *usually* find the key we're looking for on the first try (and, it turns
+out, we usually do -- the table load factor is kept under 2/3, so the odds
+are solidly in our favor), then it makes best sense to keep the initial index
+computation dirt cheap.
+
+The first half of collision resolution is to visit table indices via this
+recurrence:
+
+    j = ((5*j) + 1) mod 2**i
+
+For any initial j in range(2**i), repeating that 2**i times generates each
+int in range(2**i) exactly once (see any text on random-number generation for
+proof).  By itself, this doesn't help much:  like linear probing (setting
+j += 1, or j -= 1, on each loop trip), it scans the table entries in a fixed
+order.  This would be bad, except that's not the only thing we do, and it's
+actually *good* in the common cases where hash keys are consecutive.  In an
+example that's really too small to make this entirely clear, for a table of
+size 2**3 the order of indices is:
+
+    0 -> 1 -> 6 -> 7 -> 4 -> 5 -> 2 -> 3 -> 0 [and here it's repeating]
+
+If two things come in at index 5, the first place we look after is index 2,
+not 6, so if another comes in at index 6 the collision at 5 didn't hurt it.
+Linear probing is deadly in this case because there the fixed probe order
+is the *same* as the order consecutive keys are likely to arrive.  But it's
+extremely unlikely hash codes will follow a 5*j+1 recurrence by accident,
+and certain that consecutive hash codes do not.
+
+The other half of the strategy is to get the other bits of the hash code
+into play.  This is done by initializing a (unsigned) vrbl "perturb" to the
+full hash code, and changing the recurrence to:
+
+    j = (5*j) + 1 + perturb;
+    perturb >>= PERTURB_SHIFT;
+    use j % 2**i as the next table index;
+
+Now the probe sequence depends (eventually) on every bit in the hash code,
+and the pseudo-scrambling property of recurring on 5*j+1 is more valuable,
+because it quickly magnifies small differences in the bits that didn't affect
+the initial index.  Note that because perturb is unsigned, if the recurrence
+is executed often enough perturb eventually becomes and remains 0.  At that
+point (very rarely reached) the recurrence is on (just) 5*j+1 again, and
+that's certain to find an empty slot eventually (since it generates every int
+in range(2**i), and we make sure there's always at least one empty slot).
+
+Selecting a good value for PERTURB_SHIFT is a balancing act.  You want it
+small so that the high bits of the hash code continue to affect the probe
+sequence across iterations; but you want it large so that in really bad cases
+the high-order hash bits have an effect on early iterations.  5 was "the
+best" in minimizing total collisions across experiments Tim Peters ran (on
+both normal and pathological cases), but 4 and 6 weren't significantly worse.
+
+Historical: Reimer Behrends contributed the idea of using a polynomial-based
+approach, using repeated multiplication by x in GF(2**n) where an irreducible
+polynomial for each table size was chosen such that x was a primitive root.
+Christian Tismer later extended that to use division by x instead, as an
+efficient way to get the high bits of the hash code into play.  This scheme
+also gave excellent collision statistics, but was more expensive:  two
+if-tests were required inside the loop; computing "the next" index took about
+the same number of operations but without as much potential parallelism
+(e.g., computing 5*j can go on at the same time as computing 1+perturb in the
+above, and then shifting perturb can be done while the table index is being
+masked); and the PyDictObject struct required a member to hold the table's
+polynomial.  In Tim's experiments the current scheme ran faster, produced
+equally good collision statistics, needed less code & used less memory.
+
+Theoretical Python 2.5 headache:  hash codes are only C "long", but
+sizeof(Py_ssize_t) > sizeof(long) may be possible.  In that case, and if a
+dict is genuinely huge, then only the slots directly reachable via indexing
+by a C long can be the first slot in a probe sequence.  The probe sequence
+will still eventually reach every slot in the table, but the collision rate
+on initial probes may be much higher than this scheme was designed for.
+Getting a hash code as fat as Py_ssize_t is the only real cure.  But in
+practice, this probably won't make a lick of difference for many years (at
+which point everyone will have terabytes of RAM on 64-bit boxes).
+*/
+
+/* Object used as dummy key to fill deleted entries */
+static PyObject *dummy = NULL; /* Initialized by first call to newPyDictObject() */
 // 
 // #ifdef Py_REF_DEBUG
 // PyObject *
@@ -146,9 +146,9 @@
 // }
 // #endif
 // 
-// /* forward declarations */
-// static PyDictEntry *
-// lookdict_unicode(PyDictObject *mp, PyObject *key, long hash);
+/* forward declarations */
+static PyDictEntry *
+lookdict_unicode(PyDictObject *mp, PyObject *key, long hash);
 // 
 // #ifdef SHOW_CONVERSION_COUNTS
 // static long created = 0L;
@@ -181,33 +181,33 @@
 // }
 // #endif
 // 
-// /* Initialization macros.
-//    There are two ways to create a dict:  PyDict_New() is the main C API
-//    function, and the tp_new slot maps to dict_new().  In the latter case we
-//    can save a little time over what PyDict_New does because it's guaranteed
-//    that the PyDictObject struct is already zeroed out.
-//    Everyone except dict_new() should use EMPTY_TO_MINSIZE (unless they have
-//    an excellent reason not to).
-// */
-// 
-// #define INIT_NONZERO_DICT_SLOTS(mp) do {				\
-// 	(mp)->ma_table = (mp)->ma_smalltable;				\
-// 	(mp)->ma_mask = PyDict_MINSIZE - 1;				\
-//     } while(0)
-// 
-// #define EMPTY_TO_MINSIZE(mp) do {					\
-// 	memset((mp)->ma_smalltable, 0, sizeof((mp)->ma_smalltable));	\
-// 	(mp)->ma_used = (mp)->ma_fill = 0;				\
-// 	INIT_NONZERO_DICT_SLOTS(mp);					\
-//     } while(0)
-// 
-// /* Dictionary reuse scheme to save calls to malloc, free, and memset */
-// #ifndef PyDict_MAXFREELIST
-// #define PyDict_MAXFREELIST 80
-// #endif
-// static PyDictObject *free_list[PyDict_MAXFREELIST];
-// static int numfree = 0;
-// 
+/* Initialization macros.
+   There are two ways to create a dict:  PyDict_New() is the main C API
+   function, and the tp_new slot maps to dict_new().  In the latter case we
+   can save a little time over what PyDict_New does because it's guaranteed
+   that the PyDictObject struct is already zeroed out.
+   Everyone except dict_new() should use EMPTY_TO_MINSIZE (unless they have
+   an excellent reason not to).
+*/
+
+#define INIT_NONZERO_DICT_SLOTS(mp) do {				\
+	(mp)->ma_table = (mp)->ma_smalltable;				\
+	(mp)->ma_mask = PyDict_MINSIZE - 1;				\
+    } while(0)
+
+#define EMPTY_TO_MINSIZE(mp) do {					\
+	memset((mp)->ma_smalltable, 0, sizeof((mp)->ma_smalltable));	\
+	(mp)->ma_used = (mp)->ma_fill = 0;				\
+	INIT_NONZERO_DICT_SLOTS(mp);					\
+    } while(0)
+
+/* Dictionary reuse scheme to save calls to malloc, free, and memset */
+#ifndef PyDict_MAXFREELIST
+#define PyDict_MAXFREELIST 80
+#endif
+static PyDictObject *free_list[PyDict_MAXFREELIST];
+static int numfree = 0;
+
 void
 PyDict_Fini(void)
 {
@@ -223,218 +223,218 @@ PyDict_Fini(void)
 PyObject *
 PyDict_New(void)
 {
-// 	register PyDictObject *mp;
-// 	if (dummy == NULL) { /* Auto-initialize dummy */
-// 		dummy = PyUnicode_FromString("<dummy key>");
-// 		if (dummy == NULL)
-// 			return NULL;
+	register PyDictObject *mp;
+	if (dummy == NULL) { /* Auto-initialize dummy */
+		dummy = PyUnicode_FromString("<dummy key>");
+		if (dummy == NULL)
+			return NULL;
 // #ifdef SHOW_CONVERSION_COUNTS
 // 		Py_AtExit(show_counts);
 // #endif
 // #ifdef SHOW_ALLOC_COUNT
 // 		Py_AtExit(show_alloc);
 // #endif
-// 	}
-// 	if (numfree) {
-// 		mp = free_list[--numfree];
-// 		assert (mp != NULL);
-// 		assert (Py_TYPE(mp) == &PyDict_Type);
-// 		_Py_NewReference((PyObject *)mp);
-// 		if (mp->ma_fill) {
-// 			EMPTY_TO_MINSIZE(mp);
-// 		} else {
-// 			/* At least set ma_table and ma_mask; these are wrong
-// 			   if an empty but presized dict is added to freelist */
-// 			INIT_NONZERO_DICT_SLOTS(mp);
-// 		}
-// 		assert (mp->ma_used == 0);
-// 		assert (mp->ma_table == mp->ma_smalltable);
-// 		assert (mp->ma_mask == PyDict_MINSIZE - 1);
+	}
+	if (numfree) {
+		mp = free_list[--numfree];
+		assert (mp != NULL);
+		assert (Py_TYPE(mp) == &PyDict_Type);
+		_Py_NewReference((PyObject *)mp);
+		if (mp->ma_fill) {
+			EMPTY_TO_MINSIZE(mp);
+		} else {
+			/* At least set ma_table and ma_mask; these are wrong
+			   if an empty but presized dict is added to freelist */
+			INIT_NONZERO_DICT_SLOTS(mp);
+		}
+		assert (mp->ma_used == 0);
+		assert (mp->ma_table == mp->ma_smalltable);
+		assert (mp->ma_mask == PyDict_MINSIZE - 1);
 // #ifdef SHOW_ALLOC_COUNT
 // 		count_reuse++;
 // #endif
-// 	} else {
-// 		mp = PyObject_GC_New(PyDictObject, &PyDict_Type);
-// 		if (mp == NULL)
-// 			return NULL;
-// 		EMPTY_TO_MINSIZE(mp);
+	} else {
+		mp = PyObject_GC_New(PyDictObject, &PyDict_Type);
+		if (mp == NULL)
+			return NULL;
+		EMPTY_TO_MINSIZE(mp);
 // #ifdef SHOW_ALLOC_COUNT
 // 		count_alloc++;
 // #endif
-// 	}
-// 	mp->ma_lookup = lookdict_unicode;
+	}
+	mp->ma_lookup = lookdict_unicode;
 // #ifdef SHOW_CONVERSION_COUNTS
 // 	++created;
 // #endif
 // 	_PyObject_GC_TRACK(mp);
-// 	return (PyObject *)mp;
+	return (PyObject *)mp;
 }
-// 
-// /*
-// The basic lookup function used by all operations.
-// This is based on Algorithm D from Knuth Vol. 3, Sec. 6.4.
-// Open addressing is preferred over chaining since the link overhead for
-// chaining would be substantial (100% with typical malloc overhead).
-// 
-// The initial probe index is computed as hash mod the table size. Subsequent
-// probe indices are computed as explained earlier.
-// 
-// All arithmetic on hash should ignore overflow.
-// 
-// The details in this version are due to Tim Peters, building on many past
-// contributions by Reimer Behrends, Jyrki Alakuijala, Vladimir Marangozov and
-// Christian Tismer.
-// 
-// lookdict() is general-purpose, and may return NULL if (and only if) a
-// comparison raises an exception (this was new in Python 2.5).
-// lookdict_unicode() below is specialized to string keys, comparison of which can
-// never raise an exception; that function can never return NULL.  For both, when
-// the key isn't found a PyDictEntry* is returned for which the me_value field is
-// NULL; this is the slot in the dict at which the key would have been found, and
-// the caller can (if it wishes) add the <key, value> pair to the returned
-// PyDictEntry*.
-// */
-// static PyDictEntry *
-// lookdict(PyDictObject *mp, PyObject *key, register long hash)
-// {
-// 	register size_t i;
-// 	register size_t perturb;
-// 	register PyDictEntry *freeslot;
-// 	register size_t mask = (size_t)mp->ma_mask;
-// 	PyDictEntry *ep0 = mp->ma_table;
-// 	register PyDictEntry *ep;
-// 	register int cmp;
-// 	PyObject *startkey;
-// 
-// 	i = (size_t)hash & mask;
-// 	ep = &ep0[i];
-// 	if (ep->me_key == NULL || ep->me_key == key)
-// 		return ep;
-// 
-// 	if (ep->me_key == dummy)
-// 		freeslot = ep;
-// 	else {
-// 		if (ep->me_hash == hash) {
-// 			startkey = ep->me_key;
-// 			Py_INCREF(startkey);
-// 			cmp = PyObject_RichCompareBool(startkey, key, Py_EQ);
-// 			Py_DECREF(startkey);
-// 			if (cmp < 0)
-// 				return NULL;
-// 			if (ep0 == mp->ma_table && ep->me_key == startkey) {
-// 				if (cmp > 0)
-// 					return ep;
-// 			}
-// 			else {
-// 				/* The compare did major nasty stuff to the
-// 				 * dict:  start over.
-// 				 * XXX A clever adversary could prevent this
-// 				 * XXX from terminating.
-//  				 */
-//  				return lookdict(mp, key, hash);
-//  			}
-// 		}
-// 		freeslot = NULL;
-// 	}
-// 
-// 	/* In the loop, me_key == dummy is by far (factor of 100s) the
-// 	   least likely outcome, so test for that last. */
-// 	for (perturb = hash; ; perturb >>= PERTURB_SHIFT) {
-// 		i = (i << 2) + i + perturb + 1;
-// 		ep = &ep0[i & mask];
-// 		if (ep->me_key == NULL)
-// 			return freeslot == NULL ? ep : freeslot;
-// 		if (ep->me_key == key)
-// 			return ep;
-// 		if (ep->me_hash == hash && ep->me_key != dummy) {
-// 			startkey = ep->me_key;
-// 			Py_INCREF(startkey);
-// 			cmp = PyObject_RichCompareBool(startkey, key, Py_EQ);
-// 			Py_DECREF(startkey);
-// 			if (cmp < 0)
-// 				return NULL;
-// 			if (ep0 == mp->ma_table && ep->me_key == startkey) {
-// 				if (cmp > 0)
-// 					return ep;
-// 			}
-// 			else {
-// 				/* The compare did major nasty stuff to the
-// 				 * dict:  start over.
-// 				 * XXX A clever adversary could prevent this
-// 				 * XXX from terminating.
-//  				 */
-//  				return lookdict(mp, key, hash);
-//  			}
-// 		}
-// 		else if (ep->me_key == dummy && freeslot == NULL)
-// 			freeslot = ep;
-// 	}
-// 	assert(0);	/* NOT REACHED */
-// 	return 0;
-// }
-// 
-// /*
-//  * Hacked up version of lookdict which can assume keys are always
-//  * unicodes; this assumption allows testing for errors during
-//  * PyObject_RichCompareBool() to be dropped; unicode-unicode
-//  * comparisons never raise exceptions.  This also means we don't need
-//  * to go through PyObject_RichCompareBool(); we can always use
-//  * unicode_eq() directly.
-//  *
-//  * This is valuable because dicts with only unicode keys are very common.
-//  */
-// static PyDictEntry *
-// lookdict_unicode(PyDictObject *mp, PyObject *key, register long hash)
-// {
-// 	register size_t i;
-// 	register size_t perturb;
-// 	register PyDictEntry *freeslot;
-// 	register size_t mask = (size_t)mp->ma_mask;
-// 	PyDictEntry *ep0 = mp->ma_table;
-// 	register PyDictEntry *ep;
-// 
-// 	/* Make sure this function doesn't have to handle non-unicode keys,
-// 	   including subclasses of str; e.g., one reason to subclass
-// 	   unicodes is to override __eq__, and for speed we don't cater to
-// 	   that here. */
-// 	if (!PyUnicode_CheckExact(key)) {
+
+/*
+The basic lookup function used by all operations.
+This is based on Algorithm D from Knuth Vol. 3, Sec. 6.4.
+Open addressing is preferred over chaining since the link overhead for
+chaining would be substantial (100% with typical malloc overhead).
+
+The initial probe index is computed as hash mod the table size. Subsequent
+probe indices are computed as explained earlier.
+
+All arithmetic on hash should ignore overflow.
+
+The details in this version are due to Tim Peters, building on many past
+contributions by Reimer Behrends, Jyrki Alakuijala, Vladimir Marangozov and
+Christian Tismer.
+
+lookdict() is general-purpose, and may return NULL if (and only if) a
+comparison raises an exception (this was new in Python 2.5).
+lookdict_unicode() below is specialized to string keys, comparison of which can
+never raise an exception; that function can never return NULL.  For both, when
+the key isn't found a PyDictEntry* is returned for which the me_value field is
+NULL; this is the slot in the dict at which the key would have been found, and
+the caller can (if it wishes) add the <key, value> pair to the returned
+PyDictEntry*.
+*/
+static PyDictEntry *
+lookdict(PyDictObject *mp, PyObject *key, register long hash)
+{
+	register size_t i;
+	register size_t perturb;
+	register PyDictEntry *freeslot;
+	register size_t mask = (size_t)mp->ma_mask;
+	PyDictEntry *ep0 = mp->ma_table;
+	register PyDictEntry *ep;
+	register int cmp;
+	PyObject *startkey;
+
+	i = (size_t)hash & mask;
+	ep = &ep0[i];
+	if (ep->me_key == NULL || ep->me_key == key)
+		return ep;
+
+	if (ep->me_key == dummy)
+		freeslot = ep;
+	else {
+		if (ep->me_hash == hash) {
+			startkey = ep->me_key;
+			Py_INCREF(startkey);
+			cmp = PyObject_RichCompareBool(startkey, key, Py_EQ);
+			Py_DECREF(startkey);
+			if (cmp < 0)
+				return NULL;
+			if (ep0 == mp->ma_table && ep->me_key == startkey) {
+				if (cmp > 0)
+					return ep;
+			}
+			else {
+				/* The compare did major nasty stuff to the
+				 * dict:  start over.
+				 * XXX A clever adversary could prevent this
+				 * XXX from terminating.
+ 				 */
+ 				return lookdict(mp, key, hash);
+ 			}
+		}
+		freeslot = NULL;
+	}
+
+	/* In the loop, me_key == dummy is by far (factor of 100s) the
+	   least likely outcome, so test for that last. */
+	for (perturb = hash; ; perturb >>= PERTURB_SHIFT) {
+		i = (i << 2) + i + perturb + 1;
+		ep = &ep0[i & mask];
+		if (ep->me_key == NULL)
+			return freeslot == NULL ? ep : freeslot;
+		if (ep->me_key == key)
+			return ep;
+		if (ep->me_hash == hash && ep->me_key != dummy) {
+			startkey = ep->me_key;
+			Py_INCREF(startkey);
+			cmp = PyObject_RichCompareBool(startkey, key, Py_EQ);
+			Py_DECREF(startkey);
+			if (cmp < 0)
+				return NULL;
+			if (ep0 == mp->ma_table && ep->me_key == startkey) {
+				if (cmp > 0)
+					return ep;
+			}
+			else {
+				/* The compare did major nasty stuff to the
+				 * dict:  start over.
+				 * XXX A clever adversary could prevent this
+				 * XXX from terminating.
+ 				 */
+ 				return lookdict(mp, key, hash);
+ 			}
+		}
+		else if (ep->me_key == dummy && freeslot == NULL)
+			freeslot = ep;
+	}
+	assert(0);	/* NOT REACHED */
+	return 0;
+}
+
+/*
+ * Hacked up version of lookdict which can assume keys are always
+ * unicodes; this assumption allows testing for errors during
+ * PyObject_RichCompareBool() to be dropped; unicode-unicode
+ * comparisons never raise exceptions.  This also means we don't need
+ * to go through PyObject_RichCompareBool(); we can always use
+ * unicode_eq() directly.
+ *
+ * This is valuable because dicts with only unicode keys are very common.
+ */
+static PyDictEntry *
+lookdict_unicode(PyDictObject *mp, PyObject *key, register long hash)
+{
+	register size_t i;
+	register size_t perturb;
+	register PyDictEntry *freeslot;
+	register size_t mask = (size_t)mp->ma_mask;
+	PyDictEntry *ep0 = mp->ma_table;
+	register PyDictEntry *ep;
+
+	/* Make sure this function doesn't have to handle non-unicode keys,
+	   including subclasses of str; e.g., one reason to subclass
+	   unicodes is to override __eq__, and for speed we don't cater to
+	   that here. */
+	if (!PyUnicode_CheckExact(key)) {
 // #ifdef SHOW_CONVERSION_COUNTS
 // 		++converted;
 // #endif
-// 		mp->ma_lookup = lookdict;
-// 		return lookdict(mp, key, hash);
-// 	}
-// 	i = hash & mask;
-// 	ep = &ep0[i];
-// 	if (ep->me_key == NULL || ep->me_key == key)
-// 		return ep;
-// 	if (ep->me_key == dummy)
-// 		freeslot = ep;
-// 	else {
-// 		if (ep->me_hash == hash && unicode_eq(ep->me_key, key))
-// 			return ep;
-// 		freeslot = NULL;
-// 	}
-// 
-// 	/* In the loop, me_key == dummy is by far (factor of 100s) the
-// 	   least likely outcome, so test for that last. */
-// 	for (perturb = hash; ; perturb >>= PERTURB_SHIFT) {
-// 		i = (i << 2) + i + perturb + 1;
-// 		ep = &ep0[i & mask];
-// 		if (ep->me_key == NULL)
-// 			return freeslot == NULL ? ep : freeslot;
-// 		if (ep->me_key == key
-// 		    || (ep->me_hash == hash
-// 		        && ep->me_key != dummy
-// 			&& unicode_eq(ep->me_key, key)))
-// 			return ep;
-// 		if (ep->me_key == dummy && freeslot == NULL)
-// 			freeslot = ep;
-// 	}
-// 	assert(0);	/* NOT REACHED */
-// 	return 0;
-// }
-// 
+		mp->ma_lookup = lookdict;
+		return lookdict(mp, key, hash);
+	}
+	i = hash & mask;
+	ep = &ep0[i];
+	if (ep->me_key == NULL || ep->me_key == key)
+		return ep;
+	if (ep->me_key == dummy)
+		freeslot = ep;
+	else {
+		if (ep->me_hash == hash && unicode_eq(ep->me_key, key))
+			return ep;
+		freeslot = NULL;
+	}
+
+	/* In the loop, me_key == dummy is by far (factor of 100s) the
+	   least likely outcome, so test for that last. */
+	for (perturb = hash; ; perturb >>= PERTURB_SHIFT) {
+		i = (i << 2) + i + perturb + 1;
+		ep = &ep0[i & mask];
+		if (ep->me_key == NULL)
+			return freeslot == NULL ? ep : freeslot;
+		if (ep->me_key == key
+		    || (ep->me_hash == hash
+		        && ep->me_key != dummy
+			&& unicode_eq(ep->me_key, key)))
+			return ep;
+		if (ep->me_key == dummy && freeslot == NULL)
+			freeslot = ep;
+	}
+	assert(0);	/* NOT REACHED */
+	return 0;
+}
+
 // /*
 // Internal routine to insert a new item into the table.
 // Used both by the internal resize routine and by the public insert routine.
@@ -2023,7 +2023,7 @@ PyDict_New(void)
 // "dict(**kwargs) -> new dictionary initialized with the name=value pairs\n"
 // "    in the keyword argument list.  For example:  dict(one=1, two=2)");
 // 
-// PyTypeObject PyDict_Type = {
+PyTypeObject PyDict_Type = {
 // 	PyVarObject_HEAD_INIT(&PyType_Type, 0)
 // 	"dict",
 // 	sizeof(PyDictObject),
@@ -2064,8 +2064,8 @@ PyDict_New(void)
 // 	PyType_GenericAlloc,			/* tp_alloc */
 // 	dict_new,				/* tp_new */
 // 	PyObject_GC_Del,        		/* tp_free */
-// };
-// 
+};
+
 /* For backward compatibility with old dictionary interface */
 
 PyObject *

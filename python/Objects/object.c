@@ -608,11 +608,11 @@
 // 
 // static char *opstrings[] = {"<", "<=", "==", "!=", ">", ">="};
 // 
-// /* Perform a rich comparison, raising TypeError when the requested comparison
-//    operator is not supported. */
-// static PyObject *
-// do_richcompare(PyObject *v, PyObject *w, int op)
-// {
+/* Perform a rich comparison, raising TypeError when the requested comparison
+   operator is not supported. */
+static PyObject *
+do_richcompare(PyObject *v, PyObject *w, int op)
+{
 // 	richcmpfunc f;
 // 	PyObject *res;
 // 
@@ -656,48 +656,48 @@
 // 	}
 // 	Py_INCREF(res);
 // 	return res;
-// }
+}
 // 
-// /* Perform a rich comparison with object result.  This wraps do_richcompare()
-//    with a check for NULL arguments and a recursion check. */
-// 
-// PyObject *
-// PyObject_RichCompare(PyObject *v, PyObject *w, int op)
-// {
-// 	PyObject *res;
-// 
-// 	assert(Py_LT <= op && op <= Py_GE);
-// 	if (v == NULL || w == NULL) {
-// 		if (!PyErr_Occurred())
-// 			PyErr_BadInternalCall();
-// 		return NULL;
-// 	}
-// 	if (Py_EnterRecursiveCall(" in cmp"))
-// 		return NULL;
-// 	res = do_richcompare(v, w, op);
-// 	Py_LeaveRecursiveCall();
-// 	return res;
-// }
-// 
-// /* Perform a rich comparison with integer result.  This wraps
-//    PyObject_RichCompare(), returning -1 for error, 0 for false, 1 for true. */
-// int
-// PyObject_RichCompareBool(PyObject *v, PyObject *w, int op)
-// {
-// 	PyObject *res;
-// 	int ok;
-// 
-// 	res = PyObject_RichCompare(v, w, op);
-// 	if (res == NULL)
-// 		return -1;
-// 	if (PyBool_Check(res))
-// 		ok = (res == Py_True);
-// 	else
-// 		ok = PyObject_IsTrue(res);
-// 	Py_DECREF(res);
-// 	return ok;
-// }
-// 
+/* Perform a rich comparison with object result.  This wraps do_richcompare()
+   with a check for NULL arguments and a recursion check. */
+
+PyObject *
+PyObject_RichCompare(PyObject *v, PyObject *w, int op)
+{
+	PyObject *res;
+
+	assert(Py_LT <= op && op <= Py_GE);
+	if (v == NULL || w == NULL) {
+		if (!PyErr_Occurred())
+			PyErr_BadInternalCall();
+		return NULL;
+	}
+	if (Py_EnterRecursiveCall(" in cmp"))
+		return NULL;
+	res = do_richcompare(v, w, op);
+	Py_LeaveRecursiveCall();
+	return res;
+}
+
+/* Perform a rich comparison with integer result.  This wraps
+   PyObject_RichCompare(), returning -1 for error, 0 for false, 1 for true. */
+int
+PyObject_RichCompareBool(PyObject *v, PyObject *w, int op)
+{
+	PyObject *res;
+	int ok;
+
+	res = PyObject_RichCompare(v, w, op);
+	if (res == NULL)
+		return -1;
+	if (PyBool_Check(res))
+		ok = (res == Py_True);
+	else
+		ok = PyObject_IsTrue(res);
+	Py_DECREF(res);
+	return ok;
+}
+
 // /* Turn the result of a three-way comparison into the result expected by a
 //    rich comparison. */
 // PyObject *
@@ -1182,12 +1182,12 @@
 // 	return res;
 // }
 // 
-// /* Test a value used as condition, e.g., in a for or if statement.
-//    Return -1 if an error occurred */
-// 
-// int
-// PyObject_IsTrue(PyObject *v)
-// {
+/* Test a value used as condition, e.g., in a for or if statement.
+   Return -1 if an error occurred */
+
+int
+PyObject_IsTrue(PyObject *v)
+{
 // 	Py_ssize_t res;
 // 	if (v == Py_True)
 // 		return 1;
@@ -1208,7 +1208,7 @@
 // 		return 1;
 // 	/* if it is negative, it should be either -1 or -2 */
 // 	return (res > 0) ? 1 : Py_SAFE_DOWNCAST(res, Py_ssize_t, int);
-// }
+}
 // 
 // /* equivalent of 'not v'
 //    Return -1 if an error occurred */

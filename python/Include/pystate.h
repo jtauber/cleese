@@ -62,9 +62,9 @@ typedef struct _ts {
     PyInterpreterState *interp;
 // 
 //     struct _frame *frame;
-//     int recursion_depth;
-//     char overflowed; /* The stack has overflowed. Allow 50 more calls
-// 		        to handle the runtime error. */
+    int recursion_depth;
+    char overflowed; /* The stack has overflowed. Allow 50 more calls
+		        to handle the runtime error. */
 //     char recursion_critical; /* The current calls must not cause 
 // 				a stack overflow. */
 //     /* 'tracing' keeps track of the execution depth when tracing/profiling.

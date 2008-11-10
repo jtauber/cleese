@@ -71,28 +71,28 @@ whose size is determined when the object is allocated.
 // 
 // #else
 #define _PyObject_HEAD_EXTRA
-// #define _PyObject_EXTRA_INIT
+#define _PyObject_EXTRA_INIT
 // #endif
 // 
-// /* PyObject_HEAD defines the initial segment of every PyObject. */
-// #define PyObject_HEAD		        PyObject ob_base;
-// 
-// #define PyObject_HEAD_INIT(type)	\
-// 	{ _PyObject_EXTRA_INIT		\
-// 	1, type },
-// 
-// #define PyVarObject_HEAD_INIT(type, size)	\
-// 	{ PyObject_HEAD_INIT(type) size },
-// 
-// /* PyObject_VAR_HEAD defines the initial segment of all variable-size
-//  * container objects.  These end with a declaration of an array with 1
-//  * element, but enough space is malloc'ed so that the array actually
-//  * has room for ob_size elements.  Note that ob_size is an element count,
-//  * not necessarily a byte count.
-//  */
-// #define PyObject_VAR_HEAD      PyVarObject ob_base;
+/* PyObject_HEAD defines the initial segment of every PyObject. */
+#define PyObject_HEAD		        PyObject ob_base;
+
+#define PyObject_HEAD_INIT(type)	\
+	{ _PyObject_EXTRA_INIT		\
+	1, type },
+
+#define PyVarObject_HEAD_INIT(type, size)	\
+	{ PyObject_HEAD_INIT(type) size },
+
+/* PyObject_VAR_HEAD defines the initial segment of all variable-size
+ * container objects.  These end with a declaration of an array with 1
+ * element, but enough space is malloc'ed so that the array actually
+ * has room for ob_size elements.  Note that ob_size is an element count,
+ * not necessarily a byte count.
+ */
+#define PyObject_VAR_HEAD      PyVarObject ob_base;
 // #define Py_INVALID_SIZE (Py_ssize_t)-1
-// 
+
 /* Nothing is actually declared to be a PyObject, but every pointer to
  * a Python object can be cast to a PyObject*.  This is inheritance built
  * by hand.  Similarly every pointer to a variable-size Python object can,
@@ -104,12 +104,12 @@ typedef struct _object {
 	struct _typeobject *ob_type;
 } PyObject;
 
-// typedef struct {
-// 	PyObject ob_base;
-// 	Py_ssize_t ob_size; /* Number of items in variable part */
-// } PyVarObject;
-// 
-// #define Py_REFCNT(ob)		(((PyObject*)(ob))->ob_refcnt)
+typedef struct {
+	PyObject ob_base;
+	Py_ssize_t ob_size; /* Number of items in variable part */
+} PyVarObject;
+
+#define Py_REFCNT(ob)		(((PyObject*)(ob))->ob_refcnt)
 #define Py_TYPE(ob)		(((PyObject*)(ob))->ob_type)
 // #define Py_SIZE(ob)		(((PyVarObject*)(ob))->ob_size)
 // 
@@ -131,7 +131,7 @@ typedef struct _object {
 // typedef PyObject * (*unaryfunc)(PyObject *);
 // typedef PyObject * (*binaryfunc)(PyObject *, PyObject *);
 // typedef PyObject * (*ternaryfunc)(PyObject *, PyObject *, PyObject *);
-// typedef int (*inquiry)(PyObject *);
+typedef int (*inquiry)(PyObject *);
 // typedef Py_ssize_t (*lenfunc)(PyObject *);
 // typedef PyObject *(*ssizeargfunc)(PyObject *, Py_ssize_t);
 // typedef PyObject *(*ssizessizeargfunc)(PyObject *, Py_ssize_t, Py_ssize_t);
@@ -192,8 +192,8 @@ typedef struct _object {
 // /* End buffer interface */
 // 
 // typedef int (*objobjproc)(PyObject *, PyObject *);
-// typedef int (*visitproc)(PyObject *, void *);
-// typedef int (*traverseproc)(PyObject *, visitproc, void *);
+typedef int (*visitproc)(PyObject *, void *);
+typedef int (*traverseproc)(PyObject *, visitproc, void *);
 // 
 // typedef struct {
 // 	/* Number implementations must check *both*
@@ -285,10 +285,10 @@ typedef void (*destructor)(PyObject *);
 // typedef PyObject *(*allocfunc)(struct _typeobject *, Py_ssize_t);
 // 
 typedef struct _typeobject {
-// 	PyObject_VAR_HEAD
+	PyObject_VAR_HEAD
 // 	const char *tp_name; /* For printing, in format "<module>.<name>" */
-// 	Py_ssize_t tp_basicsize, tp_itemsize; /* For allocation */
-// 
+	Py_ssize_t tp_basicsize, tp_itemsize; /* For allocation */
+
 // 	/* Methods to implement standard operations */
 
 	destructor tp_dealloc;
@@ -314,19 +314,19 @@ typedef struct _typeobject {
 // 
 // 	/* Functions to access object as input/output buffer */
 // 	PyBufferProcs *tp_as_buffer;
-// 
-// 	/* Flags to define presence of optional/expanded features */
-// 	long tp_flags;
-// 
+
+	/* Flags to define presence of optional/expanded features */
+	long tp_flags;
+
 // 	const char *tp_doc; /* Documentation string */
 // 
-// 	/* Assigned meaning in release 2.0 */
-// 	/* call function for all accessible objects */
-// 	traverseproc tp_traverse;
-// 
-// 	/* delete references to contained objects */
-// 	inquiry tp_clear;
-// 
+	/* Assigned meaning in release 2.0 */
+	/* call function for all accessible objects */
+	traverseproc tp_traverse;
+
+	/* delete references to contained objects */
+	inquiry tp_clear;
+
 // 	/* Assigned meaning in release 2.1 */
 // 	/* rich comparisons */
 // 	richcmpfunc tp_richcompare;
@@ -351,13 +351,13 @@ typedef struct _typeobject {
 // 	allocfunc tp_alloc;
 // 	newfunc tp_new;
 // 	freefunc tp_free; /* Low-level free-memory routine */
-// 	inquiry tp_is_gc; /* For PyObject_IS_GC */
+	inquiry tp_is_gc; /* For PyObject_IS_GC */
 // 	PyObject *tp_bases;
 // 	PyObject *tp_mro; /* method resolution order */
 // 	PyObject *tp_cache;
 // 	PyObject *tp_subclasses;
 // 	PyObject *tp_weaklist;
-// 	destructor tp_del;
+	destructor tp_del;
 // 
 // 	/* Type attribute cache version tag. Added in version 2.6 */
 // 	unsigned int tp_version_tag;
@@ -426,7 +426,7 @@ PyAPI_FUNC(int) PyType_IsSubtype(PyTypeObject *, PyTypeObject *);
 // PyAPI_FUNC(PyObject *) PyObject_Bytes(PyObject *);
 // PyAPI_FUNC(int) PyObject_Compare(PyObject *, PyObject *);
 // PyAPI_FUNC(PyObject *) PyObject_RichCompare(PyObject *, PyObject *, int);
-// PyAPI_FUNC(int) PyObject_RichCompareBool(PyObject *, PyObject *, int);
+PyAPI_FUNC(int) PyObject_RichCompareBool(PyObject *, PyObject *, int);
 // PyAPI_FUNC(PyObject *) Py_CmpToRich(int op, int cmp);
 // PyAPI_FUNC(PyObject *) PyObject_GetAttrString(PyObject *, const char *);
 // PyAPI_FUNC(int) PyObject_SetAttrString(PyObject *, const char *, PyObject *);
@@ -441,7 +441,7 @@ PyAPI_FUNC(int) PyType_IsSubtype(PyTypeObject *, PyTypeObject *);
 // 					      PyObject *, PyObject *);
 // PyAPI_FUNC(long) PyObject_Hash(PyObject *);
 // PyAPI_FUNC(long) PyObject_HashNotImplemented(PyObject *);
-// PyAPI_FUNC(int) PyObject_IsTrue(PyObject *);
+PyAPI_FUNC(int) PyObject_IsTrue(PyObject *);
 // PyAPI_FUNC(int) PyObject_Not(PyObject *);
 // PyAPI_FUNC(int) PyCallable_Check(PyObject *);
 // 
@@ -504,10 +504,10 @@ PyAPI_FUNC(int) PyType_IsSubtype(PyTypeObject *, PyTypeObject *);
 // 
 // /* Set while the type is being 'readied', to prevent recursive ready calls */
 // #define Py_TPFLAGS_READYING (1L<<13)
-// 
-// /* Objects support garbage collection (see objimp.h) */
-// #define Py_TPFLAGS_HAVE_GC (1L<<14)
-// 
+
+/* Objects support garbage collection (see objimp.h) */
+#define Py_TPFLAGS_HAVE_GC (1L<<14)
+
 // /* These two bits are preserved for Stackless Python, next after this is 17 */
 // #ifdef STACKLESS
 // #define Py_TPFLAGS_HAVE_STACKLESS_EXTENSION (3L<<15)
@@ -538,7 +538,7 @@ PyAPI_FUNC(int) PyType_IsSubtype(PyTypeObject *, PyTypeObject *);
 //                              Py_TPFLAGS_HAVE_VERSION_TAG | \
 //                             0)
 // 
-// #define PyType_HasFeature(t,f)  (((t)->tp_flags & (f)) != 0)
+#define PyType_HasFeature(t,f)  (((t)->tp_flags & (f)) != 0)
 // #define PyType_FastSubclass(t,f)  PyType_HasFeature(t,f)
 // 
 // 
@@ -615,7 +615,7 @@ PyAPI_FUNC(int) PyType_IsSubtype(PyTypeObject *, PyTypeObject *);
 // #define _Py_DEC_TPFREES(OP)	Py_TYPE(OP)->tp_frees--
 // #define _Py_COUNT_ALLOCS_COMMA	,
 // #else
-// #define _Py_INC_TPALLOCS(OP)
+#define _Py_INC_TPALLOCS(OP)
 #define _Py_INC_TPFREES(OP)
 // #define _Py_DEC_TPFREES(OP)
 #define _Py_COUNT_ALLOCS_COMMA
@@ -634,11 +634,11 @@ PyAPI_FUNC(int) PyType_IsSubtype(PyTypeObject *, PyTypeObject *);
 // /* Without Py_TRACE_REFS, there's little enough to do that we expand code
 //  * inline.
 //  */
-// #define _Py_NewReference(op) (				\
-// 	_Py_INC_TPALLOCS(op) _Py_COUNT_ALLOCS_COMMA	\
-// 	_Py_INC_REFTOTAL  _Py_REF_DEBUG_COMMA		\
-// 	Py_REFCNT(op) = 1)
-// 
+#define _Py_NewReference(op) (				\
+	_Py_INC_TPALLOCS(op) _Py_COUNT_ALLOCS_COMMA	\
+	_Py_INC_REFTOTAL  _Py_REF_DEBUG_COMMA		\
+	Py_REFCNT(op) = 1)
+
 // #define _Py_ForgetReference(op) _Py_INC_TPFREES(op)
 // 
 #define _Py_Dealloc(op) (				\
@@ -646,10 +646,10 @@ PyAPI_FUNC(int) PyType_IsSubtype(PyTypeObject *, PyTypeObject *);
 	(*Py_TYPE(op)->tp_dealloc)((PyObject *)(op)))
 // #endif /* !Py_TRACE_REFS */
 // 
-// #define Py_INCREF(op) (				\
-// 	_Py_INC_REFTOTAL  _Py_REF_DEBUG_COMMA	\
-// 	((PyObject*)(op))->ob_refcnt++)
-// 
+#define Py_INCREF(op) (				\
+	_Py_INC_REFTOTAL  _Py_REF_DEBUG_COMMA	\
+	((PyObject*)(op))->ob_refcnt++)
+
 #define Py_DECREF(op)					\
 	if (_Py_DEC_REFTOTAL  _Py_REF_DEBUG_COMMA	\
 	    --((PyObject*)(op))->ob_refcnt != 0)		\
@@ -729,15 +729,15 @@ PyAPI_FUNC(int) PyType_IsSubtype(PyTypeObject *, PyTypeObject *);
 // */
 // PyAPI_DATA(PyObject) _Py_NotImplementedStruct; /* Don't use this directly */
 // #define Py_NotImplemented (&_Py_NotImplementedStruct)
-// 
-// /* Rich comparison opcodes */
-// #define Py_LT 0
-// #define Py_LE 1
-// #define Py_EQ 2
-// #define Py_NE 3
-// #define Py_GT 4
-// #define Py_GE 5
-// 
+
+/* Rich comparison opcodes */
+#define Py_LT 0
+#define Py_LE 1
+#define Py_EQ 2
+#define Py_NE 3
+#define Py_GT 4
+#define Py_GE 5
+
 // /* Maps Py_LT to Py_GT, ..., Py_GE to Py_LE.
 //  * Defined in object.c.
 //  */

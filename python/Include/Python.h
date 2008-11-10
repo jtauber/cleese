@@ -26,8 +26,8 @@
 #ifndef NULL
 #   error "Python.h requires that stdio.h define NULL."
 #endif
-// 
-// #include <string.h>
+
+#include <string.h>
 // #ifdef HAVE_ERRNO_H
 // #include <errno.h>
 // #endif
@@ -41,12 +41,12 @@
 // #include <stddef.h>
 // #endif
 // 
-// /* CAUTION:  Build setups should ensure that NDEBUG is defined on the
-//  * compiler command line when building Python in release mode; else
-//  * assert() calls won't be removed.
-//  */
-// #include <assert.h>
-// 
+/* CAUTION:  Build setups should ensure that NDEBUG is defined on the
+ * compiler command line when building Python in release mode; else
+ * assert() calls won't be removed.
+ */
+#include <assert.h>
+
 #include "pyport.h"
 // 
 // /* Debug-mode build with pymalloc implies PYMALLOC_DEBUG.
@@ -59,19 +59,19 @@
 // #error "PYMALLOC_DEBUG requires WITH_PYMALLOC"
 // #endif
 // #include "pymath.h"
-// #include "pymem.h"
-// 
+#include "pymem.h"
+
 #include "object.h"
-// #include "objimpl.h"
+#include "objimpl.h"
 
 #include "pydebug.h"
 
 // #include "bytearrayobject.h"
 // #include "bytesobject.h"
 #include "unicodeobject.h"
-// #include "longobject.h"
-// #include "longintrepr.h"
-// #include "boolobject.h"
+#include "longobject.h"
+#include "longintrepr.h"
+#include "boolobject.h"
 // #include "floatobject.h"
 // #ifndef WITHOUT_COMPLEX
 // #include "complexobject.h"
@@ -99,14 +99,14 @@
 // #include "weakrefobject.h"
 // 
 // #include "codecs.h"
-// #include "pyerrors.h"
-// 
+#include "pyerrors.h"
+
 #include "pystate.h"
 // 
 // #include "pyarena.h"
 // #include "modsupport.h"
 #include "pythonrun.h"
-// #include "ceval.h"
+#include "ceval.h"
 // #include "sysmodule.h"
 // #include "intrcheck.h"
 #include "import.h"
