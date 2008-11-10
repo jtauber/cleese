@@ -22,10 +22,10 @@
 // #define _SGI_MP_SOURCE
 // #endif
 // 
-// #include <stdio.h>
-// #ifndef NULL
-// #   error "Python.h requires that stdio.h define NULL."
-// #endif
+#include <stdio.h>
+#ifndef NULL
+#   error "Python.h requires that stdio.h define NULL."
+#endif
 // 
 // #include <string.h>
 // #ifdef HAVE_ERRNO_H

@@ -190,8 +190,8 @@ Py_InitializeEx(int install_sigs)
 // 		Py_DontWriteBytecodeFlag = add_flag(Py_DontWriteBytecodeFlag, p);
 // 
 	interp = PyInterpreterState_New();
-// 	if (interp == NULL)
-// 		Py_FatalError("Py_Initialize: can't make first interpreter");
+	if (interp == NULL)
+		Py_FatalError("Py_Initialize: can't make first interpreter");
 // 
 // 	tstate = PyThreadState_New(interp);
 // 	if (tstate == NULL)
@@ -1907,13 +1907,13 @@ Py_Finalize(void)
 // 		err->text = NULL;
 // 	}
 // }
-// 
+
 /* Print fatal error message and abort */
 
-// void
-// Py_FatalError(const char *msg)
-// {
-// 	fprintf(stderr, "Fatal Python error: %s\n", msg);
+void
+Py_FatalError(const char *msg)
+{
+	fprintf(stderr, "Fatal Python error: %s\n", msg);
 // 	if (PyErr_Occurred()) {
 // 		PyErr_Print();
 // 	}
@@ -1925,8 +1925,8 @@ Py_Finalize(void)
 // 	DebugBreak();
 // #endif
 // #endif /* MS_WINDOWS */
-// 	abort();
-// }
+	abort();
+}
 // 
 // /* Clean up and exit */
 // 
