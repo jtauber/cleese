@@ -1,7 +1,7 @@
 
 /* Python interpreter main program for frozen scripts */
 
-// #include "Python.h"
+#include "Python.h"
 // #include <locale.h>
 // 
 // #ifdef MS_WINDOWS

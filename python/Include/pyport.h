@@ -80,7 +80,7 @@
 // 
 // #elif SIZEOF_VOID_P <= SIZEOF_INT
 // typedef unsigned int	Py_uintptr_t;
-// typedef int		Py_intptr_t;
+typedef int		Py_intptr_t;
 // 
 // #elif SIZEOF_VOID_P <= SIZEOF_LONG
 // typedef unsigned long	Py_uintptr_t;
@@ -101,7 +101,7 @@
 // #ifdef HAVE_SSIZE_T
 // typedef ssize_t		Py_ssize_t;
 // #elif SIZEOF_VOID_P == SIZEOF_SIZE_T
-// typedef Py_intptr_t	Py_ssize_t;
+typedef Py_intptr_t	Py_ssize_t;
 // #else
 // #   error "Python needs a typedef for Py_ssize_t in pyport.h."
 // #endif

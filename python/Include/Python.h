@@ -31,7 +31,7 @@
 // #ifdef HAVE_ERRNO_H
 // #include <errno.h>
 // #endif
-// #include <stdlib.h>
+#include <stdlib.h>
 // #ifdef HAVE_UNISTD_H
 // #include <unistd.h>
 // #endif
@@ -61,14 +61,14 @@
 // #include "pymath.h"
 // #include "pymem.h"
 // 
-// #include "object.h"
+#include "object.h"
 // #include "objimpl.h"
 
 #include "pydebug.h"
 
 // #include "bytearrayobject.h"
 // #include "bytesobject.h"
-// #include "unicodeobject.h"
+#include "unicodeobject.h"
 // #include "longobject.h"
 // #include "longintrepr.h"
 // #include "boolobject.h"
@@ -80,11 +80,11 @@
 // #include "memoryobject.h"
 // #include "tupleobject.h"
 // #include "listobject.h"
-// #include "dictobject.h"
+#include "dictobject.h"
 // #include "enumobject.h"
 // #include "setobject.h"
 // #include "methodobject.h"
-// #include "moduleobject.h"
+#include "moduleobject.h"
 // #include "funcobject.h"
 // #include "classobject.h"
 // #include "fileobject.h"
@@ -109,7 +109,7 @@
 // #include "ceval.h"
 // #include "sysmodule.h"
 // #include "intrcheck.h"
-// #include "import.h"
+#include "import.h"
 // 
 // #include "abstract.h"
 // 

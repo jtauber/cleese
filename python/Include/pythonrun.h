@@ -24,7 +24,7 @@
 // PyAPI_FUNC(wchar_t *) Py_GetPythonHome(void);
 // 
 PyAPI_FUNC(void) Py_Initialize(void);
-// PyAPI_FUNC(void) Py_InitializeEx(int);
+PyAPI_FUNC(void) Py_InitializeEx(int);
 PyAPI_FUNC(void) Py_Finalize(void);
 // PyAPI_FUNC(int) Py_IsInitialized(void);
 // PyAPI_FUNC(PyThreadState *) Py_NewInterpreter(void);
@@ -121,7 +121,7 @@ PyAPI_FUNC(int) Py_Main(void);
 // /* Internal -- various one-time initializations */
 // PyAPI_FUNC(PyObject *) _PyBuiltin_Init(void);
 // PyAPI_FUNC(PyObject *) _PySys_Init(void);
-// PyAPI_FUNC(void) _PyImport_Init(void);
+PyAPI_FUNC(void) _PyImport_Init(void);
 // PyAPI_FUNC(void) _PyExc_Init(void);
 // PyAPI_FUNC(void) _PyImportHooks_Init(void);
 // PyAPI_FUNC(int) _PyFrame_Init(void);
@@ -130,11 +130,11 @@ PyAPI_FUNC(int) Py_Main(void);
 // 
 // /* Various internal finalizers */
 // PyAPI_FUNC(void) _PyExc_Fini(void);
-// PyAPI_FUNC(void) _PyImport_Fini(void);
+PyAPI_FUNC(void) _PyImport_Fini(void);
 // PyAPI_FUNC(void) PyMethod_Fini(void);
 // PyAPI_FUNC(void) PyFrame_Fini(void);
 // PyAPI_FUNC(void) PyCFunction_Fini(void);
-// PyAPI_FUNC(void) PyDict_Fini(void);
+PyAPI_FUNC(void) PyDict_Fini(void);
 // PyAPI_FUNC(void) PyTuple_Fini(void);
 // PyAPI_FUNC(void) PyList_Fini(void);
 // PyAPI_FUNC(void) PySet_Fini(void);

@@ -50,8 +50,8 @@
 // 
 // extern grammar _PyParser_Grammar; /* From graminit.c */
 // 
-// /* Forward */
-// static void initmain(void);
+/* Forward */
+static void initmain(void);
 // static void initsite(void);
 // static int initstdio(void);
 // static void flush_io(void);
@@ -211,9 +211,9 @@ Py_InitializeEx(int install_sigs)
 // 
 // 	_PyFloat_Init();
 // 
-// 	interp->modules = PyDict_New();
-// 	if (interp->modules == NULL)
-// 		Py_FatalError("Py_Initialize: can't make modules dictionary");
+	interp->modules = PyDict_New();
+	if (interp->modules == NULL)
+		Py_FatalError("Py_Initialize: can't make modules dictionary");
 // 	interp->modules_reloading = PyDict_New();
 // 	if (interp->modules_reloading == NULL)
 // 		Py_FatalError("Py_Initialize: can't make modules_reloading dictionary");
@@ -253,7 +253,7 @@ Py_InitializeEx(int install_sigs)
 // 	PySys_SetObject("stderr", pstderr);
 // 	PySys_SetObject("__stderr__", pstderr);
 // 
-// 	_PyImport_Init();
+	_PyImport_Init();
 // 
 // 	_PyImportHooks_Init();
 // 
@@ -269,7 +269,7 @@ Py_InitializeEx(int install_sigs)
 // 		Py_XDECREF(warnings_module);
 // 	}
 // 
-// 	initmain(); /* Module __main__ */
+	initmain(); /* Module __main__ */
 // 	if (initstdio() < 0)
 // 		Py_FatalError(
 // 		    "Py_Initialize: can't initialize sys standard streams");
@@ -403,9 +403,9 @@ Py_Finalize(void)
 // 	while (PyGC_Collect() > 0)
 // 		/* nothing */;
 // #endif
-// 
-// 	/* Destroy all modules */
-// 	PyImport_Cleanup();
+
+	/* Destroy all modules */
+	PyImport_Cleanup();
 // 
 // 	/* Flush stdout+stderr (again, in case more was printed) */
 // 	flush_std_files();
@@ -429,8 +429,8 @@ Py_Finalize(void)
 // 	PyGC_Collect();
 // #endif
 // 
-// 	/* Destroy the database used by _PyImport_{Fixup,Find}Extension */
-// 	_PyImport_Fini();
+	/* Destroy the database used by _PyImport_{Fixup,Find}Extension */
+	_PyImport_Fini();
 // 
 // 	/* Debugging stuff */
 // #ifdef COUNT_ALLOCS
@@ -480,7 +480,7 @@ Py_Finalize(void)
 // 	PyByteArray_Fini();
 // 	PyLong_Fini();
 // 	PyFloat_Fini();
-// 	PyDict_Fini();
+	PyDict_Fini();
 // 
 // 	/* Cleanup Unicode implementation */
 // 	_PyUnicode_Fini();
@@ -678,25 +678,25 @@ Py_Finalize(void)
 // 	return home;
 // }
 // 
-// /* Create __main__ module */
-// 
-// static void
-// initmain(void)
-// {
-// 	PyObject *m, *d;
-// 	m = PyImport_AddModule("__main__");
-// 	if (m == NULL)
-// 		Py_FatalError("can't create __main__ module");
-// 	d = PyModule_GetDict(m);
-// 	if (PyDict_GetItemString(d, "__builtins__") == NULL) {
-// 		PyObject *bimod = PyImport_ImportModule("builtins");
-// 		if (bimod == NULL ||
-// 		    PyDict_SetItemString(d, "__builtins__", bimod) != 0)
-// 			Py_FatalError("can't add __builtins__ to __main__");
-// 		Py_DECREF(bimod);
-// 	}
-// }
-// 
+/* Create __main__ module */
+
+static void
+initmain(void)
+{
+	PyObject *m, *d;
+	m = PyImport_AddModule("__main__");
+	if (m == NULL)
+		Py_FatalError("can't create __main__ module");
+	d = PyModule_GetDict(m);
+	if (PyDict_GetItemString(d, "__builtins__") == NULL) {
+		PyObject *bimod = PyImport_ImportModule("builtins");
+		if (bimod == NULL ||
+		    PyDict_SetItemString(d, "__builtins__", bimod) != 0)
+			Py_FatalError("can't add __builtins__ to __main__");
+		Py_DECREF(bimod);
+	}
+}
+
 // /* Import the site module (not into __main__ though) */
 // 
 // static void
