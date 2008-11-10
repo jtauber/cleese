@@ -14,7 +14,6 @@
 // 	return Py_Main(argc, argv);
 // }
 // #else
-extern int Py_FrozenMain(void);
 int
 main(void) // main(int argc, char **argv)
 {
