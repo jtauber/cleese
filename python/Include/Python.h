@@ -63,9 +63,9 @@
 // 
 // #include "object.h"
 // #include "objimpl.h"
-// 
-// #include "pydebug.h"
-// 
+
+#include "pydebug.h"
+
 // #include "bytearrayobject.h"
 // #include "bytesobject.h"
 // #include "unicodeobject.h"
