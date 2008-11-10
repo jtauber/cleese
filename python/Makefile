@@ -2,6 +2,7 @@ all: 1p1
 
 PYTHON_OBJS = 	\
 				Python/frozenmain.o \
+				Python/pystate.o \
 				Python/pythonrun.o
 
 OBJS =			\

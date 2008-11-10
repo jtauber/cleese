@@ -1,8 +1,8 @@
-// 
-// /* Python interpreter top-level routines, including init/exit */
-// 
-// #include "Python.h"
-// 
+
+/* Python interpreter top-level routines, including init/exit */
+
+#include "Python.h"
+
 // #include "Python-ast.h"
 // #undef Yield /* undefine macro conflicting with winbase.h */
 // #include "grammar.h"
@@ -160,7 +160,7 @@ Py_IsInitialized(void)
 void
 Py_InitializeEx(int install_sigs)
 {
-// 	PyInterpreterState *interp;
+	PyInterpreterState *interp;
 // 	PyThreadState *tstate;
 // 	PyObject *bimod, *sysmod, *pstderr;
 // 	char *p;
@@ -189,7 +189,7 @@ Py_InitializeEx(int install_sigs)
 // 	if ((p = Py_GETENV("PYTHONDONTWRITEBYTECODE")) && *p != '\0')
 // 		Py_DontWriteBytecodeFlag = add_flag(Py_DontWriteBytecodeFlag, p);
 // 
-// 	interp = PyInterpreterState_New();
+	interp = PyInterpreterState_New();
 // 	if (interp == NULL)
 // 		Py_FatalError("Py_Initialize: can't make first interpreter");
 // 
@@ -352,7 +352,7 @@ Py_Initialize(void)
 void
 Py_Finalize(void)
 {
-// 	PyInterpreterState *interp;
+	PyInterpreterState *interp;
 // 	PyThreadState *tstate;
 
 	if (!initialized)
@@ -1908,8 +1908,8 @@ Py_Finalize(void)
 // 	}
 // }
 // 
-// /* Print fatal error message and abort */
-// 
+/* Print fatal error message and abort */
+
 // void
 // Py_FatalError(const char *msg)
 // {

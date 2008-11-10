@@ -101,7 +101,7 @@
 // #include "codecs.h"
 // #include "pyerrors.h"
 // 
-// #include "pystate.h"
+#include "pystate.h"
 // 
 // #include "pyarena.h"
 // #include "modsupport.h"
