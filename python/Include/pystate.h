@@ -38,9 +38,9 @@ typedef struct _is {
 
 } PyInterpreterState;
 
-// 
-// /* State unique per thread */
-// 
+
+/* State unique per thread */
+
 // struct _frame; /* Avoid including frameobject.h */
 // 
 // /* Py_tracefunc return -1 when raising an exception, or 0 for success. */
@@ -55,11 +55,11 @@ typedef struct _is {
 // #define PyTrace_C_EXCEPTION 5
 // #define PyTrace_C_RETURN 6
 // 
-// typedef struct _ts {
+typedef struct _ts {
 //     /* See Python/ceval.c for comments explaining most fields */
 // 
 //     struct _ts *next;
-//     PyInterpreterState *interp;
+    PyInterpreterState *interp;
 // 
 //     struct _frame *frame;
 //     int recursion_depth;
@@ -103,16 +103,16 @@ typedef struct _is {
 // 
 //     /* XXX signal handlers should also be here */
 // 
-// } PyThreadState;
-// 
-// 
+} PyThreadState;
+
+
 PyAPI_FUNC(PyInterpreterState *) PyInterpreterState_New(void);
-// PyAPI_FUNC(void) PyInterpreterState_Clear(PyInterpreterState *);
-// PyAPI_FUNC(void) PyInterpreterState_Delete(PyInterpreterState *);
+PyAPI_FUNC(void) PyInterpreterState_Clear(PyInterpreterState *);
+PyAPI_FUNC(void) PyInterpreterState_Delete(PyInterpreterState *);
 // PyAPI_FUNC(int) _PyState_AddModule(PyObject*, struct PyModuleDef*);
 // PyAPI_FUNC(PyObject*) PyState_FindModule(struct PyModuleDef*);
 // 
-// PyAPI_FUNC(PyThreadState *) PyThreadState_New(PyInterpreterState *);
+PyAPI_FUNC(PyThreadState *) PyThreadState_New(PyInterpreterState *);
 // PyAPI_FUNC(void) PyThreadState_Clear(PyThreadState *);
 // PyAPI_FUNC(void) PyThreadState_Delete(PyThreadState *);
 // #ifdef WITH_THREAD
@@ -120,19 +120,19 @@ PyAPI_FUNC(PyInterpreterState *) PyInterpreterState_New(void);
 // #endif
 // 
 // PyAPI_FUNC(PyThreadState *) PyThreadState_Get(void);
-// PyAPI_FUNC(PyThreadState *) PyThreadState_Swap(PyThreadState *);
+PyAPI_FUNC(PyThreadState *) PyThreadState_Swap(PyThreadState *);
 // PyAPI_FUNC(PyObject *) PyThreadState_GetDict(void);
 // PyAPI_FUNC(int) PyThreadState_SetAsyncExc(long, PyObject *);
 // 
 // 
 // /* Variable and macro for in-line access to current thread state */
 // 
-// PyAPI_DATA(PyThreadState *) _PyThreadState_Current;
+PyAPI_DATA(PyThreadState *) _PyThreadState_Current;
 // 
 // #ifdef Py_DEBUG
 // #define PyThreadState_GET() PyThreadState_Get()
 // #else
-// #define PyThreadState_GET() (_PyThreadState_Current)
+#define PyThreadState_GET() (_PyThreadState_Current)
 // #endif
 // 
 // typedef

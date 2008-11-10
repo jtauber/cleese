@@ -549,9 +549,9 @@
 #ifndef PyAPI_FUNC
 #	define PyAPI_FUNC(RTYPE) RTYPE
 #endif
-// #ifndef PyAPI_DATA
-// #	define PyAPI_DATA(RTYPE) extern RTYPE
-// #endif
+#ifndef PyAPI_DATA
+#	define PyAPI_DATA(RTYPE) extern RTYPE
+#endif
 // #ifndef PyMODINIT_FUNC
 // #	if defined(__cplusplus)
 // #		define PyMODINIT_FUNC extern "C" PyObject*

@@ -46,8 +46,8 @@
 // #endif
 // 
 // static PyInterpreterState *interp_head = NULL;
-// 
-// PyThreadState *_PyThreadState_Current = NULL;
+
+PyThreadState *_PyThreadState_Current = NULL;
 // PyThreadFrameGetter _PyThreadState_GetFrame = NULL;
 // 
 // #ifdef WITH_THREAD
@@ -96,11 +96,11 @@ PyInterpreterState_New(void)
 // 
 	return interp;
 }
-// 
-// 
-// void
-// PyInterpreterState_Clear(PyInterpreterState *interp)
-// {
+
+
+void
+PyInterpreterState_Clear(PyInterpreterState *interp)
+{
 // 	PyThreadState *p;
 // 	HEAD_LOCK();
 // 	for (p = interp->tstate_head; p != NULL; p = p->next)
@@ -114,8 +114,8 @@ PyInterpreterState_New(void)
 // 	Py_CLEAR(interp->modules_reloading);
 // 	Py_CLEAR(interp->sysdict);
 // 	Py_CLEAR(interp->builtins);
-// }
-// 
+}
+
 // 
 // static void
 // zapthreads(PyInterpreterState *interp)
@@ -128,10 +128,10 @@ PyInterpreterState_New(void)
 // 	}
 // }
 // 
-// 
-// void
-// PyInterpreterState_Delete(PyInterpreterState *interp)
-// {
+
+void
+PyInterpreterState_Delete(PyInterpreterState *interp)
+{
 // 	PyInterpreterState **p;
 // 	zapthreads(interp);
 // 	HEAD_LOCK();
@@ -147,7 +147,7 @@ PyInterpreterState_New(void)
 // 	*p = interp->next;
 // 	HEAD_UNLOCK();
 // 	free(interp);
-// }
+}
 // 
 // 
 // /* Default implementation for _PyThreadState_GetFrame */
@@ -156,17 +156,17 @@ PyInterpreterState_New(void)
 // {
 // 	return self->frame;
 // }
-// 
-// PyThreadState *
-// PyThreadState_New(PyInterpreterState *interp)
-// {
-// 	PyThreadState *tstate = (PyThreadState *)malloc(sizeof(PyThreadState));
+
+PyThreadState *
+PyThreadState_New(PyInterpreterState *interp)
+{
+	PyThreadState *tstate = (PyThreadState *)malloc(sizeof(PyThreadState));
 // 
 // 	if (_PyThreadState_GetFrame == NULL)
 // 		_PyThreadState_GetFrame = threadstate_getframe;
 // 
-// 	if (tstate != NULL) {
-// 		tstate->interp = interp;
+	if (tstate != NULL) {
+		tstate->interp = interp;
 // 
 // 		tstate->frame = NULL;
 // 		tstate->recursion_depth = 0;
@@ -206,10 +206,10 @@ PyInterpreterState_New(void)
 // 		tstate->next = interp->tstate_head;
 // 		interp->tstate_head = tstate;
 // 		HEAD_UNLOCK();
-// 	}
-// 
-// 	return tstate;
-// }
+	}
+
+	return tstate;
+}
 // 
 // PyObject*
 // PyState_FindModule(struct PyModuleDef* m)
@@ -351,13 +351,13 @@ PyInterpreterState_New(void)
 // 	return _PyThreadState_Current;
 // }
 // 
-// 
-// PyThreadState *
-// PyThreadState_Swap(PyThreadState *newts)
-// {
-// 	PyThreadState *oldts = _PyThreadState_Current;
-// 
-// 	_PyThreadState_Current = newts;
+
+PyThreadState *
+PyThreadState_Swap(PyThreadState *newts)
+{
+	PyThreadState *oldts = _PyThreadState_Current;
+
+	_PyThreadState_Current = newts;
 // 	/* It should not be possible for more than one thread state
 // 	   to be used for a thread.  Check this the best we can in debug
 // 	   builds.
@@ -374,8 +374,8 @@ PyInterpreterState_New(void)
 // 		errno = err;
 // 	}
 // #endif
-// 	return oldts;
-// }
+	return oldts;
+}
 // 
 // /* An extension mechanism to store arbitrary additional per-thread state.
 //    PyThreadState_GetDict() returns a dictionary that can be used to hold such

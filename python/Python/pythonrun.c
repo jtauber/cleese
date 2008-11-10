@@ -161,7 +161,7 @@ void
 Py_InitializeEx(int install_sigs)
 {
 	PyInterpreterState *interp;
-// 	PyThreadState *tstate;
+	PyThreadState *tstate;
 // 	PyObject *bimod, *sysmod, *pstderr;
 // 	char *p;
 // #if defined(HAVE_LANGINFO_H) && defined(CODESET)
@@ -192,12 +192,12 @@ Py_InitializeEx(int install_sigs)
 	interp = PyInterpreterState_New();
 	if (interp == NULL)
 		Py_FatalError("Py_Initialize: can't make first interpreter");
-// 
-// 	tstate = PyThreadState_New(interp);
-// 	if (tstate == NULL)
-// 		Py_FatalError("Py_Initialize: can't make first thread");
-// 	(void) PyThreadState_Swap(tstate);
-// 
+
+	tstate = PyThreadState_New(interp);
+	if (tstate == NULL)
+		Py_FatalError("Py_Initialize: can't make first thread");
+	(void) PyThreadState_Swap(tstate);
+
 // 	_Py_ReadyTypes();
 // 
 // 	if (!_PyFrame_Init())
@@ -353,7 +353,7 @@ void
 Py_Finalize(void)
 {
 	PyInterpreterState *interp;
-// 	PyThreadState *tstate;
+	PyThreadState *tstate;
 
 	if (!initialized)
 		return;
@@ -372,11 +372,11 @@ Py_Finalize(void)
 // 
 // 	/* Flush stdout+stderr */
 // 	flush_std_files();
-// 
-// 	/* Get current thread state and interpreter pointer */
-// 	tstate = PyThreadState_GET();
-// 	interp = tstate->interp;
-// 
+
+	/* Get current thread state and interpreter pointer */
+	tstate = PyThreadState_GET();
+	interp = tstate->interp;
+
 // 	/* Disable signal handling */
 // 	PyOS_FiniInterrupts();
 // 
@@ -448,10 +448,10 @@ Py_Finalize(void)
 // 	if (Py_GETENV("PYTHONDUMPREFS"))
 // 		_Py_PrintReferences(stderr);
 // #endif /* Py_TRACE_REFS */
-// 
-// 	/* Clear interpreter state */
-// 	PyInterpreterState_Clear(interp);
-// 
+
+	/* Clear interpreter state */
+	PyInterpreterState_Clear(interp);
+
 // 	/* Now we decref the exception classes.  After this point nothing
 // 	   can raise an exception.  That's okay, because each Fini() method
 // 	   below has been checked to make sure no exceptions are ever
@@ -464,11 +464,11 @@ Py_Finalize(void)
 // #ifdef WITH_THREAD
 // 	_PyGILState_Fini();
 // #endif /* WITH_THREAD */
-// 
-// 	/* Delete current thread */
-// 	PyThreadState_Swap(NULL);
-// 	PyInterpreterState_Delete(interp);
-// 
+
+	/* Delete current thread */
+	PyThreadState_Swap(NULL);
+	PyInterpreterState_Delete(interp);
+
 // 	/* Sundry finalizers */
 // 	PyMethod_Fini();
 // 	PyFrame_Fini();
