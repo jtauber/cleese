@@ -1,11 +1,15 @@
 all: 1p1
 
+OBJECTS_OBJS =	\
+				Objects/object.o \
+
 PYTHON_OBJS = 	\
 				Python/frozenmain.o \
 				Python/pystate.o \
 				Python/pythonrun.o
 
 OBJS =			\
+				$(OBJECTS_OBJS) \
 				$(PYTHON_OBJS)
 
 1p1: Modules/python.o $(OBJS)

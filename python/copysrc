@@ -13,7 +13,7 @@ filename = sys.argv[1]
 BASE = "../python-30rc2"
 
 sources = []
-for d in ["Include", "Modules", "Python"]:
+for d in ["Include", "Modules", "Objects", "Python"]:
     path = os.path.join(BASE, d, filename)
     if os.access(path, os.R_OK):
         sources.append(d)
