@@ -29,6 +29,10 @@ if len(sources) > 1:
 source = os.path.join(BASE, sources[0], filename)
 destination = os.path.join(".", sources[0], filename)
 
+if os.access(destination, os.F_OK):
+    print "already exists: %s" % destination
+    sys.exit(4)
+
 dest_file = open(destination, "w")
 for line in open(source):
     dest_file.write("// " + line)
