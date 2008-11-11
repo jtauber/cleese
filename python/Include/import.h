@@ -55,7 +55,7 @@ struct _frozen {
 /* Embedding apps may change this pointer to point to their favorite
    collection of frozen modules: */
 
-PyAPI_DATA(struct _frozen *) PyImport_FrozenModules;
+struct _frozen * PyImport_FrozenModules; // PyAPI_DATA(struct _frozen *) PyImport_FrozenModules;
 
 // #ifdef __cplusplus
 // }
