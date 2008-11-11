@@ -66,8 +66,8 @@ PyAPI_FUNC(void) Py_Finalize(void);
 // 					     PyCompilerFlags *);
 // PyAPI_FUNC(struct symtable *) Py_SymtableString(const char *, const char *, int);
 // 
-// PyAPI_FUNC(void) PyErr_Print(void);
-// PyAPI_FUNC(void) PyErr_PrintEx(int);
+PyAPI_FUNC(void) PyErr_Print(void);
+PyAPI_FUNC(void) PyErr_PrintEx(int);
 // PyAPI_FUNC(void) PyErr_Display(PyObject *, PyObject *, PyObject *);
 // 
 // /* Py_PyAtExit is for the atexit module, Py_AtExit is for low-level

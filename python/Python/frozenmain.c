@@ -9,14 +9,14 @@
 // extern void PyWinFreeze_ExeTerm(void);
 // extern int PyInitFrozenExtensions(void);
 // #endif
-// 
+
 /* Main program */
 
 int
 Py_FrozenMain(void) // Py_FrozenMain(int argc, char **argv)
 {
 // 	char *p;
-	int sts; // int i, n, sts;
+	int n, sts; // int i, n, sts;
 // 	int inspect = 0;
 // 	int unbuffered = 0;
 // 	char *oldloc;
@@ -84,15 +84,15 @@ Py_FrozenMain(void) // Py_FrozenMain(int argc, char **argv)
 // 
 // 	PySys_SetArgv(argc, argv_copy);
 // 
-// 	n = PyImport_ImportFrozenModule("__main__");
-// 	if (n == 0)
-// 		Py_FatalError("__main__ not frozen");
-// 	if (n < 0) {
-// 		PyErr_Print();
-// 		sts = 1;
-// 	}
-// 	else
-// 		sts = 0;
+	n = PyImport_ImportFrozenModule("__main__");
+	if (n == 0)
+		Py_FatalError("__main__ not frozen");
+	if (n < 0) {
+		PyErr_Print();
+		sts = 1;
+	}
+	else
+		sts = 0;
 // 
 // 	if (inspect && isatty((int)fileno(stdin)))
 // 		sts = PyRun_AnyFile(stdin, "<stdin>") != 0;

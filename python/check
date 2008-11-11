@@ -16,6 +16,8 @@ for path, dirs, files in os.walk("."):
         
         if filename[-2:] not in [".c", ".h"]:
             continue
+        if filename == "oneplusone.c":
+            continue
         ours = os.path.join(path, filename)
         theirs = os.path.join(BASE, path, filename)
         if not os.access(theirs, os.F_OK):

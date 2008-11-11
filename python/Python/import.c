@@ -8,7 +8,7 @@
 // #include "pyarena.h"
 // #include "pythonrun.h"
 // #include "errcode.h"
-// #include "marshal.h"
+#include "marshal.h"
 // #include "code.h"
 // #include "compile.h"
 // #include "eval.h"
@@ -366,10 +366,10 @@ _PyImport_Fini(void)
 PyObject *
 PyImport_GetModuleDict(void)
 {
-// 	PyInterpreterState *interp = PyThreadState_GET()->interp;
-// 	if (interp->modules == NULL)
-// 		Py_FatalError("PyImport_GetModuleDict: no module dictionary!");
-// 	return interp->modules;
+	PyInterpreterState *interp = PyThreadState_GET()->interp;
+	if (interp->modules == NULL)
+		Py_FatalError("PyImport_GetModuleDict: no module dictionary!");
+	return interp->modules;
 }
 // 
 // 
@@ -639,7 +639,7 @@ PyImport_Cleanup(void)
 // 	
 // }
 // 
-// 
+
 /* Get the module object corresponding to a module name.
    First check the modules dictionary if there's one there,
    if not, create a new one and insert it in the modules dictionary.
@@ -680,23 +680,23 @@ PyImport_AddModule(const char *name)
 // }
 // 
 // static PyObject * get_sourcefile(const char *file);
-// 
-// /* Execute a code object in a module and return the module object
-//  * WITH INCREMENTED REFERENCE COUNT.  If an error occurs, name is
-//  * removed from sys.modules, to avoid leaving damaged module objects
-//  * in sys.modules.  The caller may wish to restore the original
-//  * module object (if any) in this case; PyImport_ReloadModule is an
-//  * example.
-//  */
-// PyObject *
-// PyImport_ExecCodeModule(char *name, PyObject *co)
-// {
-// 	return PyImport_ExecCodeModuleEx(name, co, (char *)NULL);
-// }
-// 
-// PyObject *
-// PyImport_ExecCodeModuleEx(char *name, PyObject *co, char *pathname)
-// {
+
+/* Execute a code object in a module and return the module object
+ * WITH INCREMENTED REFERENCE COUNT.  If an error occurs, name is
+ * removed from sys.modules, to avoid leaving damaged module objects
+ * in sys.modules.  The caller may wish to restore the original
+ * module object (if any) in this case; PyImport_ReloadModule is an
+ * example.
+ */
+PyObject *
+PyImport_ExecCodeModule(char *name, PyObject *co)
+{
+	return PyImport_ExecCodeModuleEx(name, co, (char *)NULL);
+}
+
+PyObject *
+PyImport_ExecCodeModuleEx(char *name, PyObject *co, char *pathname)
+{
 // 	PyObject *modules = PyImport_GetModuleDict();
 // 	PyObject *m, *d, *v;
 // 
@@ -745,7 +745,7 @@ PyImport_AddModule(const char *name)
 //   error:
 // 	_RemoveModule(name);
 // 	return NULL;
-// }
+}
 // 
 // 
 // /* Given a pathname for a Python source file, fill a buffer with the
@@ -1060,7 +1060,7 @@ PyImport_AddModule(const char *name)
 // static PyObject *load_module(char *, FILE *, char *, int, PyObject *);
 // static struct filedescr *find_module(char *, char *, PyObject *,
 // 				     char *, size_t, FILE **, PyObject **);
-// static struct _frozen * find_frozen(char *);
+static struct _frozen * find_frozen(char *);
 // 
 // /* Load a package and return its module object WITH INCREMENTED
 //    REFERENCE COUNT */
@@ -1858,26 +1858,26 @@ PyImport_AddModule(const char *name)
 // 	return 0;
 // }
 // 
-// 
-// /* Frozen modules */
-// 
-// static struct _frozen *
-// find_frozen(char *name)
-// {
-// 	struct _frozen *p;
-// 
-// 	if (!name)
-// 		return NULL;
-// 
-// 	for (p = PyImport_FrozenModules; ; p++) {
-// 		if (p->name == NULL)
-// 			return NULL;
-// 		if (strcmp(p->name, name) == 0)
-// 			break;
-// 	}
-// 	return p;
-// }
-// 
+
+/* Frozen modules */
+
+static struct _frozen *
+find_frozen(char *name)
+{
+	struct _frozen *p;
+
+	if (!name)
+		return NULL;
+
+	for (p = PyImport_FrozenModules; ; p++) {
+		if (p->name == NULL)
+			return NULL;
+		if (strcmp(p->name, name) == 0)
+			break;
+	}
+	return p;
+}
+
 // static PyObject *
 // get_frozen_object(char *name)
 // {
@@ -1902,20 +1902,20 @@ PyImport_AddModule(const char *name)
 // 	return PyMarshal_ReadObjectFromString((char *)p->code, size);
 // }
 // 
-// /* Initialize a frozen module.
-//    Return 1 for succes, 0 if the module is not found, and -1 with
-//    an exception set if the initialization failed.
-//    This function is also used from frozenmain.c */
-// 
-// int
-// PyImport_ImportFrozenModule(char *name)
-// {
-// 	struct _frozen *p = find_frozen(name);
-// 	PyObject *co;
-// 	PyObject *m;
+/* Initialize a frozen module.
+   Return 1 for succes, 0 if the module is not found, and -1 with
+   an exception set if the initialization failed.
+   This function is also used from frozenmain.c */
+
+int
+PyImport_ImportFrozenModule(char *name)
+{
+	struct _frozen *p = find_frozen(name);
+	PyObject *co;
+	PyObject *m;
 // 	int ispackage;
-// 	int size;
-// 
+	int size;
+
 // 	if (p == NULL)
 // 		return 0;
 // 	if (p->code == NULL) {
@@ -1924,14 +1924,14 @@ PyImport_AddModule(const char *name)
 // 			     name);
 // 		return -1;
 // 	}
-// 	size = p->size;
+	size = p->size;
 // 	ispackage = (size < 0);
 // 	if (ispackage)
 // 		size = -size;
 // 	if (Py_VerboseFlag)
 // 		PySys_WriteStderr("import %s # frozen%s\n",
 // 			name, ispackage ? " package" : "");
-// 	co = PyMarshal_ReadObjectFromString((char *)p->code, size);
+	co = PyMarshal_ReadObjectFromString((char *)p->code, size);
 // 	if (co == NULL)
 // 		return -1;
 // 	if (!PyCode_Check(co)) {
@@ -1962,17 +1962,17 @@ PyImport_AddModule(const char *name)
 // 		if (err != 0)
 // 			goto err_return;
 // 	}
-// 	m = PyImport_ExecCodeModuleEx(name, co, "<frozen>");
-// 	if (m == NULL)
-// 		goto err_return;
-// 	Py_DECREF(co);
-// 	Py_DECREF(m);
-// 	return 1;
-// err_return:
-// 	Py_DECREF(co);
-// 	return -1;
-// }
-// 
+	m = PyImport_ExecCodeModuleEx(name, co, "<frozen>");
+	if (m == NULL)
+		goto err_return;
+	Py_DECREF(co);
+	Py_DECREF(m);
+	return 1;
+err_return:
+	Py_DECREF(co);
+	return -1;
+}
+
 
 /* Import a module, either built-in, frozen, or external, and return
    its module object WITH INCREMENTED REFERENCE COUNT */

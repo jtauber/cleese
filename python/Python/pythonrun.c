@@ -16,7 +16,7 @@
 // #include "pyarena.h"
 // #include "ast.h"
 // #include "eval.h"
-// #include "marshal.h"
+#include "marshal.h"
 // #include "osdefs.h"
 // 
 // #ifdef HAVE_SIGNAL_H
@@ -1182,13 +1182,13 @@ initmain(void)
 // 	Py_XDECREF(v);
 // 	return 0;
 // }
-// 
-// void
-// PyErr_Print(void)
-// {
-// 	PyErr_PrintEx(1);
-// }
-// 
+
+void
+PyErr_Print(void)
+{
+	PyErr_PrintEx(1);
+}
+
 // static void
 // print_error_text(PyObject *f, int offset, const char *text)
 // {
@@ -1268,10 +1268,10 @@ initmain(void)
 // 	Py_Exit(exitcode);
 // 	/* NOTREACHED */
 // }
-// 
-// void
-// PyErr_PrintEx(int set_sys_last_vars)
-// {
+
+void
+PyErr_PrintEx(int set_sys_last_vars)
+{
 // 	PyObject *exception, *v, *tb, *hook;
 // 
 // 	if (PyErr_ExceptionMatches(PyExc_SystemExit)) {
@@ -1334,7 +1334,7 @@ initmain(void)
 // 	Py_XDECREF(exception);
 // 	Py_XDECREF(v);
 // 	Py_XDECREF(tb);
-// }
+}
 // 
 // static void
 // print_exception(PyObject *f, PyObject *value)
