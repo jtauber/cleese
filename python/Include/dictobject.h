@@ -108,7 +108,7 @@ PyAPI_DATA(PyTypeObject) PyDict_Type;
 // 
 
 PyAPI_FUNC(PyObject *) PyDict_New(void);
-// PyAPI_FUNC(PyObject *) PyDict_GetItem(PyObject *mp, PyObject *key);
+PyAPI_FUNC(PyObject *) PyDict_GetItem(PyObject *mp, PyObject *key);
 // PyAPI_FUNC(PyObject *) PyDict_GetItemWithError(PyObject *mp, PyObject *key);
 // PyAPI_FUNC(int) PyDict_SetItem(PyObject *mp, PyObject *key, PyObject *item);
 // PyAPI_FUNC(int) PyDict_DelItem(PyObject *mp, PyObject *key);

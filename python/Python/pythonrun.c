@@ -167,8 +167,8 @@ Py_InitializeEx(int install_sigs)
 // #if defined(HAVE_LANGINFO_H) && defined(CODESET)
 // 	char *codeset;
 // #endif
-// 	extern void _Py_ReadyTypes(void);
-// 
+	extern void _Py_ReadyTypes(void);
+
 	if (initialized)
 		return;
 	initialized = 1;
@@ -198,7 +198,7 @@ Py_InitializeEx(int install_sigs)
 		Py_FatalError("Py_Initialize: can't make first thread");
 	(void) PyThreadState_Swap(tstate);
 
-// 	_Py_ReadyTypes();
+	_Py_ReadyTypes();
 // 
 // 	if (!_PyFrame_Init())
 // 		Py_FatalError("Py_Initialize: can't init frames");
@@ -217,10 +217,10 @@ Py_InitializeEx(int install_sigs)
 // 	interp->modules_reloading = PyDict_New();
 // 	if (interp->modules_reloading == NULL)
 // 		Py_FatalError("Py_Initialize: can't make modules_reloading dictionary");
-// 
-// 	/* Init Unicode implementation; relies on the codec registry */
-// 	_PyUnicode_Init();
-// 
+
+	/* Init Unicode implementation; relies on the codec registry */
+	_PyUnicode_Init();
+
 // 	bimod = _PyBuiltin_Init();
 // 	if (bimod == NULL)
 // 		Py_FatalError("Py_Initialize: can't initialize builtins modules");

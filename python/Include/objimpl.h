@@ -130,14 +130,14 @@
 // 
 // #define PyObject_Del		PyObject_Free
 // #define PyObject_DEL		PyObject_FREE
-// 
-// /*
-//  * Generic object allocator interface
-//  * ==================================
-//  */
-// 
-// /* Functions */
-// PyAPI_FUNC(PyObject *) PyObject_Init(PyObject *, PyTypeObject *);
+
+/*
+ * Generic object allocator interface
+ * ==================================
+ */
+
+/* Functions */
+PyAPI_FUNC(PyObject *) PyObject_Init(PyObject *, PyTypeObject *);
 // PyAPI_FUNC(PyVarObject *) PyObject_InitVar(PyVarObject *,
 //                                                  PyTypeObject *, Py_ssize_t);
 // PyAPI_FUNC(PyObject *) _PyObject_New(PyTypeObject *);

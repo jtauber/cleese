@@ -2575,9 +2575,9 @@ PyType_IsSubtype(PyTypeObject *a, PyTypeObject *b)
 // 	return type->tp_flags & Py_TPFLAGS_HEAPTYPE;
 // }
 // 
-// PyTypeObject PyType_Type = {
-// 	PyVarObject_HEAD_INIT(&PyType_Type, 0)
-// 	"type",					/* tp_name */
+PyTypeObject PyType_Type = {
+	PyVarObject_HEAD_INIT(&PyType_Type, 0)
+	"type",					/* tp_name */
 // 	sizeof(PyHeapTypeObject),		/* tp_basicsize */
 // 	sizeof(PyMemberDef),			/* tp_itemsize */
 // 	(destructor)type_dealloc,		/* tp_dealloc */
@@ -2617,7 +2617,7 @@ PyType_IsSubtype(PyTypeObject *a, PyTypeObject *b)
 // 	type_new,				/* tp_new */
 // 	PyObject_GC_Del,			/* tp_free */
 // 	(inquiry)type_is_gc,			/* tp_is_gc */
-// };
+};
 // 
 // 
 // /* The base type of all types (eventually)... except itself. */
@@ -3714,10 +3714,12 @@ PyType_IsSubtype(PyTypeObject *a, PyTypeObject *b)
 // }
 // 
 // static int add_operators(PyTypeObject *);
-// 
-// int
-// PyType_Ready(PyTypeObject *type)
-// {
+
+int
+PyType_Ready(PyTypeObject *type)
+{
+	printf("PyType_Ready\n");
+	printf("name: %s\n", type->tp_name);
 // 	PyObject *dict, *bases;
 // 	PyTypeObject *base;
 // 	Py_ssize_t i, n;
@@ -3898,8 +3900,8 @@ PyType_IsSubtype(PyTypeObject *a, PyTypeObject *b)
 //   error:
 // 	type->tp_flags &= ~Py_TPFLAGS_READYING;
 // 	return -1;
-// }
-// 
+}
+
 // static int
 // add_subclass(PyTypeObject *base, PyTypeObject *type)
 // {

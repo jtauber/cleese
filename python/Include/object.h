@@ -274,7 +274,7 @@ typedef void (*destructor)(PyObject *);
 // typedef int (*setattrofunc)(PyObject *, PyObject *, PyObject *);
 // typedef int (*cmpfunc)(PyObject *, PyObject *);
 // typedef PyObject *(*reprfunc)(PyObject *);
-// typedef long (*hashfunc)(PyObject *);
+typedef long (*hashfunc)(PyObject *);
 // typedef PyObject *(*richcmpfunc) (PyObject *, PyObject *, int);
 // typedef PyObject *(*getiterfunc) (PyObject *);
 // typedef PyObject *(*iternextfunc) (PyObject *);
@@ -283,10 +283,10 @@ typedef void (*destructor)(PyObject *);
 // typedef int (*initproc)(PyObject *, PyObject *, PyObject *);
 // typedef PyObject *(*newfunc)(struct _typeobject *, PyObject *, PyObject *);
 // typedef PyObject *(*allocfunc)(struct _typeobject *, Py_ssize_t);
-// 
+
 typedef struct _typeobject {
 	PyObject_VAR_HEAD
-// 	const char *tp_name; /* For printing, in format "<module>.<name>" */
+	const char *tp_name; /* For printing, in format "<module>.<name>" */
 	Py_ssize_t tp_basicsize, tp_itemsize; /* For allocation */
 
 // 	/* Methods to implement standard operations */
@@ -306,7 +306,7 @@ typedef struct _typeobject {
 // 
 // 	/* More standard operations (here for binary compatibility) */
 // 
-// 	hashfunc tp_hash;
+	hashfunc tp_hash;
 // 	ternaryfunc tp_call;
 // 	reprfunc tp_str;
 // 	getattrofunc tp_getattro;
@@ -400,7 +400,7 @@ PyAPI_FUNC(int) PyType_IsSubtype(PyTypeObject *, PyTypeObject *);
 #define PyObject_TypeCheck(ob, tp) \
 	(Py_TYPE(ob) == (tp) || PyType_IsSubtype(Py_TYPE(ob), (tp)))
 
-// PyAPI_DATA(PyTypeObject) PyType_Type; /* built-in 'type' */
+PyAPI_DATA(PyTypeObject) PyType_Type; /* built-in 'type' */
 // PyAPI_DATA(PyTypeObject) PyBaseObject_Type; /* built-in 'object' */
 // PyAPI_DATA(PyTypeObject) PySuper_Type; /* built-in 'super' */
 // 
@@ -408,7 +408,7 @@ PyAPI_FUNC(int) PyType_IsSubtype(PyTypeObject *, PyTypeObject *);
 // 	PyType_FastSubclass(Py_TYPE(op), Py_TPFLAGS_TYPE_SUBCLASS)
 // #define PyType_CheckExact(op) (Py_TYPE(op) == &PyType_Type)
 // 
-// PyAPI_FUNC(int) PyType_Ready(PyTypeObject *);
+PyAPI_FUNC(int) PyType_Ready(PyTypeObject *);
 // PyAPI_FUNC(PyObject *) PyType_GenericAlloc(PyTypeObject *, Py_ssize_t);
 // PyAPI_FUNC(PyObject *) PyType_GenericNew(PyTypeObject *,
 // 					       PyObject *, PyObject *);
@@ -439,7 +439,7 @@ PyAPI_FUNC(int) PyObject_RichCompareBool(PyObject *, PyObject *, int);
 // PyAPI_FUNC(PyObject *) PyObject_GenericGetAttr(PyObject *, PyObject *);
 // PyAPI_FUNC(int) PyObject_GenericSetAttr(PyObject *,
 // 					      PyObject *, PyObject *);
-// PyAPI_FUNC(long) PyObject_Hash(PyObject *);
+PyAPI_FUNC(long) PyObject_Hash(PyObject *);
 // PyAPI_FUNC(long) PyObject_HashNotImplemented(PyObject *);
 PyAPI_FUNC(int) PyObject_IsTrue(PyObject *);
 // PyAPI_FUNC(int) PyObject_Not(PyObject *);
@@ -495,10 +495,10 @@ PyAPI_FUNC(int) PyObject_IsTrue(PyObject *);
 // 
 // /* Set if the type object is dynamically allocated */
 // #define Py_TPFLAGS_HEAPTYPE (1L<<9)
-// 
-// /* Set if the type allows subclassing */
-// #define Py_TPFLAGS_BASETYPE (1L<<10)
-// 
+
+/* Set if the type allows subclassing */
+#define Py_TPFLAGS_BASETYPE (1L<<10)
+
 // /* Set if the type is 'ready' -- fully initialized */
 // #define Py_TPFLAGS_READY (1L<<12)
 // 
@@ -508,15 +508,15 @@ PyAPI_FUNC(int) PyObject_IsTrue(PyObject *);
 /* Objects support garbage collection (see objimp.h) */
 #define Py_TPFLAGS_HAVE_GC (1L<<14)
 
-// /* These two bits are preserved for Stackless Python, next after this is 17 */
+/* These two bits are preserved for Stackless Python, next after this is 17 */
 // #ifdef STACKLESS
 // #define Py_TPFLAGS_HAVE_STACKLESS_EXTENSION (3L<<15)
 // #else
-// #define Py_TPFLAGS_HAVE_STACKLESS_EXTENSION 0
+#define Py_TPFLAGS_HAVE_STACKLESS_EXTENSION 0
 // #endif
 // 
 // /* Objects support type attribute cache */
-// #define Py_TPFLAGS_HAVE_VERSION_TAG   (1L<<18)
+#define Py_TPFLAGS_HAVE_VERSION_TAG   (1L<<18)
 // #define Py_TPFLAGS_VALID_VERSION_TAG  (1L<<19)
 // 
 // /* Type is abstract and cannot be instantiated */
@@ -528,16 +528,16 @@ PyAPI_FUNC(int) PyObject_IsTrue(PyObject *);
 // #define Py_TPFLAGS_LIST_SUBCLASS	(1L<<25)
 // #define Py_TPFLAGS_TUPLE_SUBCLASS	(1L<<26)
 // #define Py_TPFLAGS_BYTES_SUBCLASS	(1L<<27)
-// #define Py_TPFLAGS_UNICODE_SUBCLASS	(1L<<28)
+#define Py_TPFLAGS_UNICODE_SUBCLASS	(1L<<28)
 // #define Py_TPFLAGS_DICT_SUBCLASS	(1L<<29)
 // #define Py_TPFLAGS_BASE_EXC_SUBCLASS	(1L<<30)
 // #define Py_TPFLAGS_TYPE_SUBCLASS	(1L<<31)
-// 
-// #define Py_TPFLAGS_DEFAULT  ( \
-//                              Py_TPFLAGS_HAVE_STACKLESS_EXTENSION | \
-//                              Py_TPFLAGS_HAVE_VERSION_TAG | \
-//                             0)
-// 
+
+#define Py_TPFLAGS_DEFAULT  ( \
+                             Py_TPFLAGS_HAVE_STACKLESS_EXTENSION | \
+                             Py_TPFLAGS_HAVE_VERSION_TAG | \
+                            0)
+
 #define PyType_HasFeature(t,f)  (((t)->tp_flags & (f)) != 0)
 // #define PyType_FastSubclass(t,f)  PyType_HasFeature(t,f)
 // 

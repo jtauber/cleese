@@ -612,30 +612,30 @@ lookdict_unicode(PyDictObject *mp, PyObject *key, register long hash)
 // 	}
 // 	return op;
 // }
-// 
-// /* Note that, for historical reasons, PyDict_GetItem() suppresses all errors
-//  * that may occur (originally dicts supported only string keys, and exceptions
-//  * weren't possible).  So, while the original intent was that a NULL return
-//  * meant the key wasn't present, in reality it can mean that, or that an error
-//  * (suppressed) occurred while computing the key's hash, or that some error
-//  * (suppressed) occurred when comparing keys in the dict's internal probe
-//  * sequence.  A nasty example of the latter is when a Python-coded comparison
-//  * function hits a stack-depth error, which can cause this to return NULL
-//  * even if the key is present.
-//  */
-// PyObject *
-// PyDict_GetItem(PyObject *op, PyObject *key)
-// {
-// 	long hash;
-// 	PyDictObject *mp = (PyDictObject *)op;
-// 	PyDictEntry *ep;
-// 	PyThreadState *tstate;
+
+/* Note that, for historical reasons, PyDict_GetItem() suppresses all errors
+ * that may occur (originally dicts supported only string keys, and exceptions
+ * weren't possible).  So, while the original intent was that a NULL return
+ * meant the key wasn't present, in reality it can mean that, or that an error
+ * (suppressed) occurred while computing the key's hash, or that some error
+ * (suppressed) occurred when comparing keys in the dict's internal probe
+ * sequence.  A nasty example of the latter is when a Python-coded comparison
+ * function hits a stack-depth error, which can cause this to return NULL
+ * even if the key is present.
+ */
+PyObject *
+PyDict_GetItem(PyObject *op, PyObject *key)
+{ printf(" > GetItem\n");
+	long hash;
+	PyDictObject *mp = (PyDictObject *)op;
+	PyDictEntry *ep;
+	PyThreadState *tstate;
 // 	if (!PyDict_Check(op))
 // 		return NULL;
 // 	if (!PyUnicode_CheckExact(key) ||
 // 	    (hash = ((PyUnicodeObject *) key)->hash) == -1)
 // 	{
-// 		hash = PyObject_Hash(key);
+		hash = PyObject_Hash(key);
 // 		if (hash == -1) {
 // 			PyErr_Clear();
 // 			return NULL;
@@ -657,15 +657,17 @@ lookdict_unicode(PyDictObject *mp, PyObject *key, register long hash)
 // 			return NULL;
 // 	}
 // 	else {
-// 		ep = (mp->ma_lookup)(mp, key, hash);
+		printf("###\n");
+		ep = (mp->ma_lookup)(mp, key, hash);
 // 		if (ep == NULL) {
 // 			PyErr_Clear();
 // 			return NULL;
 // 		}
 // 	}
-// 	return ep->me_value;
-// }
-// 
+	printf(" < GetItem\n");
+	return ep->me_value;
+}
+
 // /* Variant of PyDict_GetItem() that doesn't suppress exceptions.
 //    This returns NULL *with* an exception set if an exception occurred.
 //    It returns NULL *without* an exception set if the key wasn't present.
@@ -2024,7 +2026,7 @@ lookdict_unicode(PyDictObject *mp, PyObject *key, register long hash)
 // "    in the keyword argument list.  For example:  dict(one=1, two=2)");
 // 
 PyTypeObject PyDict_Type = {
-// 	PyVarObject_HEAD_INIT(&PyType_Type, 0)
+	PyVarObject_HEAD_INIT(&PyType_Type, 0)
 // 	"dict",
 // 	sizeof(PyDictObject),
 // 	0,
@@ -2071,13 +2073,13 @@ PyTypeObject PyDict_Type = {
 PyObject *
 PyDict_GetItemString(PyObject *v, const char *key)
 {
-// 	PyObject *kv, *rv;
-// 	kv = PyUnicode_FromString(key);
-// 	if (kv == NULL)
-// 		return NULL;
-// 	rv = PyDict_GetItem(v, kv);
-// 	Py_DECREF(kv);
-// 	return rv;
+	PyObject *kv, *rv;
+	kv = PyUnicode_FromString(key);
+	if (kv == NULL)
+		return NULL;
+	rv = PyDict_GetItem(v, kv);
+	Py_DECREF(kv);
+	return rv;
 }
 
 int

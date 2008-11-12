@@ -372,9 +372,9 @@ OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //     return NULL;
 // }
 // 
-// static
-// void unicode_dealloc(register PyUnicodeObject *unicode)
-// {
+static
+void unicode_dealloc(register PyUnicodeObject *unicode)
+{
 //     switch (PyUnicode_CHECK_INTERNED(unicode)) {
 //         case SSTATE_NOT_INTERNED:
 //             break;
@@ -416,8 +416,8 @@ OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 // 	Py_XDECREF(unicode->defenc);
 // 	Py_TYPE(unicode)->tp_free((PyObject *)unicode);
 //     }
-// }
-// 
+}
+
 // int PyUnicode_Resize(PyObject **unicode, Py_ssize_t length)
 // {
 //     register PyUnicodeObject *v;
@@ -6879,30 +6879,30 @@ PyObject *PyUnicode_FromString(const char *u)
 // 
 //     return (PyObject*) PyUnicode_FromUnicode(&self->str[index], 1);
 // }
-// 
-// /* Believe it or not, this produces the same value for ASCII strings
-//    as string_hash(). */
-// static long
-// unicode_hash(PyUnicodeObject *self)
-// {
-//     Py_ssize_t len;
-//     Py_UNICODE *p;
-//     long x;
-// 
-//     if (self->hash != -1)
-//         return self->hash;
-//     len = Py_SIZE(self);
-//     p = self->str;
-//     x = *p << 7;
-//     while (--len >= 0)
-//         x = (1000003*x) ^ *p++;
-//     x ^= Py_SIZE(self);
-//     if (x == -1)
-//         x = -2;
-//     self->hash = x;
-//     return x;
-// }
-// 
+
+/* Believe it or not, this produces the same value for ASCII strings
+   as string_hash(). */
+static long
+unicode_hash(PyUnicodeObject *self)
+{
+    Py_ssize_t len;
+    Py_UNICODE *p;
+    long x;
+
+    if (self->hash != -1)
+        return self->hash;
+    len = Py_SIZE(self);
+    p = self->str;
+    x = *p << 7;
+    while (--len >= 0)
+        x = (1000003*x) ^ *p++;
+    x ^= Py_SIZE(self);
+    if (x == -1)
+        x = -2;
+    self->hash = x;
+    return x;
+}
+
 // PyDoc_STRVAR(index__doc__,
 // "S.index(sub[, start[, end]]) -> int\n\
 // \n\
@@ -9310,12 +9310,12 @@ PyObject *PyUnicode_FromString(const char *u)
 // static PyObject *unicode_iter(PyObject *seq);
 // 
 PyTypeObject PyUnicode_Type = {
-//     PyVarObject_HEAD_INIT(&PyType_Type, 0)
-//     "str", 				/* tp_name */
-//     sizeof(PyUnicodeObject), 		/* tp_size */
-//     0, 					/* tp_itemsize */
+    PyVarObject_HEAD_INIT(&PyType_Type, 0)
+    "str", 				/* tp_name */
+    sizeof(PyUnicodeObject), 		/* tp_size */
+    0, 					/* tp_itemsize */
 //     /* Slots */
-//     (destructor)unicode_dealloc, 	/* tp_dealloc */
+    (destructor)unicode_dealloc, 	/* tp_dealloc */
 //     0, 					/* tp_print */
 //     0,				 	/* tp_getattr */
 //     0, 					/* tp_setattr */
@@ -9324,17 +9324,17 @@ PyTypeObject PyUnicode_Type = {
 //     &unicode_as_number, 		/* tp_as_number */
 //     &unicode_as_sequence, 		/* tp_as_sequence */
 //     &unicode_as_mapping, 		/* tp_as_mapping */
-//     (hashfunc) unicode_hash, 		/* tp_hash*/
+    (hashfunc) unicode_hash, 		/* tp_hash*/
 //     0, 					/* tp_call*/
 //     (reprfunc) unicode_str,	 	/* tp_str */
 //     PyObject_GenericGetAttr, 		/* tp_getattro */
 //     0,			 		/* tp_setattro */
 //     0, 					/* tp_as_buffer */
-//     Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE | 
-//         Py_TPFLAGS_UNICODE_SUBCLASS,	/* tp_flags */
+    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE | 
+        Py_TPFLAGS_UNICODE_SUBCLASS,	/* tp_flags */
 //     unicode_doc,			/* tp_doc */
-//     0,					/* tp_traverse */
-//     0,					/* tp_clear */
+    0,					/* tp_traverse */
+    0,					/* tp_clear */
 //     PyUnicode_RichCompare,		/* tp_richcompare */
 //     0,					/* tp_weaklistoffset */
 //     unicode_iter,			/* tp_iter */
@@ -9352,11 +9352,11 @@ PyTypeObject PyUnicode_Type = {
 //     unicode_new,			/* tp_new */
 //     PyObject_Del,      		/* tp_free */
 };
-// 
-// /* Initialize the Unicode implementation */
-// 
-// void _PyUnicode_Init(void)
-// {
+
+/* Initialize the Unicode implementation */
+
+void _PyUnicode_Init(void)
+{
 //     int i;
 // 
 //     /* XXX - move this array to unicodectype.c ? */
@@ -9380,8 +9380,8 @@ PyTypeObject PyUnicode_Type = {
 // 
 //     for (i = 0; i < 256; i++)
 // 	unicode_latin1[i] = NULL;
-//     if (PyType_Ready(&PyUnicode_Type) < 0)
-// 	Py_FatalError("Can't initialize 'unicode'");
+    if (PyType_Ready(&PyUnicode_Type) < 0)
+	Py_FatalError("Can't initialize 'unicode'");
 // 
 //     /* initialize the linebreak bloom filter */
 //     bloom_linebreak = make_bloom_mask(
@@ -9389,8 +9389,8 @@ PyTypeObject PyUnicode_Type = {
 //         );
 // 
 //     PyType_Ready(&EncodingMapType);
-// }
-// 
+}
+
 // /* Finalize the Unicode implementation */
 // 
 // int

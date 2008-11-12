@@ -212,10 +212,10 @@
 // PyObject_Init(PyObject *op, PyTypeObject *tp)
 // {
 // 	if (op == NULL)
-// 		return PyErr_NoMemory();
+// 	return PyErr_NoMemory();
 // 	/* Any changes should be reflected in PyObject_INIT (objimpl.h) */
 // 	Py_TYPE(op) = tp;
-// 	_Py_NewReference(op);
+// 	Py_NewReference(op);
 // 	return op;
 // }
 // 
@@ -827,17 +827,25 @@ PyObject_RichCompareBool(PyObject *v, PyObject *w, int op)
 // 		     Py_TYPE(v)->tp_name);
 // 	return -1;
 // }
-// 
-// long
-// PyObject_Hash(PyObject *v)
-// {
-// 	PyTypeObject *tp = Py_TYPE(v);
-// 	if (tp->tp_hash != NULL)
-// 		return (*tp->tp_hash)(v);
+
+long
+PyObject_Hash(PyObject *v)
+{
+	printf("!!!\n");
+	printf("@@@%s\n", v->ob_type->tp_name);
+	printf("A\n");
+	PyTypeObject *tp = Py_TYPE(v);
+	printf("B\n");
+	if (tp->tp_hash != NULL) {
+		printf("C\n");
+		return (*tp->tp_hash)(v);
+		printf("D\n");
+	}
+	printf("E\n");
 // 	/* Otherwise, the object can't be hashed */
 // 	return PyObject_HashNotImplemented(v);
-// }
-// 
+}
+
 // PyObject *
 // PyObject_GetAttrString(PyObject *v, const char *name)
 // {
@@ -1554,12 +1562,12 @@ PyObject_IsTrue(PyObject *v)
 // 	1, &PyNotImplemented_Type
 // };
 // 
-// void
-// _Py_ReadyTypes(void)
-// {
-// 	if (PyType_Ready(&PyType_Type) < 0)
-// 		Py_FatalError("Can't initialize 'type'");
-// 
+void
+_Py_ReadyTypes(void)
+{
+	if (PyType_Ready(&PyType_Type) < 0)
+		Py_FatalError("Can't initialize 'type'");
+
 // 	if (PyType_Ready(&_PyWeakref_RefType) < 0)
 // 		Py_FatalError("Can't initialize 'weakref'");
 // 
@@ -1589,9 +1597,9 @@ PyObject_IsTrue(PyObject *v)
 // 
 // 	if (PyType_Ready(&PyStdPrinter_Type) < 0)
 // 		Py_FatalError("Can't initialize StdPrinter");
-// }
-// 
-// 
+}
+
+
 // #ifdef Py_TRACE_REFS
 // 
 // void
