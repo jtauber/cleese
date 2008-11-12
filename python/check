@@ -4,10 +4,20 @@
 
 import sys
 import os
+import re
 
 # allow external definition of python src tree. use the original value as a
 # fallback for now. it can likely be removed later.
 BASE = os.environ.get("PYTHON_SRC", "../python-30rc2")
+
+# list of regex that must be matched for file to be checked
+MUSTS = [
+    re.compile(".+(\.c|\.h)"),
+]
+# list of regex that will cause file to be ignored (even if matching a pattern in  MUSTS)
+IGNORES = [
+    re.compile("./oneplusone.c"),
+]
 
 for path, dirs, files in os.walk("."):
     for filename in files:
@@ -16,11 +26,20 @@ for path, dirs, files in os.walk("."):
         changed = 0
         exact = 0
         
-        if filename[-2:] not in [".c", ".h"]:
-            continue
-        if filename == "oneplusone.c":
-            continue
         ours = os.path.join(path, filename)
+        
+        ignore = False
+        for pattern in MUSTS:
+            if not pattern.match(ours):
+                ignore = True
+                break
+        for pattern in IGNORES:
+            if pattern.match(ours):
+                ignore = True
+                break
+        if ignore:
+            continue
+        
         theirs = os.path.join(BASE, path, filename)
         if not os.access(theirs, os.F_OK):
             print "no file corresponding: %s" % ours
