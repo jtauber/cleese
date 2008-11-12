@@ -33,3 +33,7 @@ FLAGS = -fnested-functions -Wreturn-type -Wimplicit-function-declaration
 
 .c.o:
 	gcc $(FLAGS) -fno-builtin -c -I./Include -o $@ $<
+
+clean:
+	find . -name "*.o" -exec rm -f {} \;
+	rm -f 1p1
