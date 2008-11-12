@@ -5,6 +5,12 @@
 import sys
 import os
 import re
+from optparse import OptionParser
+
+parser = OptionParser()
+parser.add_option("-s", "--stats", action="store_true", help="display statistics")
+
+options, args = parser.parse_args()
 
 # allow external definition of python src tree. use the original value as a
 # fallback for now. it can likely be removed later.
@@ -60,4 +66,5 @@ for path, dirs, files in os.walk("."):
                 print our_line, their_line
                 sys.exit(2)
         total = commented + changed + exact
-        print "%40s\t%d\t%d\t%d\t%s%%\t%d" % (ours, commented, changed, exact, (100 * exact / total), total)
+        if options.stats:
+            print "%40s\t%d\t%d\t%d\t%s%%\t%d" % (ours, commented, changed, exact, (100 * exact / total), total)
