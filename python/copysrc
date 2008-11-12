@@ -10,7 +10,9 @@ if len(sys.argv) != 2:
 
 filename = sys.argv[1]
 
-BASE = "../python-30rc2"
+# allow external definition of python src tree. use the original value as a
+# fallback for now. it can likely be removed later.
+BASE = os.environ.get("PYTHON_SRC", "../python-30rc2")
 
 sources = []
 for d in ["Include", "Modules", "Objects", "Python"]:
