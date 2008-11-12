@@ -15,12 +15,11 @@ static struct _frozen frozenModules[] = {
 struct _frozen *PyImport_FrozenModules = frozenModules;
 
 int
-main(void) // main(int argc, char **argv)
-{ 
-	int res; // int i, res;
+main(void)
+{
+	int res;
 	
-	res = Py_FrozenMain(); // res = Py_Main(argc, argv_copy);
+	res = Py_FrozenMain();
 	
 	return res;
 }
-// #endif
