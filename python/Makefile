@@ -26,7 +26,7 @@ OBJS =			\
 				$(OBJECTS_OBJS) \
 				$(PYTHON_OBJS)
 
-FLAGS = -fnested-functions -Wreturn-type -Wimplicit-function-declaration
+FLAGS = -g -fnested-functions -Wreturn-type -Wimplicit-function-declaration
 
 1p1: oneplusone.o $(OBJS)
 	gcc $(FLAGS) -o $@ oneplusone.o $(OBJS)
