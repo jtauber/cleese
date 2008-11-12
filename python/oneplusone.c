@@ -12,12 +12,12 @@ static struct _frozen frozenModules[] = {
 //        {0, 0, 0} /* sentinel */
 };
 
+struct _frozen *PyImport_FrozenModules = frozenModules;
+
 int
 main(void) // main(int argc, char **argv)
 { 
 	int res; // int i, res;
-
-	PyImport_FrozenModules = frozenModules;
 	
 	res = Py_FrozenMain(); // res = Py_Main(argc, argv_copy);
 	
