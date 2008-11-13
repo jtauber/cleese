@@ -50,7 +50,7 @@ PyModule_New(const char *name)
 // 	PyObject_GC_Track(m);
 	return (PyObject *)m;
 
-fail:
+ fail:
 	Py_XDECREF(nameobj);
 	Py_DECREF(m);
 	return NULL;
