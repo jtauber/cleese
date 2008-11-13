@@ -6,25 +6,25 @@
 // 
 // static Py_ssize_t max_module_number;
 // 
-// typedef struct {
-// 	PyObject_HEAD
-// 	PyObject *md_dict;
-// 	struct PyModuleDef *md_def;
-// 	void *md_state;
-// } PyModuleObject;
-// 
+typedef struct {
+	PyObject_HEAD
+	PyObject *md_dict;
+	struct PyModuleDef *md_def;
+	void *md_state;
+} PyModuleObject;
+
 // static PyMemberDef module_members[] = {
 // 	{"__dict__", T_OBJECT, offsetof(PyModuleObject, md_dict), READONLY},
 // 	{0}
 // };
-// 
-// static PyTypeObject moduledef_type = {
-// 	PyVarObject_HEAD_INIT(&PyType_Type, 0)
-// 	"moduledef",				/* tp_name */
-// 	sizeof(struct PyModuleDef),		/* tp_size */
-// 	0,					/* tp_itemsize */
-// };
-// 
+
+static PyTypeObject moduledef_type = {
+	PyVarObject_HEAD_INIT(&PyType_Type, 0)
+	"moduledef",				/* tp_name */
+	sizeof(struct PyModuleDef),		/* tp_size */
+	0,					/* tp_itemsize */
+};
+
 
 PyObject *
 PyModule_New(const char *name)
@@ -304,10 +304,10 @@ PyModule_GetDict(PyObject *m)
 // 		return -1;
 // 	return 0;
 // }
-// 
-// static void
-// module_dealloc(PyModuleObject *m)
-// {
+
+static void
+module_dealloc(PyModuleObject *m)
+{
 // 	PyObject_GC_UnTrack(m);
 // 	if (m->md_def && m->md_def->m_free)
 // 		m->md_def->m_free(m);
@@ -316,8 +316,8 @@ PyModule_GetDict(PyObject *m)
 // 		Py_DECREF(m->md_dict);
 // 	}
 // 	Py_TYPE(m)->tp_free((PyObject *)m);
-// }
-// 
+}
+
 // static PyObject *
 // module_repr(PyModuleObject *m)
 // {
@@ -336,10 +336,10 @@ PyModule_GetDict(PyObject *m)
 // 	}
 // 	return PyUnicode_FromFormat("<module '%s' from '%s'>", name, filename);
 // }
-// 
-// static int
-// module_traverse(PyModuleObject *m, visitproc visit, void *arg)
-// {
+
+static int
+module_traverse(PyModuleObject *m, visitproc visit, void *arg)
+{
 // 	if (m->md_def && m->md_def->m_traverse) {
 // 		int res = m->md_def->m_traverse((PyObject*)m, visit, arg);
 // 		if (res)
@@ -347,11 +347,11 @@ PyModule_GetDict(PyObject *m)
 // 	}
 // 	Py_VISIT(m->md_dict);
 // 	return 0;
-// }
-// 
-// static int
-// module_clear(PyModuleObject *m)
-// {
+}
+
+static int
+module_clear(PyModuleObject *m)
+{
 // 	if (m->md_def && m->md_def->m_clear) {
 // 		int res = m->md_def->m_clear((PyObject*)m);
 // 		if (res)
@@ -359,21 +359,21 @@ PyModule_GetDict(PyObject *m)
 // 	}
 // 	Py_CLEAR(m->md_dict);
 // 	return 0;
-// }
-// 	
+}
+	
 // 
 // PyDoc_STRVAR(module_doc,
 // "module(name[, doc])\n\
 // \n\
 // Create a module object.\n\
 // The name must be a string; the optional doc argument can have any type.");
-// 
+
 PyTypeObject PyModule_Type = {
-// 	PyVarObject_HEAD_INIT(&PyType_Type, 0)
-// 	"module",				/* tp_name */
-// 	sizeof(PyModuleObject),			/* tp_size */
-// 	0,					/* tp_itemsize */
-// 	(destructor)module_dealloc,		/* tp_dealloc */
+	PyVarObject_HEAD_INIT(&PyType_Type, 0)
+	"module",				/* tp_name */
+	sizeof(PyModuleObject),			/* tp_size */
+	0,					/* tp_itemsize */
+	(destructor)module_dealloc,		/* tp_dealloc */
 // 	0,					/* tp_print */
 // 	0,					/* tp_getattr */
 // 	0,					/* tp_setattr */
@@ -382,17 +382,17 @@ PyTypeObject PyModule_Type = {
 // 	0,					/* tp_as_number */
 // 	0,					/* tp_as_sequence */
 // 	0,					/* tp_as_mapping */
-// 	0,					/* tp_hash */
+	0,					/* tp_hash */
 // 	0,					/* tp_call */
 // 	0,					/* tp_str */
 // 	PyObject_GenericGetAttr,		/* tp_getattro */
 // 	PyObject_GenericSetAttr,		/* tp_setattro */
 // 	0,					/* tp_as_buffer */
-// 	Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HAVE_GC |
-// 		Py_TPFLAGS_BASETYPE,		/* tp_flags */
+	Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HAVE_GC |
+		Py_TPFLAGS_BASETYPE,		/* tp_flags */
 // 	module_doc,				/* tp_doc */
-// 	(traverseproc)module_traverse,		/* tp_traverse */
-// 	(inquiry)module_clear,			/* tp_clear */
+	(traverseproc)module_traverse,		/* tp_traverse */
+	(inquiry)module_clear,			/* tp_clear */
 // 	0,					/* tp_richcompare */
 // 	0,					/* tp_weaklistoffset */
 // 	0,					/* tp_iter */

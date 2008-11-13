@@ -137,7 +137,7 @@ which point everyone will have terabytes of RAM on 64-bit boxes).
 
 /* Object used as dummy key to fill deleted entries */
 static PyObject *dummy = NULL; /* Initialized by first call to newPyDictObject() */
-// 
+
 // #ifdef Py_REF_DEBUG
 // PyObject *
 // _PyDict_Dummy(void)
@@ -625,7 +625,7 @@ lookdict_unicode(PyDictObject *mp, PyObject *key, register long hash)
  */
 PyObject *
 PyDict_GetItem(PyObject *op, PyObject *key)
-{ printf(" > GetItem\n");
+{
 	long hash;
 	PyDictObject *mp = (PyDictObject *)op;
 	PyDictEntry *ep;
@@ -657,14 +657,12 @@ PyDict_GetItem(PyObject *op, PyObject *key)
 // 			return NULL;
 // 	}
 // 	else {
-		printf("###\n");
 		ep = (mp->ma_lookup)(mp, key, hash);
 // 		if (ep == NULL) {
 // 			PyErr_Clear();
 // 			return NULL;
 // 		}
 // 	}
-	printf(" < GetItem\n");
 	return ep->me_value;
 }
 
@@ -925,12 +923,12 @@ PyDict_GetItem(PyObject *op, PyObject *key)
 // 		*pvalue = ep[i].me_value;
 // 	return 1;
 // }
-// 
-// /* Methods */
-// 
-// static void
-// dict_dealloc(register PyDictObject *mp)
-// {
+
+/* Methods */
+
+static void
+dict_dealloc(register PyDictObject *mp)
+{
 // 	register PyDictEntry *ep;
 // 	Py_ssize_t fill = mp->ma_fill;
 //  	PyObject_GC_UnTrack(mp);
@@ -949,8 +947,8 @@ PyDict_GetItem(PyObject *op, PyObject *key)
 // 	else
 // 		Py_TYPE(mp)->tp_free((PyObject *)mp);
 // 	Py_TRASHCAN_SAFE_END(mp)
-// }
-// 
+}
+
 // static PyObject *
 // dict_repr(PyDictObject *mp)
 // {
@@ -1822,10 +1820,10 @@ PyDict_GetItem(PyObject *op, PyObject *key)
 // 	mp->ma_table[0].me_hash = i + 1;  /* next place to start */
 // 	return res;
 // }
-// 
-// static int
-// dict_traverse(PyObject *op, visitproc visit, void *arg)
-// {
+
+static int
+dict_traverse(PyObject *op, visitproc visit, void *arg)
+{
 // 	Py_ssize_t i = 0;
 // 	PyObject *pk;
 // 	PyObject *pv;
@@ -1835,15 +1833,15 @@ PyDict_GetItem(PyObject *op, PyObject *key)
 // 		Py_VISIT(pv);
 // 	}
 // 	return 0;
-// }
-// 
-// static int
-// dict_tp_clear(PyObject *op)
-// {
+}
+
+static int
+dict_tp_clear(PyObject *op)
+{
 // 	PyDict_Clear(op);
 // 	return 0;
-// }
-// 
+}
+
 // static PyObject *dictiter_new(PyDictObject *, PyTypeObject *);
 // 
 // static PyObject *
@@ -2027,10 +2025,10 @@ PyDict_GetItem(PyObject *op, PyObject *key)
 // 
 PyTypeObject PyDict_Type = {
 	PyVarObject_HEAD_INIT(&PyType_Type, 0)
-// 	"dict",
-// 	sizeof(PyDictObject),
-// 	0,
-// 	(destructor)dict_dealloc,		/* tp_dealloc */
+	"dict",
+	sizeof(PyDictObject),
+	0,
+	(destructor)dict_dealloc,		/* tp_dealloc */
 // 	0,					/* tp_print */
 // 	0,					/* tp_getattr */
 // 	0,					/* tp_setattr */
@@ -2039,17 +2037,17 @@ PyTypeObject PyDict_Type = {
 // 	0,					/* tp_as_number */
 // 	&dict_as_sequence,			/* tp_as_sequence */
 // 	&dict_as_mapping,			/* tp_as_mapping */
-// 	(hashfunc)PyObject_HashNotImplemented,	/* tp_hash */
+	(hashfunc)PyObject_HashNotImplemented,	/* tp_hash */
 // 	0,					/* tp_call */
 // 	0,					/* tp_str */
 // 	PyObject_GenericGetAttr,		/* tp_getattro */
 // 	0,					/* tp_setattro */
 // 	0,					/* tp_as_buffer */
-// 	Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HAVE_GC |
-// 		Py_TPFLAGS_BASETYPE | Py_TPFLAGS_DICT_SUBCLASS,	/* tp_flags */
+	Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HAVE_GC |
+		Py_TPFLAGS_BASETYPE | Py_TPFLAGS_DICT_SUBCLASS,	/* tp_flags */
 // 	dictionary_doc,				/* tp_doc */
-// 	dict_traverse,				/* tp_traverse */
-// 	dict_tp_clear,				/* tp_clear */
+	dict_traverse,				/* tp_traverse */
+	dict_tp_clear,				/* tp_clear */
 // 	dict_richcompare,			/* tp_richcompare */
 // 	0,					/* tp_weaklistoffset */
 // 	(getiterfunc)dict_iter,			/* tp_iter */

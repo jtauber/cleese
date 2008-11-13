@@ -3718,8 +3718,6 @@ PyTypeObject PyType_Type = {
 int
 PyType_Ready(PyTypeObject *type)
 {
-	printf("PyType_Ready\n");
-	printf("name: %s\n", type->tp_name);
 // 	PyObject *dict, *bases;
 // 	PyTypeObject *base;
 // 	Py_ssize_t i, n;

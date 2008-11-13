@@ -405,10 +405,10 @@ typedef PY_UNICODE_TYPE Py_UNICODE;
 //         Py_UNICODE_ISDECIMAL(ch) || \
 //         Py_UNICODE_ISDIGIT(ch) || \
 //         Py_UNICODE_ISNUMERIC(ch))
-// 
-// #define Py_UNICODE_COPY(target, source, length)				\
-// 	Py_MEMCPY((target), (source), (length)*sizeof(Py_UNICODE))
-// 
+
+#define Py_UNICODE_COPY(target, source, length)				\
+	Py_MEMCPY((target), (source), (length)*sizeof(Py_UNICODE))
+
 // #define Py_UNICODE_FILL(target, value, length) do\
 //     {Py_ssize_t i_; Py_UNICODE *t_ = (target); Py_UNICODE v_ = (value);\
 //         for (i_ = 0; i_ < (length); i_++) t_[i_] = v_;\
@@ -449,8 +449,8 @@ PyAPI_DATA(PyTypeObject) PyUnicode_Type;
 // #define SSTATE_INTERNED_MORTAL 1
 // #define SSTATE_INTERNED_IMMORTAL 2
 // 
-// #define PyUnicode_Check(op) \
-//                  PyType_FastSubclass(Py_TYPE(op), Py_TPFLAGS_UNICODE_SUBCLASS)
+#define PyUnicode_Check(op) \
+                 PyType_FastSubclass(Py_TYPE(op), Py_TPFLAGS_UNICODE_SUBCLASS)
 #define PyUnicode_CheckExact(op) (Py_TYPE(op) == &PyUnicode_Type)
 // 
 // /* Fast access macros */
@@ -458,8 +458,8 @@ PyAPI_DATA(PyTypeObject) PyUnicode_Type;
 //         (assert(PyUnicode_Check(op)),(((PyUnicodeObject *)(op))->length))
 // #define PyUnicode_GET_DATA_SIZE(op) \
 //         (assert(PyUnicode_Check(op)),(((PyUnicodeObject *)(op))->length * sizeof(Py_UNICODE)))
-// #define PyUnicode_AS_UNICODE(op) \
-//         (assert(PyUnicode_Check(op)),(((PyUnicodeObject *)(op))->str))
+#define PyUnicode_AS_UNICODE(op) \
+        (assert(PyUnicode_Check(op)),(((PyUnicodeObject *)(op))->str))
 // #define PyUnicode_AS_DATA(op) \
 //         (assert(PyUnicode_Check(op)),((const char *)((PyUnicodeObject *)(op))->str))
 // 
@@ -532,12 +532,12 @@ PyAPI_FUNC(PyObject*) PyUnicode_FromString(
 //    is returned and *unicode left untouched.
 // 
 // */
-// 
-// PyAPI_FUNC(int) PyUnicode_Resize(
-//     PyObject **unicode,		/* Pointer to the Unicode object */
-//     Py_ssize_t length		/* New length */
-//     );
-// 
+
+PyAPI_FUNC(int) PyUnicode_Resize(
+    PyObject **unicode,		/* Pointer to the Unicode object */
+    Py_ssize_t length		/* New length */
+    );
+
 // /* Coerce obj to an Unicode object and return a reference with
 //    *incremented* refcount.
 // 
@@ -850,32 +850,32 @@ PyAPI_FUNC(PyObject*) PyUnicode_FromString(
 //                                    carriage return and linefeed characters */
 //     const char *errors		/* error handling */
 //     );
-// 
-// /* --- UTF-8 Codecs ------------------------------------------------------- */
-// 
-// PyAPI_FUNC(PyObject*) PyUnicode_DecodeUTF8(
-//     const char *string, 	/* UTF-8 encoded string */
-//     Py_ssize_t length,	 	/* size of string */
-//     const char *errors		/* error handling */
-//     );
-// 
-// PyAPI_FUNC(PyObject*) PyUnicode_DecodeUTF8Stateful(
-//     const char *string, 	/* UTF-8 encoded string */
-//     Py_ssize_t length,	 	/* size of string */
-//     const char *errors,		/* error handling */
-//     Py_ssize_t *consumed	/* bytes consumed */
-//     );
-// 
-// PyAPI_FUNC(PyObject*) PyUnicode_AsUTF8String(
-//     PyObject *unicode	 	/* Unicode object */
-//     );
-// 
-// PyAPI_FUNC(PyObject*) PyUnicode_EncodeUTF8(
-//     const Py_UNICODE *data, 	/* Unicode char buffer */
-//     Py_ssize_t length,	 	/* number of Py_UNICODE chars to encode */
-//     const char *errors		/* error handling */
-//     );
-// 
+
+/* --- UTF-8 Codecs ------------------------------------------------------- */
+
+PyAPI_FUNC(PyObject*) PyUnicode_DecodeUTF8(
+    const char *string, 	/* UTF-8 encoded string */
+    Py_ssize_t length,	 	/* size of string */
+    const char *errors		/* error handling */
+    );
+
+PyAPI_FUNC(PyObject*) PyUnicode_DecodeUTF8Stateful(
+    const char *string, 	/* UTF-8 encoded string */
+    Py_ssize_t length,	 	/* size of string */
+    const char *errors,		/* error handling */
+    Py_ssize_t *consumed	/* bytes consumed */
+    );
+
+PyAPI_FUNC(PyObject*) PyUnicode_AsUTF8String(
+    PyObject *unicode	 	/* Unicode object */
+    );
+
+PyAPI_FUNC(PyObject*) PyUnicode_EncodeUTF8(
+    const Py_UNICODE *data, 	/* Unicode char buffer */
+    Py_ssize_t length,	 	/* number of Py_UNICODE chars to encode */
+    const char *errors		/* error handling */
+    );
+
 // /* --- UTF-32 Codecs ------------------------------------------------------ */
 // 
 // /* Decodes length bytes from a UTF-32 encoded buffer string and returns

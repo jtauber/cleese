@@ -212,10 +212,10 @@
 // PyObject_Init(PyObject *op, PyTypeObject *tp)
 // {
 // 	if (op == NULL)
-// 	return PyErr_NoMemory();
+// 		return PyErr_NoMemory();
 // 	/* Any changes should be reflected in PyObject_INIT (objimpl.h) */
 // 	Py_TYPE(op) = tp;
-// 	Py_NewReference(op);
+// 	_Py_NewReference(op);
 // 	return op;
 // }
 // 
@@ -230,17 +230,17 @@
 // 	_Py_NewReference((PyObject *)op);
 // 	return op;
 // }
-// 
-// PyObject *
-// _PyObject_New(PyTypeObject *tp)
-// {
-// 	PyObject *op;
-// 	op = (PyObject *) PyObject_MALLOC(_PyObject_SIZE(tp));
+
+PyObject *
+_PyObject_New(PyTypeObject *tp)
+{
+	PyObject *op;
+	op = (PyObject *) PyObject_MALLOC(_PyObject_SIZE(tp));
 // 	if (op == NULL)
 // 		return PyErr_NoMemory();
-// 	return PyObject_INIT(op, tp);
-// }
-// 
+	return PyObject_INIT(op, tp);
+}
+
 // PyVarObject *
 // _PyObject_NewVar(PyTypeObject *tp, Py_ssize_t nitems)
 // {
@@ -819,29 +819,21 @@ PyObject_RichCompareBool(PyObject *v, PyObject *w, int op)
 // 	return x;
 // #endif
 // }
-// 
-// long
-// PyObject_HashNotImplemented(PyObject *v)
-// {
+
+long
+PyObject_HashNotImplemented(PyObject *v)
+{
 // 	PyErr_Format(PyExc_TypeError, "unhashable type: '%.200s'",
 // 		     Py_TYPE(v)->tp_name);
 // 	return -1;
-// }
+}
 
 long
 PyObject_Hash(PyObject *v)
 {
-	printf("!!!\n");
-	printf("@@@%s\n", v->ob_type->tp_name);
-	printf("A\n");
 	PyTypeObject *tp = Py_TYPE(v);
-	printf("B\n");
-	if (tp->tp_hash != NULL) {
-		printf("C\n");
+	if (tp->tp_hash != NULL)
 		return (*tp->tp_hash)(v);
-		printf("D\n");
-	}
-	printf("E\n");
 // 	/* Otherwise, the object can't be hashed */
 // 	return PyObject_HashNotImplemented(v);
 }

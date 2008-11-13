@@ -440,7 +440,7 @@ PyAPI_FUNC(int) PyObject_RichCompareBool(PyObject *, PyObject *, int);
 // PyAPI_FUNC(int) PyObject_GenericSetAttr(PyObject *,
 // 					      PyObject *, PyObject *);
 PyAPI_FUNC(long) PyObject_Hash(PyObject *);
-// PyAPI_FUNC(long) PyObject_HashNotImplemented(PyObject *);
+PyAPI_FUNC(long) PyObject_HashNotImplemented(PyObject *);
 PyAPI_FUNC(int) PyObject_IsTrue(PyObject *);
 // PyAPI_FUNC(int) PyObject_Not(PyObject *);
 // PyAPI_FUNC(int) PyCallable_Check(PyObject *);
@@ -529,7 +529,7 @@ PyAPI_FUNC(int) PyObject_IsTrue(PyObject *);
 // #define Py_TPFLAGS_TUPLE_SUBCLASS	(1L<<26)
 // #define Py_TPFLAGS_BYTES_SUBCLASS	(1L<<27)
 #define Py_TPFLAGS_UNICODE_SUBCLASS	(1L<<28)
-// #define Py_TPFLAGS_DICT_SUBCLASS	(1L<<29)
+#define Py_TPFLAGS_DICT_SUBCLASS	(1L<<29)
 // #define Py_TPFLAGS_BASE_EXC_SUBCLASS	(1L<<30)
 // #define Py_TPFLAGS_TYPE_SUBCLASS	(1L<<31)
 
@@ -539,9 +539,9 @@ PyAPI_FUNC(int) PyObject_IsTrue(PyObject *);
                             0)
 
 #define PyType_HasFeature(t,f)  (((t)->tp_flags & (f)) != 0)
-// #define PyType_FastSubclass(t,f)  PyType_HasFeature(t,f)
-// 
-// 
+#define PyType_FastSubclass(t,f)  PyType_HasFeature(t,f)
+
+
 // /*
 // The macros Py_INCREF(op) and Py_DECREF(op) are used to increment or decrement
 // reference counts.  Py_DECREF calls the object's deallocator function when
@@ -702,7 +702,7 @@ PyAPI_FUNC(int) PyObject_IsTrue(PyObject *);
 // 
 // /* Macros to use in case the object pointer may be NULL: */
 // #define Py_XINCREF(op) if ((op) == NULL) ; else Py_INCREF(op)
-// #define Py_XDECREF(op) if ((op) == NULL) ; else Py_DECREF(op)
+#define Py_XDECREF(op) if ((op) == NULL) ; else Py_DECREF(op)
 // 
 // /*
 // These are provided as conveniences to Python runtime embedders, so that

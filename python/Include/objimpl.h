@@ -124,12 +124,12 @@
 // #else	/* ! WITH_PYMALLOC */
 #define PyObject_MALLOC		PyMem_MALLOC
 // #define PyObject_REALLOC	PyMem_REALLOC
-// #define PyObject_FREE		PyMem_FREE
+#define PyObject_FREE		PyMem_FREE
 // 
 // #endif	/* WITH_PYMALLOC */
 // 
 // #define PyObject_Del		PyObject_Free
-// #define PyObject_DEL		PyObject_FREE
+#define PyObject_DEL		PyObject_FREE
 
 /*
  * Generic object allocator interface
@@ -140,11 +140,11 @@
 PyAPI_FUNC(PyObject *) PyObject_Init(PyObject *, PyTypeObject *);
 // PyAPI_FUNC(PyVarObject *) PyObject_InitVar(PyVarObject *,
 //                                                  PyTypeObject *, Py_ssize_t);
-// PyAPI_FUNC(PyObject *) _PyObject_New(PyTypeObject *);
+PyAPI_FUNC(PyObject *) _PyObject_New(PyTypeObject *);
 // PyAPI_FUNC(PyVarObject *) _PyObject_NewVar(PyTypeObject *, Py_ssize_t);
 // 
-// #define PyObject_New(type, typeobj) \
-// 		( (type *) _PyObject_New(typeobj) )
+#define PyObject_New(type, typeobj) \
+		( (type *) _PyObject_New(typeobj) )
 // #define PyObject_NewVar(type, typeobj, n) \
 // 		( (type *) _PyObject_NewVar((typeobj), (n)) )
 // 

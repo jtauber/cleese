@@ -63,7 +63,7 @@ static void initmain(void);
 // static void initsigs(void);
 // static void call_py_exitfuncs(void);
 // static void call_ll_exitfuncs(void);
-// extern void _PyUnicode_Init(void);
+extern void _PyUnicode_Init(void);
 // extern void _PyUnicode_Fini(void);
 // extern int _PyLong_Init(void);
 // extern void PyLong_Fini(void);

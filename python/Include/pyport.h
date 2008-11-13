@@ -217,7 +217,7 @@ typedef Py_intptr_t	Py_ssize_t;
 // 				t_[i_] = s_[i_];			\
 // 	} while (0)
 // #else
-// #define Py_MEMCPY memcpy
+#define Py_MEMCPY memcpy
 // #endif
 // 
 // #include <stdlib.h>
