@@ -29,7 +29,7 @@ PyAPI_FUNC(PyObject *) PyModule_GetDict(PyObject *);
 // 
 // #define PyModuleDef_HEAD_INIT {PyObject_HEAD_INIT(NULL)}
 // 
-// typedef struct PyModuleDef{
+typedef struct PyModuleDef{
 //   PyModuleDef_Base m_base;
 //   const char* m_name;
 //   const char* m_doc;
@@ -39,7 +39,7 @@ PyAPI_FUNC(PyObject *) PyModule_GetDict(PyObject *);
 //   traverseproc m_traverse;
 //   inquiry m_clear;
 //   freefunc m_free;
-// }PyModuleDef;
+}PyModuleDef;
 // 
 // 
 // #ifdef __cplusplus

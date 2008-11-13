@@ -230,17 +230,17 @@
 // 	_Py_NewReference((PyObject *)op);
 // 	return op;
 // }
-// 
-// PyObject *
-// _PyObject_New(PyTypeObject *tp)
-// {
-// 	PyObject *op;
-// 	op = (PyObject *) PyObject_MALLOC(_PyObject_SIZE(tp));
+
+PyObject *
+_PyObject_New(PyTypeObject *tp)
+{
+	PyObject *op;
+	op = (PyObject *) PyObject_MALLOC(_PyObject_SIZE(tp));
 // 	if (op == NULL)
 // 		return PyErr_NoMemory();
-// 	return PyObject_INIT(op, tp);
-// }
-// 
+	return PyObject_INIT(op, tp);
+}
+
 // PyVarObject *
 // _PyObject_NewVar(PyTypeObject *tp, Py_ssize_t nitems)
 // {
@@ -819,25 +819,25 @@ PyObject_RichCompareBool(PyObject *v, PyObject *w, int op)
 // 	return x;
 // #endif
 // }
-// 
-// long
-// PyObject_HashNotImplemented(PyObject *v)
-// {
+
+long
+PyObject_HashNotImplemented(PyObject *v)
+{
 // 	PyErr_Format(PyExc_TypeError, "unhashable type: '%.200s'",
 // 		     Py_TYPE(v)->tp_name);
 // 	return -1;
-// }
-// 
-// long
-// PyObject_Hash(PyObject *v)
-// {
-// 	PyTypeObject *tp = Py_TYPE(v);
-// 	if (tp->tp_hash != NULL)
-// 		return (*tp->tp_hash)(v);
+}
+
+long
+PyObject_Hash(PyObject *v)
+{
+	PyTypeObject *tp = Py_TYPE(v);
+	if (tp->tp_hash != NULL)
+		return (*tp->tp_hash)(v);
 // 	/* Otherwise, the object can't be hashed */
 // 	return PyObject_HashNotImplemented(v);
-// }
-// 
+}
+
 // PyObject *
 // PyObject_GetAttrString(PyObject *v, const char *name)
 // {
@@ -1554,12 +1554,12 @@ PyObject_IsTrue(PyObject *v)
 // 	1, &PyNotImplemented_Type
 // };
 // 
-// void
-// _Py_ReadyTypes(void)
-// {
-// 	if (PyType_Ready(&PyType_Type) < 0)
-// 		Py_FatalError("Can't initialize 'type'");
-// 
+void
+_Py_ReadyTypes(void)
+{
+	if (PyType_Ready(&PyType_Type) < 0)
+		Py_FatalError("Can't initialize 'type'");
+
 // 	if (PyType_Ready(&_PyWeakref_RefType) < 0)
 // 		Py_FatalError("Can't initialize 'weakref'");
 // 
@@ -1589,9 +1589,9 @@ PyObject_IsTrue(PyObject *v)
 // 
 // 	if (PyType_Ready(&PyStdPrinter_Type) < 0)
 // 		Py_FatalError("Can't initialize StdPrinter");
-// }
-// 
-// 
+}
+
+
 // #ifdef Py_TRACE_REFS
 // 
 // void
