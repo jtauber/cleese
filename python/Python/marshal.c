@@ -39,7 +39,7 @@
 // #define TYPE_TUPLE		'('
 // #define TYPE_LIST		'['
 // #define TYPE_DICT		'{'
-// #define TYPE_CODE		'c'
+#define TYPE_CODE		'c'
 // #define TYPE_UNICODE		'u'
 // #define TYPE_UNKNOWN		'?'
 // #define TYPE_SET		'<'
@@ -424,31 +424,31 @@ typedef WFILE RFILE; /* Same struct with different invariants */
 // 	x |= -(x & 0x8000);
 // 	return x;
 // }
-// 
-// static long
-// r_long(RFILE *p)
-// {
-// 	register long x;
-// 	register FILE *fp = p->fp;
-// 	if (fp) {
-// 		x = getc(fp);
-// 		x |= (long)getc(fp) << 8;
-// 		x |= (long)getc(fp) << 16;
-// 		x |= (long)getc(fp) << 24;
-// 	}
-// 	else {
-// 		x = rs_byte(p);
-// 		x |= (long)rs_byte(p) << 8;
-// 		x |= (long)rs_byte(p) << 16;
-// 		x |= (long)rs_byte(p) << 24;
-// 	}
+
+static long
+r_long(RFILE *p)
+{
+	register long x;
+	register FILE *fp = p->fp;
+	if (fp) {
+		x = getc(fp);
+		x |= (long)getc(fp) << 8;
+		x |= (long)getc(fp) << 16;
+		x |= (long)getc(fp) << 24;
+	}
+	else {
+		x = rs_byte(p);
+		x |= (long)rs_byte(p) << 8;
+		x |= (long)rs_byte(p) << 16;
+		x |= (long)rs_byte(p) << 24;
+	}
 // #if SIZEOF_LONG > 4
 // 	/* Sign extension for 64-bit machines */
 // 	x |= -(x & 0x80000000L);
 // #endif
-// 	return x;
-// }
-// 
+	return x;
+}
+
 // /* r_long64 deals with the TYPE_INT64 code.  On a machine with
 //    sizeof(long) > 4, it returns a Python int object, else a Python long
 //    object.  Note that w_long64 writes out TYPE_INT if 32 bits is enough,
@@ -841,86 +841,86 @@ r_object(RFILE *p)
 // 		retval = v;
 // 		break;
 // 
-// 	case TYPE_CODE:
-// 		{
-// 			int argcount;
-// 			int kwonlyargcount;
-// 			int nlocals;
-// 			int stacksize;
-// 			int flags;
-// 			PyObject *code = NULL;
-// 			PyObject *consts = NULL;
-// 			PyObject *names = NULL;
-// 			PyObject *varnames = NULL;
-// 			PyObject *freevars = NULL;
-// 			PyObject *cellvars = NULL;
-// 			PyObject *filename = NULL;
-// 			PyObject *name = NULL;
-// 			int firstlineno;
-// 			PyObject *lnotab = NULL;
-// 			
-// 			v = NULL;
-// 
-// 			/* XXX ignore long->int overflows for now */
-// 			argcount = (int)r_long(p);
-// 			kwonlyargcount = (int)r_long(p);
-// 			nlocals = (int)r_long(p);
-// 			stacksize = (int)r_long(p);
-// 			flags = (int)r_long(p);
-// 			code = r_object(p);
-// 			if (code == NULL)
-// 				goto code_error;
-// 			consts = r_object(p);
-// 			if (consts == NULL)
-// 				goto code_error;
-// 			names = r_object(p);
-// 			if (names == NULL)
-// 				goto code_error;
-// 			varnames = r_object(p);
-// 			if (varnames == NULL)
-// 				goto code_error;
-// 			freevars = r_object(p);
-// 			if (freevars == NULL)
-// 				goto code_error;
-// 			cellvars = r_object(p);
-// 			if (cellvars == NULL)
-// 				goto code_error;
-// 			filename = r_object(p);
-// 			if (filename == NULL)
-// 				goto code_error;
-// 			name = r_object(p);
-// 			if (name == NULL)
-// 				goto code_error;
-// 			firstlineno = (int)r_long(p);
-// 			lnotab = r_object(p);
-// 			if (lnotab == NULL)
-// 				goto code_error;
-// 
-// 			v = (PyObject *) PyCode_New(
-// 					argcount, kwonlyargcount,
-// 					nlocals, stacksize, flags,
-// 					code, consts, names, varnames,
-// 					freevars, cellvars, filename, name,
-// 					firstlineno, lnotab);
-// 
-// 		  code_error:
-// 			Py_XDECREF(code);
-// 			Py_XDECREF(consts);
-// 			Py_XDECREF(names);
-// 			Py_XDECREF(varnames);
-// 			Py_XDECREF(freevars);
-// 			Py_XDECREF(cellvars);
-// 			Py_XDECREF(filename);
-// 			Py_XDECREF(name);
-// 			Py_XDECREF(lnotab);
-// 		}
-// 		retval = v;
-// 		break;
-// 
+	case TYPE_CODE:
+		{
+			int argcount;
+			int kwonlyargcount;
+			int nlocals;
+			int stacksize;
+			int flags;
+			PyObject *code = NULL;
+			PyObject *consts = NULL;
+			PyObject *names = NULL;
+			PyObject *varnames = NULL;
+			PyObject *freevars = NULL;
+			PyObject *cellvars = NULL;
+			PyObject *filename = NULL;
+			PyObject *name = NULL;
+			int firstlineno;
+			PyObject *lnotab = NULL;
+			
+			v = NULL;
+
+			/* XXX ignore long->int overflows for now */
+			argcount = (int)r_long(p);
+			kwonlyargcount = (int)r_long(p);
+			nlocals = (int)r_long(p);
+			stacksize = (int)r_long(p);
+			flags = (int)r_long(p);
+			code = r_object(p);
+			if (code == NULL)
+				goto code_error;
+			consts = r_object(p);
+			if (consts == NULL)
+				goto code_error;
+			names = r_object(p);
+			if (names == NULL)
+				goto code_error;
+			varnames = r_object(p);
+			if (varnames == NULL)
+				goto code_error;
+			freevars = r_object(p);
+			if (freevars == NULL)
+				goto code_error;
+			cellvars = r_object(p);
+			if (cellvars == NULL)
+				goto code_error;
+			filename = r_object(p);
+			if (filename == NULL)
+				goto code_error;
+			name = r_object(p);
+			if (name == NULL)
+				goto code_error;
+			firstlineno = (int)r_long(p);
+			lnotab = r_object(p);
+			if (lnotab == NULL)
+				goto code_error;
+
+			v = (PyObject *) PyCode_New(
+					argcount, kwonlyargcount,
+					nlocals, stacksize, flags,
+					code, consts, names, varnames,
+					freevars, cellvars, filename, name,
+					firstlineno, lnotab);
+
+		  code_error:
+			Py_XDECREF(code);
+			Py_XDECREF(consts);
+			Py_XDECREF(names);
+			Py_XDECREF(varnames);
+			Py_XDECREF(freevars);
+			Py_XDECREF(cellvars);
+			Py_XDECREF(filename);
+			Py_XDECREF(name);
+			Py_XDECREF(lnotab);
+		}
+		retval = v;
+		break;
+
 	default:
 		/* Bogus data got written, which isn't ideal.
 		   This will let you keep working and recover. */
-		printf("unimplemented marshal object type: %d\n", type); // 		PyErr_SetString(PyExc_ValueError, "bad marshal data");
+		printf("unimplemented marshal object type: %s\n", type); // PyErr_SetString(PyExc_ValueError, "bad marshal data");
 		retval = NULL;
 		break;
 
