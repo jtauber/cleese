@@ -1916,8 +1916,8 @@ PyImport_ImportFrozenModule(char *name)
 // 	int ispackage;
 	int size;
 
-// 	if (p == NULL)
-// 		return 0;
+ 	if (p == NULL)
+ 		return 0;
 // 	if (p->code == NULL) {
 // 		PyErr_Format(PyExc_ImportError,
 // 			     "Excluded frozen object named %.200s",
