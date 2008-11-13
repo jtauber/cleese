@@ -435,47 +435,47 @@ lookdict_unicode(PyDictObject *mp, PyObject *key, register long hash)
 	return 0;
 }
 
-// /*
-// Internal routine to insert a new item into the table.
-// Used both by the internal resize routine and by the public insert routine.
-// Eats a reference to key and one to value.
-// Returns -1 if an error occurred, or 0 on success.
-// */
-// static int
-// insertdict(register PyDictObject *mp, PyObject *key, long hash, PyObject *value)
-// {
-// 	PyObject *old_value;
-// 	register PyDictEntry *ep;
-// 	typedef PyDictEntry *(*lookupfunc)(PyDictObject *, PyObject *, long);
-// 
-// 	assert(mp->ma_lookup != NULL);
-// 	ep = mp->ma_lookup(mp, key, hash);
-// 	if (ep == NULL) {
-// 		Py_DECREF(key);
-// 		Py_DECREF(value);
-// 		return -1;
-// 	}
-// 	if (ep->me_value != NULL) {
-// 		old_value = ep->me_value;
-// 		ep->me_value = value;
-// 		Py_DECREF(old_value); /* which **CAN** re-enter */
-// 		Py_DECREF(key);
-// 	}
-// 	else {
-// 		if (ep->me_key == NULL)
-// 			mp->ma_fill++;
-// 		else {
-// 			assert(ep->me_key == dummy);
-// 			Py_DECREF(dummy);
-// 		}
-// 		ep->me_key = key;
-// 		ep->me_hash = (Py_ssize_t)hash;
-// 		ep->me_value = value;
-// 		mp->ma_used++;
-// 	}
-// 	return 0;
-// }
-// 
+/*
+Internal routine to insert a new item into the table.
+Used both by the internal resize routine and by the public insert routine.
+Eats a reference to key and one to value.
+Returns -1 if an error occurred, or 0 on success.
+*/
+static int
+insertdict(register PyDictObject *mp, PyObject *key, long hash, PyObject *value)
+{
+	PyObject *old_value;
+	register PyDictEntry *ep;
+	typedef PyDictEntry *(*lookupfunc)(PyDictObject *, PyObject *, long);
+
+	assert(mp->ma_lookup != NULL);
+	ep = mp->ma_lookup(mp, key, hash);
+	if (ep == NULL) {
+		Py_DECREF(key);
+		Py_DECREF(value);
+		return -1;
+	}
+	if (ep->me_value != NULL) {
+		old_value = ep->me_value;
+		ep->me_value = value;
+		Py_DECREF(old_value); /* which **CAN** re-enter */
+		Py_DECREF(key);
+	}
+	else {
+		if (ep->me_key == NULL)
+			mp->ma_fill++;
+		else {
+			assert(ep->me_key == dummy);
+			Py_DECREF(dummy);
+		}
+		ep->me_key = key;
+		ep->me_hash = (Py_ssize_t)hash;
+		ep->me_value = value;
+		mp->ma_used++;
+	}
+	return 0;
+}
+
 // /*
 // Internal routine used by dictresize() to insert an item which is
 // known to be absent from the dict.  This routine also assumes that
@@ -508,14 +508,14 @@ lookdict_unicode(PyDictObject *mp, PyObject *key, register long hash)
 // 	mp->ma_used++;
 // }
 // 
-// /*
-// Restructure the table by allocating a new table and reinserting all
-// items again.  When entries have been deleted, the new table may
-// actually be smaller than the old one.
-// */
-// static int
-// dictresize(PyDictObject *mp, Py_ssize_t minused)
-// {
+/*
+Restructure the table by allocating a new table and reinserting all
+items again.  When entries have been deleted, the new table may
+actually be smaller than the old one.
+*/
+static int
+dictresize(PyDictObject *mp, Py_ssize_t minused)
+{
 // 	Py_ssize_t newsize;
 // 	PyDictEntry *oldtable, *newtable, *ep;
 // 	Py_ssize_t i;
@@ -594,8 +594,8 @@ lookdict_unicode(PyDictObject *mp, PyObject *key, register long hash)
 // 	if (is_oldtable_malloced)
 // 		PyMem_DEL(oldtable);
 // 	return 0;
-// }
-// 
+}
+
 // /* Create a new dictionary pre-sized to hold an estimated number of elements.
 //    Underestimates are okay because the dictionary will resize as necessary.
 //    Overestimates just mean the dictionary will be more sparse than usual.
@@ -695,59 +695,59 @@ PyDict_GetItem(PyObject *op, PyObject *key)
 // 		return NULL;
 // 	return ep->me_value;
 // }
-// 
-// /* CAUTION: PyDict_SetItem() must guarantee that it won't resize the
-//  * dictionary if it's merely replacing the value for an existing key.
-//  * This means that it's safe to loop over a dictionary with PyDict_Next()
-//  * and occasionally replace a value -- but you can't insert new keys or
-//  * remove them.
-//  */
-// int
-// PyDict_SetItem(register PyObject *op, PyObject *key, PyObject *value)
-// {
-// 	register PyDictObject *mp;
-// 	register long hash;
-// 	register Py_ssize_t n_used;
-// 
+
+/* CAUTION: PyDict_SetItem() must guarantee that it won't resize the
+ * dictionary if it's merely replacing the value for an existing key.
+ * This means that it's safe to loop over a dictionary with PyDict_Next()
+ * and occasionally replace a value -- but you can't insert new keys or
+ * remove them.
+ */
+int
+PyDict_SetItem(register PyObject *op, PyObject *key, PyObject *value)
+{
+	register PyDictObject *mp;
+	register long hash;
+	register Py_ssize_t n_used;
+
 // 	if (!PyDict_Check(op)) {
 // 		PyErr_BadInternalCall();
 // 		return -1;
 // 	}
-// 	assert(key);
-// 	assert(value);
-// 	mp = (PyDictObject *)op;
-// 	if (!PyUnicode_CheckExact(key) ||
-// 	    (hash = ((PyUnicodeObject *) key)->hash) == -1)
-// 	{
-// 		hash = PyObject_Hash(key);
-// 		if (hash == -1)
-// 			return -1;
-// 	}
-// 	assert(mp->ma_fill <= mp->ma_mask);  /* at least one empty slot */
-// 	n_used = mp->ma_used;
-// 	Py_INCREF(value);
-// 	Py_INCREF(key);
-// 	if (insertdict(mp, key, hash, value) != 0)
-// 		return -1;
-// 	/* If we added a key, we can safely resize.  Otherwise just return!
-// 	 * If fill >= 2/3 size, adjust size.  Normally, this doubles or
-// 	 * quaduples the size, but it's also possible for the dict to shrink
-// 	 * (if ma_fill is much larger than ma_used, meaning a lot of dict
-// 	 * keys have been * deleted).
-// 	 *
-// 	 * Quadrupling the size improves average dictionary sparseness
-// 	 * (reducing collisions) at the cost of some memory and iteration
-// 	 * speed (which loops over every possible entry).  It also halves
-// 	 * the number of expensive resize operations in a growing dictionary.
-// 	 *
-// 	 * Very large dictionaries (over 50K items) use doubling instead.
-// 	 * This may help applications with severe memory constraints.
-// 	 */
-// 	if (!(mp->ma_used > n_used && mp->ma_fill*3 >= (mp->ma_mask+1)*2))
-// 		return 0;
-// 	return dictresize(mp, (mp->ma_used > 50000 ? 2 : 4) * mp->ma_used);
-// }
-// 
+	assert(key);
+	assert(value);
+	mp = (PyDictObject *)op;
+	if (!PyUnicode_CheckExact(key) ||
+	    (hash = ((PyUnicodeObject *) key)->hash) == -1)
+	{
+		hash = PyObject_Hash(key);
+		if (hash == -1)
+			return -1;
+	}
+	assert(mp->ma_fill <= mp->ma_mask);  /* at least one empty slot */
+	n_used = mp->ma_used;
+	Py_INCREF(value);
+	Py_INCREF(key);
+	if (insertdict(mp, key, hash, value) != 0)
+		return -1;
+	/* If we added a key, we can safely resize.  Otherwise just return!
+	 * If fill >= 2/3 size, adjust size.  Normally, this doubles or
+	 * quaduples the size, but it's also possible for the dict to shrink
+	 * (if ma_fill is much larger than ma_used, meaning a lot of dict
+	 * keys have been * deleted).
+	 *
+	 * Quadrupling the size improves average dictionary sparseness
+	 * (reducing collisions) at the cost of some memory and iteration
+	 * speed (which loops over every possible entry).  It also halves
+	 * the number of expensive resize operations in a growing dictionary.
+	 *
+	 * Very large dictionaries (over 50K items) use doubling instead.
+	 * This may help applications with severe memory constraints.
+	 */
+	if (!(mp->ma_used > n_used && mp->ma_fill*3 >= (mp->ma_mask+1)*2))
+		return 0;
+	return dictresize(mp, (mp->ma_used > 50000 ? 2 : 4) * mp->ma_used);
+}
+
 // int
 // PyDict_DelItem(PyObject *op, PyObject *key)
 // {
@@ -2083,17 +2083,17 @@ PyDict_GetItemString(PyObject *v, const char *key)
 int
 PyDict_SetItemString(PyObject *v, const char *key, PyObject *item)
 {
-// 	PyObject *kv;
-// 	int err;
-// 	kv = PyUnicode_FromString(key);
-// 	if (kv == NULL)
-// 		return -1;
+	PyObject *kv;
+	int err;
+	kv = PyUnicode_FromString(key);
+	if (kv == NULL)
+		return -1;
 // 	PyUnicode_InternInPlace(&kv); /* XXX Should we really? */
-// 	err = PyDict_SetItem(v, kv, item);
-// 	Py_DECREF(kv);
-// 	return err;
+	err = PyDict_SetItem(v, kv, item);
+	Py_DECREF(kv);
+	return err;
 }
-// 
+
 // int
 // PyDict_DelItemString(PyObject *v, const char *key)
 // {

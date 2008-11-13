@@ -316,34 +316,34 @@ PyUnicodeObject *_PyUnicode_New(Py_ssize_t length)
 //         return (PyUnicodeObject *)PyErr_NoMemory();
 //     }
 // 
-    /* Unicode freelist & memory allocation */
-    if (free_list) {
-        unicode = free_list;
-        free_list = *(PyUnicodeObject **)unicode;
-        numfree--;
-	if (unicode->str) {
-	    /* Keep-Alive optimization: we only upsize the buffer,
-	       never downsize it. */
-	    if ((unicode->length < length) &&
-                unicode_resize(unicode, length) < 0) {
-		PyObject_DEL(unicode->str);
-		unicode->str = NULL;
-	    }
-	}
-        else {
-	    size_t new_size = sizeof(Py_UNICODE) * ((size_t)length + 1);
-	    unicode->str = (Py_UNICODE*) PyObject_MALLOC(new_size);
-        }
-        PyObject_INIT(unicode, &PyUnicode_Type);
-    }
-    else {
+//     /* Unicode freelist & memory allocation */
+//     if (free_list) {
+//         unicode = free_list;
+//         free_list = *(PyUnicodeObject **)unicode;
+//         numfree--;
+// 	if (unicode->str) {
+// 	    /* Keep-Alive optimization: we only upsize the buffer,
+// 	       never downsize it. */
+// 	    if ((unicode->length < length) &&
+//                 unicode_resize(unicode, length) < 0) {
+// 		PyObject_DEL(unicode->str);
+// 		unicode->str = NULL;
+// 	    }
+// 	}
+//         else {
+// 	    size_t new_size = sizeof(Py_UNICODE) * ((size_t)length + 1);
+// 	    unicode->str = (Py_UNICODE*) PyObject_MALLOC(new_size);
+//         }
+//         PyObject_INIT(unicode, &PyUnicode_Type);
+//     }
+//     else {
 	size_t new_size;
         unicode = PyObject_New(PyUnicodeObject, &PyUnicode_Type);
         if (unicode == NULL)
             return NULL;
 	new_size = sizeof(Py_UNICODE) * ((size_t)length + 1);
 	unicode->str = (Py_UNICODE*) PyObject_MALLOC(new_size);
-    }
+//     }
 
 //     if (!unicode->str) {
 // 	PyErr_NoMemory();
