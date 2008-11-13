@@ -920,7 +920,7 @@ r_object(RFILE *p)
 	default:
 		/* Bogus data got written, which isn't ideal.
 		   This will let you keep working and recover. */
-		printf("unimplemented marshal object type: %d\n", type); // PyErr_SetString(PyExc_ValueError, "bad marshal data");
+		printf("unimplemented marshal object type: %c\n", type); // PyErr_SetString(PyExc_ValueError, "bad marshal data");
 		retval = NULL;
 		break;
 
