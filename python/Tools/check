@@ -63,11 +63,8 @@ for path, dirs, files in os.walk("."):
                 changed += 1
             else:
                 print "in file %s (line %d), the following lines are inconsistent:" % (ours, line_num)
-                our_line = our_line.replace("\\", "\\\\")
-                our_line = our_line.replace("\t", "\\t")
-                their_line = their_line.replace("\\", "\\\\")
-                their_line = their_line.replace("\t", "\\t")
-                print our_line, their_line
+                print `our_line`
+                print `their_line`
                 sys.exit(2)
         total = commented + changed + exact
         if options.stats:
