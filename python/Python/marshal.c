@@ -394,13 +394,13 @@ typedef struct {
 // 	w_object(x, &wf);
 // 	Py_XDECREF(wf.strings);
 // }
-// 
+
 typedef WFILE RFILE; /* Same struct with different invariants */
-// 
-// #define rs_byte(p) (((p)->ptr < (p)->end) ? (unsigned char)*(p)->ptr++ : EOF)
-// 
-// #define r_byte(p) ((p)->fp ? getc((p)->fp) : rs_byte(p))
-// 
+
+#define rs_byte(p) (((p)->ptr < (p)->end) ? (unsigned char)*(p)->ptr++ : EOF)
+
+#define r_byte(p) ((p)->fp ? getc((p)->fp) : rs_byte(p))
+
 // static int
 // r_string(char *s, int n, RFILE *p)
 // {
@@ -483,13 +483,13 @@ typedef WFILE RFILE; /* Same struct with different invariants */
 static PyObject *
 r_object(RFILE *p)
 {
-// 	/* NULL is a valid return value, it does not necessarily means that
-// 	   an exception is set. */
-// 	PyObject *v, *v2;
-// 	long i, n;
-// 	int type = r_byte(p);
-// 	PyObject *retval;
-// 
+	/* NULL is a valid return value, it does not necessarily means that
+	   an exception is set. */
+	PyObject *v, *v2;
+	long i, n;
+	int type = r_byte(p);
+	PyObject *retval;
+
 // 	p->depth++;
 // 
 // 	if (p->depth > MAX_MARSHAL_STACK_DEPTH) {
@@ -497,9 +497,9 @@ r_object(RFILE *p)
 // 		PyErr_SetString(PyExc_ValueError, "recursion limit exceeded");
 // 		return NULL;
 // 	}
-// 
-// 	switch (type) {
-// 
+
+	switch (type) {
+
 // 	case EOF:
 // 		PyErr_SetString(PyExc_EOFError,
 // 				"EOF read where object expected");
@@ -917,16 +917,16 @@ r_object(RFILE *p)
 // 		retval = v;
 // 		break;
 // 
-// 	default:
-// 		/* Bogus data got written, which isn't ideal.
-// 		   This will let you keep working and recover. */
-// 		PyErr_SetString(PyExc_ValueError, "bad marshal data");
-// 		retval = NULL;
-// 		break;
-// 
-// 	}
+	default:
+		/* Bogus data got written, which isn't ideal.
+		   This will let you keep working and recover. */
+printf("unimplemented marshal object type: %d\n", type);// 		PyErr_SetString(PyExc_ValueError, "bad marshal data");
+		retval = NULL;
+		break;
+
+	}
 // 	p->depth--;
-// 	return retval;
+	return retval;
 }
 
 // static PyObject *
@@ -1048,10 +1048,10 @@ PyMarshal_ReadObjectFromString(char *str, Py_ssize_t len)
 	rf.fp = NULL;
 	rf.ptr = str;
 	rf.end = str + len;
-	rf.strings = PyList_New(0);
+// 	rf.strings = PyList_New(0);
 	rf.depth = 0;
 	result = r_object(&rf);
-	Py_DECREF(rf.strings);
+// 	Py_DECREF(rf.strings);
 	return result;
 }
 

@@ -1932,8 +1932,8 @@ PyImport_ImportFrozenModule(char *name)
 // 		PySys_WriteStderr("import %s # frozen%s\n",
 // 			name, ispackage ? " package" : "");
 	co = PyMarshal_ReadObjectFromString((char *)p->code, size);
-// 	if (co == NULL)
-// 		return -1;
+	if (co == NULL)
+		return -1;
 // 	if (!PyCode_Check(co)) {
 // 		PyErr_Format(PyExc_TypeError,
 // 			     "frozen object %.200s is not a code object",
