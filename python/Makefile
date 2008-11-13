@@ -5,6 +5,7 @@ MODULES_OBJS =	\
 
 OBJECTS_OBJS =	\
 				Objects/boolobject.o \
+				Objects/codeobject.o \
 				Objects/dictobject.o \
 				Objects/listobject.o \
 				Objects/moduleobject.o \
