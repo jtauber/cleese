@@ -1489,24 +1489,24 @@ PyObject_IsTrue(PyObject *v)
 // {
 // 	return PyUnicode_FromString("None");
 // }
-// 
-// /* ARGUSED */
-// static void
-// none_dealloc(PyObject* ignore)
-// {
-// 	/* This should never get called, but we also don't want to SEGV if
-// 	 * we accidently decref None out of existance.
-// 	 */
-// 	Py_FatalError("deallocating None");
-// }
-// 
-// 
-// static PyTypeObject PyNone_Type = {
-// 	PyVarObject_HEAD_INIT(&PyType_Type, 0)
-// 	"NoneType",
-// 	0,
-// 	0,
-// 	none_dealloc,	/*tp_dealloc*/ /*never called*/
+
+/* ARGUSED */
+static void
+none_dealloc(PyObject* ignore)
+{
+	/* This should never get called, but we also don't want to SEGV if
+	 * we accidently decref None out of existance.
+	 */
+	Py_FatalError("deallocating None");
+}
+
+
+static PyTypeObject PyNone_Type = {
+	PyVarObject_HEAD_INIT(&PyType_Type, 0)
+	"NoneType",
+	0,
+	0,
+	none_dealloc,	/*tp_dealloc*/ /*never called*/
 // 	0,		/*tp_print*/
 // 	0,		/*tp_getattr*/
 // 	0,		/*tp_setattr*/
@@ -1515,14 +1515,14 @@ PyObject_IsTrue(PyObject *v)
 // 	0,		/*tp_as_number*/
 // 	0,		/*tp_as_sequence*/
 // 	0,		/*tp_as_mapping*/
-// 	0,		/*tp_hash */
-// };
-// 
-// PyObject _Py_NoneStruct = {
-//   _PyObject_EXTRA_INIT
-//   1, &PyNone_Type
-// };
-// 
+	0,		/*tp_hash */
+};
+
+PyObject _Py_NoneStruct = {
+  _PyObject_EXTRA_INIT
+  1, &PyNone_Type
+};
+
 // /* NotImplemented is an object that can be used to signal that an
 //    operation is not implemented for the given type combination. */
 // 

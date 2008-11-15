@@ -717,9 +717,9 @@ PyAPI_FUNC(int) PyObject_IsTrue(PyObject *);
 // 
 // Don't forget to apply Py_INCREF() when returning this value!!!
 // */
-// PyAPI_DATA(PyObject) _Py_NoneStruct; /* Don't use this directly */
-// #define Py_None (&_Py_NoneStruct)
-// 
+PyAPI_DATA(PyObject) _Py_NoneStruct; /* Don't use this directly */
+#define Py_None (&_Py_NoneStruct)
+
 // /* Macro for returning Py_None from a function */
 // #define Py_RETURN_NONE return Py_INCREF(Py_None), Py_None
 // 

@@ -23,7 +23,7 @@
 // #endif
 // 
 // #define TYPE_NULL		'0'
-// #define TYPE_NONE		'N'
+#define TYPE_NONE		'N'
 // #define TYPE_FALSE		'F'
 // #define TYPE_TRUE		'T'
 // #define TYPE_STOPITER		'S'
@@ -511,12 +511,12 @@ r_object(RFILE *p)
 // 	case TYPE_NULL:
 // 		retval = NULL;
 // 		break;
-// 
-// 	case TYPE_NONE:
-// 		Py_INCREF(Py_None);
-// 		retval = Py_None;
-// 		break;
-// 
+
+	case TYPE_NONE:
+		Py_INCREF(Py_None);
+		retval = Py_None;
+		break;
+
 // 	case TYPE_STOPITER:
 // 		Py_INCREF(PyExc_StopIteration);
 // 		retval = PyExc_StopIteration;
