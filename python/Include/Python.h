@@ -78,7 +78,7 @@
 // #endif
 // #include "rangeobject.h"
 // #include "memoryobject.h"
-// #include "tupleobject.h"
+#include "tupleobject.h"
 #include "listobject.h"
 #include "dictobject.h"
 // #include "enumobject.h"

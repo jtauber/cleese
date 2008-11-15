@@ -11,6 +11,7 @@ OBJECTS_OBJS =	\
 				Objects/listobject.o \
 				Objects/moduleobject.o \
 				Objects/object.o \
+				Objects/tupleobject.o \
 				Objects/typeobject.o \
 				Objects/unicodeobject.o
 
