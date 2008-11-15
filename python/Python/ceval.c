@@ -461,7 +461,7 @@ int _Py_CheckRecursionLimit = Py_DEFAULT_RECURSION_LIMIT;
    Without USE_STACKCHECK, there is no need for this. */
 int
 _Py_CheckRecursiveCall(char *where)
-{
+{ printf("_Py_CheckRecursiveCall\n"); return 0;
 // 	PyThreadState *tstate = PyThreadState_GET();
 // 
 // #ifdef USE_STACKCHECK

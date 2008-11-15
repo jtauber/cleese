@@ -110,10 +110,10 @@ static int numfree;
 /* The empty Unicode object is shared to improve performance. */
 static PyUnicodeObject *unicode_empty;
 
-// /* Single character Unicode strings in the Latin-1 range are being
-//    shared as well. */
-// static PyUnicodeObject *unicode_latin1[256];
-// 
+/* Single character Unicode strings in the Latin-1 range are being
+   shared as well. */
+static PyUnicodeObject *unicode_latin1[256];
+
 // /* Default encoding to use and assume when NULL is passed as encoding
 //    parameter; it is fixed to "utf-8".  Always use the
 //    PyUnicode_GetDefaultEncoding() API to access this global.
@@ -238,57 +238,57 @@ static PyUnicodeObject *unicode_empty;
 // 
 // #define BLOOM_MEMBER(mask, chr, set, setlen)\
 //     BLOOM(mask, chr) && unicode_member(chr, set, setlen)
-// 
+
 /* --- Unicode Object ----------------------------------------------------- */
 
 static
 int unicode_resize(register PyUnicodeObject *unicode,
                       Py_ssize_t length)
 {
-//     void *oldstr;
-// 
-//     /* Shortcut if there's nothing much to do. */
-//     if (unicode->length == length)
-// 	goto reset;
-// 
-//     /* Resizing shared object (unicode_empty or single character
-//        objects) in-place is not allowed. Use PyUnicode_Resize()
-//        instead ! */
-// 
-//     if (unicode == unicode_empty || 
-// 	(unicode->length == 1 && 
-// 	 unicode->str[0] < 256U &&
-// 	 unicode_latin1[unicode->str[0]] == unicode)) {
-//         PyErr_SetString(PyExc_SystemError,
+    void *oldstr;
+
+    /* Shortcut if there's nothing much to do. */
+    if (unicode->length == length)
+	goto reset;
+
+    /* Resizing shared object (unicode_empty or single character
+       objects) in-place is not allowed. Use PyUnicode_Resize()
+       instead ! */
+
+    if (unicode == unicode_empty || 
+	(unicode->length == 1 && 
+	 unicode->str[0] < 256U &&
+	 unicode_latin1[unicode->str[0]] == unicode)) {
+        printf("can't resize shared str objects\n"); // PyErr_SetString(PyExc_SystemError,
 //                         "can't resize shared str objects");
-//         return -1;
-//     }
-// 
-//     /* We allocate one more byte to make sure the string is Ux0000 terminated.
-//        The overallocation is also used by fastsearch, which assumes that it's
-//        safe to look at str[length] (without making any assumptions about what
-//        it contains). */
-// 
-//     oldstr = unicode->str;
-//     unicode->str = PyObject_REALLOC(unicode->str,
-// 				    sizeof(Py_UNICODE) * (length + 1));
-//     if (!unicode->str) {
-// 	unicode->str = (Py_UNICODE *)oldstr;
-//         PyErr_NoMemory();
-//         return -1;
-//     }
-//     unicode->str[length] = 0;
-//     unicode->length = length;
-// 
-//  reset:
-//     /* Reset the object caches */
-//     if (unicode->defenc) {
-//         Py_DECREF(unicode->defenc);
-//         unicode->defenc = NULL;
-//     }
-//     unicode->hash = -1;
-// 
-//     return 0;
+        return -1;
+    }
+
+    /* We allocate one more byte to make sure the string is Ux0000 terminated.
+       The overallocation is also used by fastsearch, which assumes that it's
+       safe to look at str[length] (without making any assumptions about what
+       it contains). */
+
+    oldstr = unicode->str;
+    unicode->str = PyObject_REALLOC(unicode->str,
+				    sizeof(Py_UNICODE) * (length + 1));
+    if (!unicode->str) {
+	unicode->str = (Py_UNICODE *)oldstr;
+        PyErr_NoMemory();
+        return -1;
+    }
+    unicode->str[length] = 0;
+    unicode->length = length;
+
+ reset:
+    /* Reset the object caches */
+    if (unicode->defenc) {
+        Py_DECREF(unicode->defenc);
+        unicode->defenc = NULL;
+    }
+    unicode->hash = -1;
+
+    return 0;
 }
 
 /* We allocate one more byte to make sure the string is
@@ -538,12 +538,12 @@ PyObject *PyUnicode_FromStringAndSize(const char *u, Py_ssize_t size)
 // 
         return PyUnicode_DecodeUTF8(u, size, NULL);
     }
-// 
-//     unicode = _PyUnicode_New(size);
-//     if (!unicode)
-//         return NULL;
-// 
-//     return (PyObject *)unicode;
+
+    unicode = _PyUnicode_New(size);
+    if (!unicode)
+        return NULL;
+
+    return (PyObject *)unicode;
 }
 
 PyObject *PyUnicode_FromString(const char *u)
@@ -9357,8 +9357,8 @@ PyTypeObject PyUnicode_Type = {
 
 void _PyUnicode_Init(void)
 {
-//     int i;
-// 
+    int i;
+
 //     /* XXX - move this array to unicodectype.c ? */
 //     Py_UNICODE linebreak[] = {
 //         0x000A, /* LINE FEED */
@@ -9371,18 +9371,18 @@ void _PyUnicode_Init(void)
 //         0x2029, /* PARAGRAPH SEPARATOR */
 //     };
 // 
-//     /* Init the implementation */
-//     free_list = NULL;
-//     numfree = 0;
-//     unicode_empty = _PyUnicode_New(0);
-//     if (!unicode_empty)
-// 	return;
-// 
-//     for (i = 0; i < 256; i++)
-// 	unicode_latin1[i] = NULL;
+    /* Init the implementation */
+    free_list = NULL;
+    numfree = 0;
+    unicode_empty = _PyUnicode_New(0);
+    if (!unicode_empty)
+	return;
+
+    for (i = 0; i < 256; i++)
+	unicode_latin1[i] = NULL;
     if (PyType_Ready(&PyUnicode_Type) < 0)
 	Py_FatalError("Can't initialize 'unicode'");
-// 
+
 //     /* initialize the linebreak bloom filter */
 //     bloom_linebreak = make_bloom_mask(
 //         linebreak, sizeof(linebreak) / sizeof(linebreak[0])

@@ -607,12 +607,12 @@ _PyObject_New(PyTypeObject *tp)
 // int _Py_SwappedOp[] = {Py_GT, Py_GE, Py_EQ, Py_NE, Py_LT, Py_LE};
 // 
 // static char *opstrings[] = {"<", "<=", "==", "!=", ">", ">="};
-// 
+
 /* Perform a rich comparison, raising TypeError when the requested comparison
    operator is not supported. */
 static PyObject *
 do_richcompare(PyObject *v, PyObject *w, int op)
-{
+{ printf("do_richcompare\n"); return NULL;
 // 	richcmpfunc f;
 // 	PyObject *res;
 // 
@@ -657,7 +657,7 @@ do_richcompare(PyObject *v, PyObject *w, int op)
 // 	Py_INCREF(res);
 // 	return res;
 }
-// 
+
 /* Perform a rich comparison with object result.  This wraps do_richcompare()
    with a check for NULL arguments and a recursion check. */
 
@@ -822,10 +822,10 @@ PyObject_RichCompareBool(PyObject *v, PyObject *w, int op)
 
 long
 PyObject_HashNotImplemented(PyObject *v)
-{
+{ printf("unhashable type\n");
 // 	PyErr_Format(PyExc_TypeError, "unhashable type: '%.200s'",
 // 		     Py_TYPE(v)->tp_name);
-// 	return -1;
+	return -1;
 }
 
 long
@@ -834,8 +834,8 @@ PyObject_Hash(PyObject *v)
 	PyTypeObject *tp = Py_TYPE(v);
 	if (tp->tp_hash != NULL)
 		return (*tp->tp_hash)(v);
-// 	/* Otherwise, the object can't be hashed */
-// 	return PyObject_HashNotImplemented(v);
+	/* Otherwise, the object can't be hashed */
+	return PyObject_HashNotImplemented(v);
 }
 
 // PyObject *
@@ -1181,13 +1181,13 @@ PyObject_Hash(PyObject *v)
 // 	Py_DECREF(name);
 // 	return res;
 // }
-// 
+
 /* Test a value used as condition, e.g., in a for or if statement.
    Return -1 if an error occurred */
 
 int
 PyObject_IsTrue(PyObject *v)
-{
+{ printf("PyObject_IsTrue\n"); return 0;
 // 	Py_ssize_t res;
 // 	if (v == Py_True)
 // 		return 1;
@@ -1209,7 +1209,7 @@ PyObject_IsTrue(PyObject *v)
 // 	/* if it is negative, it should be either -1 or -2 */
 // 	return (res > 0) ? 1 : Py_SAFE_DOWNCAST(res, Py_ssize_t, int);
 }
-// 
+
 // /* equivalent of 'not v'
 //    Return -1 if an error occurred */
 // 

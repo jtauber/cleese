@@ -371,12 +371,12 @@ typedef struct _typeobject {
 // 	struct _typeobject *tp_next;
 // #endif
 } PyTypeObject;
-// 
-// 
-// /* The *real* layout of a type object when allocated on the heap */
-// typedef struct _heaptypeobject {
-// 	/* Note: there's a dependency on the order of these members
-// 	   in slotptr() in typeobject.c . */
+
+
+/* The *real* layout of a type object when allocated on the heap */
+typedef struct _heaptypeobject {
+	/* Note: there's a dependency on the order of these members
+	   in slotptr() in typeobject.c . */
 // 	PyTypeObject ht_type;
 // 	PyNumberMethods as_number;
 // 	PyMappingMethods as_mapping;
@@ -388,8 +388,8 @@ typedef struct _typeobject {
 // 	PyBufferProcs as_buffer;
 // 	PyObject *ht_name, *ht_slots;
 // 	/* here are optional user slots, followed by the members. */
-// } PyHeapTypeObject;
-// 
+} PyHeapTypeObject;
+
 // /* access macro to the members which are floating "behind" the object */
 // #define PyHeapType_GET_MEMBERS(etype) \
 //     ((PyMemberDef *)(((char *)etype) + Py_TYPE(etype)->tp_basicsize))
@@ -499,11 +499,11 @@ PyAPI_FUNC(int) PyObject_IsTrue(PyObject *);
 /* Set if the type allows subclassing */
 #define Py_TPFLAGS_BASETYPE (1L<<10)
 
-// /* Set if the type is 'ready' -- fully initialized */
-// #define Py_TPFLAGS_READY (1L<<12)
-// 
-// /* Set while the type is being 'readied', to prevent recursive ready calls */
-// #define Py_TPFLAGS_READYING (1L<<13)
+/* Set if the type is 'ready' -- fully initialized */
+#define Py_TPFLAGS_READY (1L<<12)
+
+/* Set while the type is being 'readied', to prevent recursive ready calls */
+#define Py_TPFLAGS_READYING (1L<<13)
 
 /* Objects support garbage collection (see objimp.h) */
 #define Py_TPFLAGS_HAVE_GC (1L<<14)
@@ -525,13 +525,13 @@ PyAPI_FUNC(int) PyObject_IsTrue(PyObject *);
 // /* These flags are used to determine if a type is a subclass. */
 // #define Py_TPFLAGS_INT_SUBCLASS		(1L<<23)
 // #define Py_TPFLAGS_LONG_SUBCLASS	(1L<<24)
-// #define Py_TPFLAGS_LIST_SUBCLASS	(1L<<25)
+#define Py_TPFLAGS_LIST_SUBCLASS	(1L<<25)
 // #define Py_TPFLAGS_TUPLE_SUBCLASS	(1L<<26)
 #define Py_TPFLAGS_BYTES_SUBCLASS	(1L<<27)
 #define Py_TPFLAGS_UNICODE_SUBCLASS	(1L<<28)
 #define Py_TPFLAGS_DICT_SUBCLASS	(1L<<29)
 // #define Py_TPFLAGS_BASE_EXC_SUBCLASS	(1L<<30)
-// #define Py_TPFLAGS_TYPE_SUBCLASS	(1L<<31)
+#define Py_TPFLAGS_TYPE_SUBCLASS	(1L<<31)
 
 #define Py_TPFLAGS_DEFAULT  ( \
                              Py_TPFLAGS_HAVE_STACKLESS_EXTENSION | \

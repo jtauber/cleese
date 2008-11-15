@@ -287,12 +287,12 @@ PyList_New(Py_ssize_t size)
 // 	PyErr_BadInternalCall();
 // 	return -1;
 // }
-// 
-// /* Methods */
-// 
-// static void
-// list_dealloc(PyListObject *op)
-// {
+
+/* Methods */
+
+static void
+list_dealloc(PyListObject *op)
+{ printf("list_dealloc\n");
 // 	Py_ssize_t i;
 // 	PyObject_GC_UnTrack(op);
 // 	Py_TRASHCAN_SAFE_BEGIN(op)
@@ -312,8 +312,8 @@ PyList_New(Py_ssize_t size)
 // 	else
 // 		Py_TYPE(op)->tp_free((PyObject *)op);
 // 	Py_TRASHCAN_SAFE_END(op)
-// }
-// 
+}
+
 // static PyObject *
 // list_repr(PyListObject *v)
 // {
@@ -533,10 +533,10 @@ PyList_New(Py_ssize_t size)
 // 	}
 // 	return (PyObject *) np;
 // }
-// 
-// static int
-// list_clear(PyListObject *a)
-// {
+
+static int
+list_clear(PyListObject *a)
+{ printf("list_clear\n"); return 0;
 // 	Py_ssize_t i;
 // 	PyObject **item = a->ob_item;
 // 	if (item != NULL) {
@@ -555,8 +555,8 @@ PyList_New(Py_ssize_t size)
 // 	   Note that there is no guarantee that the list is actually empty
 // 	   at this point, because XDECREF may have populated it again! */
 // 	return 0;
-// }
-// 
+}
+
 // /* a[ilow:ihigh] = v if v != NULL.
 //  * del a[ilow:ihigh] if v == NULL.
 //  *
@@ -2150,17 +2150,17 @@ PyList_New(Py_ssize_t size)
 // 	PyErr_SetString(PyExc_ValueError, "list.remove(x): x not in list");
 // 	return NULL;
 // }
-// 
-// static int
-// list_traverse(PyListObject *o, visitproc visit, void *arg)
-// {
+
+static int
+list_traverse(PyListObject *o, visitproc visit, void *arg)
+{ printf("list_traverse\n"); return 0;
 // 	Py_ssize_t i;
 // 
 // 	for (i = Py_SIZE(o); --i >= 0; )
 // 		Py_VISIT(o->ob_item[i]);
 // 	return 0;
-// }
-// 
+}
+
 // static PyObject *
 // list_richcompare(PyObject *v, PyObject *w, int op)
 // {
@@ -2557,11 +2557,11 @@ PyList_New(Py_ssize_t size)
 // };
 
 PyTypeObject PyList_Type = {
-// 	PyVarObject_HEAD_INIT(&PyType_Type, 0)
-// 	"list",
-// 	sizeof(PyListObject),
-// 	0,
-// 	(destructor)list_dealloc,		/* tp_dealloc */
+	PyVarObject_HEAD_INIT(&PyType_Type, 0)
+	"list",
+	sizeof(PyListObject),
+	0,
+	(destructor)list_dealloc,		/* tp_dealloc */
 // 	0,					/* tp_print */
 // 	0,					/* tp_getattr */
 // 	0,					/* tp_setattr */
@@ -2570,17 +2570,17 @@ PyTypeObject PyList_Type = {
 // 	0,					/* tp_as_number */
 // 	&list_as_sequence,			/* tp_as_sequence */
 // 	&list_as_mapping,			/* tp_as_mapping */
-// 	(hashfunc)PyObject_HashNotImplemented,	/* tp_hash */
+	(hashfunc)PyObject_HashNotImplemented,	/* tp_hash */
 // 	0,					/* tp_call */
 // 	0,					/* tp_str */
 // 	PyObject_GenericGetAttr,		/* tp_getattro */
 // 	0,					/* tp_setattro */
 // 	0,					/* tp_as_buffer */
-// 	Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HAVE_GC |
-// 		Py_TPFLAGS_BASETYPE | Py_TPFLAGS_LIST_SUBCLASS,	/* tp_flags */
+	Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HAVE_GC |
+		Py_TPFLAGS_BASETYPE | Py_TPFLAGS_LIST_SUBCLASS,	/* tp_flags */
 //  	list_doc,				/* tp_doc */
-//  	(traverseproc)list_traverse,		/* tp_traverse */
-//  	(inquiry)list_clear,			/* tp_clear */
+ 	(traverseproc)list_traverse,		/* tp_traverse */
+ 	(inquiry)list_clear,			/* tp_clear */
 // 	list_richcompare,			/* tp_richcompare */
 // 	0,					/* tp_weaklistoffset */
 // 	list_iter,				/* tp_iter */

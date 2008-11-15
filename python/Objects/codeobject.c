@@ -49,7 +49,7 @@ PyCode_New(int argcount, int kwonlyargcount,
 	   PyObject *varnames, PyObject *freevars, PyObject *cellvars,
 	   PyObject *filename, PyObject *name, int firstlineno,
 	   PyObject *lnotab)
-{
+{ printf("PyCode_New\n"); return NULL;
 // 	PyCodeObject *co;
 // 	Py_ssize_t i;
 // 

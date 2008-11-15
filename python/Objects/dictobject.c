@@ -515,7 +515,7 @@ actually be smaller than the old one.
 */
 static int
 dictresize(PyDictObject *mp, Py_ssize_t minused)
-{
+{ printf("dictresize\n"); return 0;
 // 	Py_ssize_t newsize;
 // 	PyDictEntry *oldtable, *newtable, *ep;
 // 	Py_ssize_t i;
@@ -1823,7 +1823,7 @@ dict_dealloc(register PyDictObject *mp)
 
 static int
 dict_traverse(PyObject *op, visitproc visit, void *arg)
-{
+{ printf("dict_traverse\n"); return 0;
 // 	Py_ssize_t i = 0;
 // 	PyObject *pk;
 // 	PyObject *pv;
@@ -1837,7 +1837,7 @@ dict_traverse(PyObject *op, visitproc visit, void *arg)
 
 static int
 dict_tp_clear(PyObject *op)
-{
+{ printf("dict_tp_clear\n"); return 0;
 // 	PyDict_Clear(op);
 // 	return 0;
 }

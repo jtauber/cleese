@@ -73,8 +73,8 @@
    Py_ssize_t can represent is supplied.  Helps prevents security holes. */
 #define PyMem_MALLOC(n)		(((n) < 0 || (n) > PY_SSIZE_T_MAX) ? NULL \
 				: malloc((n) ? (n) : 1))
-// #define PyMem_REALLOC(p, n)	(((n) < 0 || (n) > PY_SSIZE_T_MAX) ? NULL \
-// 				: realloc((p), (n) ? (n) : 1))
+#define PyMem_REALLOC(p, n)	(((n) < 0 || (n) > PY_SSIZE_T_MAX) ? NULL \
+				: realloc((p), (n) ? (n) : 1))
 #define PyMem_FREE		free
 
 // #endif	/* PYMALLOC_DEBUG */

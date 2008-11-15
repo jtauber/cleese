@@ -129,7 +129,7 @@
 
 PyObject *
 PyErr_Occurred(void)
-{
+{ printf("PyErr_Occurred\n"); return NULL;
 // 	PyThreadState *tstate = PyThreadState_GET();
 // 
 // 	return tstate->curexc_type;

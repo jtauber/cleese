@@ -2,7 +2,7 @@
 
 #include "Python.h"
 // #include "frameobject.h"
-// #include "structmember.h"
+#include "structmember.h"
 // 
 // #include <ctype.h>
 // 
@@ -1079,7 +1079,7 @@
 
 int
 PyType_IsSubtype(PyTypeObject *a, PyTypeObject *b)
-{
+{ printf("PyType_IsSubtype\n"); return 0;
 // 	PyObject *mro;
 // 
 // 	mro = a->tp_mro;
@@ -2435,10 +2435,10 @@ PyType_IsSubtype(PyTypeObject *a, PyTypeObject *b)
 // 		return -1;
 // 	return update_slot(type, name);
 // }
-// 
-// static void
-// type_dealloc(PyTypeObject *type)
-// {
+
+static void
+type_dealloc(PyTypeObject *type)
+{ printf("type_dealloc\n");
 // 	PyHeapTypeObject *et;
 // 
 // 	/* Assert this is a heap-allocated type object */
@@ -2459,8 +2459,8 @@ PyType_IsSubtype(PyTypeObject *a, PyTypeObject *b)
 // 	Py_XDECREF(et->ht_name);
 // 	Py_XDECREF(et->ht_slots);
 // 	Py_TYPE(type)->tp_free((PyObject *)type);
-// }
-// 
+}
+
 // static PyObject *
 // type_subclasses(PyTypeObject *type, PyObject *args_ignored)
 // {
@@ -2510,10 +2510,10 @@ PyType_IsSubtype(PyTypeObject *a, PyTypeObject *b)
 // PyDoc_STRVAR(type_doc,
 // "type(object) -> the object's type\n"
 // "type(name, bases, dict) -> a new type");
-// 
-// static int
-// type_traverse(PyTypeObject *type, visitproc visit, void *arg)
-// {
+
+static int
+type_traverse(PyTypeObject *type, visitproc visit, void *arg)
+{ printf("type_traverse\n"); return 0;
 // 	/* Because of type_is_gc(), the collector only calls this
 // 	   for heaptypes. */
 // 	assert(type->tp_flags & Py_TPFLAGS_HEAPTYPE);
@@ -2530,11 +2530,11 @@ PyType_IsSubtype(PyTypeObject *a, PyTypeObject *b)
 // 	   and slots is a tuple of strings. */
 // 
 // 	return 0;
-// }
-// 
-// static int
-// type_clear(PyTypeObject *type)
-// {
+}
+
+static int
+type_clear(PyTypeObject *type)
+{ printf("type_clear\n"); return 0;
 // 	/* Because of type_is_gc(), the collector only calls this
 // 	   for heaptypes. */
 // 	assert(type->tp_flags & Py_TPFLAGS_HEAPTYPE);
@@ -2567,8 +2567,8 @@ PyType_IsSubtype(PyTypeObject *a, PyTypeObject *b)
 // 	Py_CLEAR(type->tp_mro);
 // 
 // 	return 0;
-// }
-// 
+}
+
 // static int
 // type_is_gc(PyTypeObject *type)
 // {
@@ -2578,9 +2578,9 @@ PyType_IsSubtype(PyTypeObject *a, PyTypeObject *b)
 PyTypeObject PyType_Type = {
 	PyVarObject_HEAD_INIT(&PyType_Type, 0)
 	"type",					/* tp_name */
-// 	sizeof(PyHeapTypeObject),		/* tp_basicsize */
-// 	sizeof(PyMemberDef),			/* tp_itemsize */
-// 	(destructor)type_dealloc,		/* tp_dealloc */
+	sizeof(PyHeapTypeObject),		/* tp_basicsize */
+	sizeof(PyMemberDef),			/* tp_itemsize */
+	(destructor)type_dealloc,		/* tp_dealloc */
 // 	0,					/* tp_print */
 // 	0,					/* tp_getattr */
 // 	0,					/* tp_setattr */
@@ -2589,17 +2589,17 @@ PyTypeObject PyType_Type = {
 // 	0,					/* tp_as_number */
 // 	0,					/* tp_as_sequence */
 // 	0,					/* tp_as_mapping */
-// 	0,					/* tp_hash */
+	0,					/* tp_hash */
 // 	(ternaryfunc)type_call,			/* tp_call */
 // 	0,					/* tp_str */
 // 	(getattrofunc)type_getattro,		/* tp_getattro */
 // 	(setattrofunc)type_setattro,		/* tp_setattro */
 // 	0,					/* tp_as_buffer */
-// 	Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HAVE_GC |
-// 		Py_TPFLAGS_BASETYPE | Py_TPFLAGS_TYPE_SUBCLASS,	/* tp_flags */
+	Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HAVE_GC |
+		Py_TPFLAGS_BASETYPE | Py_TPFLAGS_TYPE_SUBCLASS,	/* tp_flags */
 // 	type_doc,				/* tp_doc */
-// 	(traverseproc)type_traverse,		/* tp_traverse */
-// 	(inquiry)type_clear,			/* tp_clear */
+	(traverseproc)type_traverse,		/* tp_traverse */
+	(inquiry)type_clear,			/* tp_clear */
 // 	0,					/* tp_richcompare */
 // 	offsetof(PyTypeObject, tp_weaklist),	/* tp_weaklistoffset */
 // 	0,					/* tp_iter */
@@ -2618,8 +2618,8 @@ PyTypeObject PyType_Type = {
 // 	PyObject_GC_Del,			/* tp_free */
 // 	(inquiry)type_is_gc,			/* tp_is_gc */
 };
-// 
-// 
+
+
 // /* The base type of all types (eventually)... except itself. */
 // 
 // /* You may wonder why object.__new__() only complains about arguments
@@ -3722,13 +3722,13 @@ PyType_Ready(PyTypeObject *type)
 // 	PyTypeObject *base;
 // 	Py_ssize_t i, n;
 // 
-// 	if (type->tp_flags & Py_TPFLAGS_READY) {
+	if (type->tp_flags & Py_TPFLAGS_READY) {
 // 		assert(type->tp_dict != NULL);
-// 		return 0;
-// 	}
-// 	assert((type->tp_flags & Py_TPFLAGS_READYING) == 0);
-// 
-// 	type->tp_flags |= Py_TPFLAGS_READYING;
+		return 0;
+	}
+	assert((type->tp_flags & Py_TPFLAGS_READYING) == 0);
+
+	type->tp_flags |= Py_TPFLAGS_READYING;
 // 
 // #ifdef Py_TRACE_REFS
 // 	/* PyType_Ready is the closest thing we have to a choke point
@@ -3891,13 +3891,13 @@ PyType_Ready(PyTypeObject *type)
 // 
 // 	/* All done -- set the ready flag */
 // 	assert(type->tp_dict != NULL);
-// 	type->tp_flags =
-// 		(type->tp_flags & ~Py_TPFLAGS_READYING) | Py_TPFLAGS_READY;
-// 	return 0;
-// 
-//   error:
-// 	type->tp_flags &= ~Py_TPFLAGS_READYING;
-// 	return -1;
+	type->tp_flags =
+		(type->tp_flags & ~Py_TPFLAGS_READYING) | Py_TPFLAGS_READY;
+	return 0;
+
+  error:
+	type->tp_flags &= ~Py_TPFLAGS_READYING;
+	return -1;
 }
 
 // static int

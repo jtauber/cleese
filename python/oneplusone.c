@@ -26,6 +26,8 @@ static struct _frozen frozenModules[] = {
 
 struct _frozen *PyImport_FrozenModules = frozenModules;
 
+int Py_FrozenMain(void);
+
 int
 main(void)
 {

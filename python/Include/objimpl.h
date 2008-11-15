@@ -123,7 +123,7 @@
 // 
 // #else	/* ! WITH_PYMALLOC */
 #define PyObject_MALLOC		PyMem_MALLOC
-// #define PyObject_REALLOC	PyMem_REALLOC
+#define PyObject_REALLOC	PyMem_REALLOC
 #define PyObject_FREE		PyMem_FREE
 // 
 // #endif	/* WITH_PYMALLOC */

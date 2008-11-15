@@ -696,7 +696,7 @@ PyImport_ExecCodeModule(char *name, PyObject *co)
 
 PyObject *
 PyImport_ExecCodeModuleEx(char *name, PyObject *co, char *pathname)
-{
+{ printf("PyImport_ExecCodeModuleEx\n"); return NULL;
 // 	PyObject *modules = PyImport_GetModuleDict();
 // 	PyObject *m, *d, *v;
 // 
@@ -2684,7 +2684,7 @@ PyImport_Import(PyObject *module_name)
 // 	PyObject *globals = NULL;
 // 	PyObject *import = NULL;
 // 	PyObject *builtins = NULL;
-// 	PyObject *r = NULL;
+	PyObject *r = NULL;
 // 
 // 	/* Initialize constant string objects */
 // 	if (silly_list == NULL) {
@@ -2741,10 +2741,10 @@ PyImport_Import(PyObject *module_name)
 // 	Py_XDECREF(builtins);
 // 	Py_XDECREF(import);
 // 
-// 	return r;
+	return r;
 }
-// 
-// 
+
+
 // /* Module 'imp' provides Python access to the primitives used for
 //    importing modules.
 // */
