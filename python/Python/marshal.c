@@ -36,7 +36,7 @@
 // #define TYPE_BINARY_COMPLEX	'y'
 // #define TYPE_LONG		'l'
 #define TYPE_STRING		's'
-// #define TYPE_TUPLE		'('
+#define TYPE_TUPLE		'('
 // #define TYPE_LIST		'['
 // #define TYPE_DICT		'{'
 #define TYPE_CODE		'c'
@@ -401,19 +401,20 @@ typedef WFILE RFILE; /* Same struct with different invariants */
 
 #define r_byte(p) ((p)->fp ? getc((p)->fp) : rs_byte(p))
 
-// static int
-// r_string(char *s, int n, RFILE *p)
-// {
-// 	if (p->fp != NULL)
-// 		/* The result fits into int because it must be <=n. */
-// 		return (int)fread(s, 1, n, p->fp);
-// 	if (p->end - p->ptr < n)
-// 		n = (int)(p->end - p->ptr);
-// 	memcpy(s, p->ptr, n);
-// 	p->ptr += n;
-// 	return n;
-// }
-// 
+static int
+r_string(char *s, int n, RFILE *p)
+{
+	if (p->fp != NULL)
+		/* The result fits into int because it must be <=n. */
+		return (int)fread(s, 1, n, p->fp);
+	if (p->end - p->ptr < n)
+		n = (int)(p->end - p->ptr);
+	memcpy(s, p->ptr, n);
+	p->ptr += n;
+	printf("r_string: %s %d\n", s, n);
+	return n;
+}
+
 // static int
 // r_short(RFILE *p)
 // {
@@ -446,6 +447,7 @@ r_long(RFILE *p)
 // 	/* Sign extension for 64-bit machines */
 // 	x |= -(x & 0x80000000L);
 // #endif
+	printf("r_long:%d\n", x);
 	return x;
 }
 
@@ -482,7 +484,7 @@ r_long(RFILE *p)
 // 
 static PyObject *
 r_object(RFILE *p)
-{
+{ printf("r_object\n");
 	/* NULL is a valid return value, it does not necessarily means that
 	   an exception is set. */
 	PyObject *v, *v2;
@@ -497,7 +499,7 @@ r_object(RFILE *p)
 // 		PyErr_SetString(PyExc_ValueError, "recursion limit exceeded");
 // 		return NULL;
 // 	}
-
+	printf("\ttype:%d\n", type);
 	switch (type) {
 
 // 	case EOF:
@@ -687,17 +689,17 @@ r_object(RFILE *p)
 // 			break;
 // 		}
 		v = PyBytes_FromStringAndSize((char *)NULL, n);
-// 		if (v == NULL) {
-// 			retval = NULL;
-// 			break;
-// 		}
-// 		if (r_string(PyBytes_AS_STRING(v), (int)n, p) != n) {
-// 			Py_DECREF(v);
-// 			PyErr_SetString(PyExc_EOFError,
+		if (v == NULL) {
+			retval = NULL;
+			break;
+		}
+		if (r_string(PyBytes_AS_STRING(v), (int)n, p) != n) {
+			Py_DECREF(v);
+			printf("EOF not expected\n"); // PyErr_SetString(PyExc_EOFError,
 // 					"EOF read where object expected");
-// 			retval = NULL;
-// 			break;
-// 		}
+			retval = NULL;
+			break;
+		}
 		retval = v;
 		break;
 
@@ -728,34 +730,34 @@ r_object(RFILE *p)
 // 		retval = v;
 // 		break;
 // 	    }
-// 
-// 	case TYPE_TUPLE:
-// 		n = r_long(p);
-// 		if (n < 0 || n > INT_MAX) {
+
+	case TYPE_TUPLE:
+		n = r_long(p);
+		if (n < 0 || n > INT_MAX) {
 // 			PyErr_SetString(PyExc_ValueError, "bad marshal data");
-// 			retval = NULL;
-// 			break;
-// 		}
-// 		v = PyTuple_New((int)n);
-// 		if (v == NULL) {
-// 			retval = NULL;
-// 			break;
-// 		}
-// 		for (i = 0; i < n; i++) {
-// 			v2 = r_object(p);
-// 			if ( v2 == NULL ) {
-// 				if (!PyErr_Occurred())
+			retval = NULL;
+			break;
+		}
+		v = PyTuple_New((int)n);
+		if (v == NULL) {
+			retval = NULL;
+			break;
+		}
+		for (i = 0; i < n; i++) {
+			v2 = r_object(p);
+			if ( v2 == NULL ) {
+				if (!PyErr_Occurred())
 // 					PyErr_SetString(PyExc_TypeError,
 // 						"NULL object in marshal data");
-// 				Py_DECREF(v);
-// 				v = NULL;
-// 				break;
-// 			}
-// 			PyTuple_SET_ITEM(v, (int)i, v2);
-// 		}
-// 		retval = v;
-// 		break;
-// 
+				Py_DECREF(v);
+				v = NULL;
+				break;
+			}
+			PyTuple_SET_ITEM(v, (int)i, v2);
+		}
+		retval = v;
+		break;
+
 // 	case TYPE_LIST:
 // 		n = r_long(p);
 // 		if (n < 0 || n > INT_MAX) {

@@ -156,29 +156,29 @@ PyAPI_FUNC(PyObject *) _PyObject_New(PyTypeObject *);
 	( Py_SIZE(op) = (size), PyObject_INIT((op), (typeobj)) )
 
 #define _PyObject_SIZE(typeobj) ( (typeobj)->tp_basicsize )
-// 
-// /* _PyObject_VAR_SIZE returns the number of bytes (as size_t) allocated for a
-//    vrbl-size object with nitems items, exclusive of gc overhead (if any).  The
-//    value is rounded up to the closest multiple of sizeof(void *), in order to
-//    ensure that pointer fields at the end of the object are correctly aligned
-//    for the platform (this is of special importance for subclasses of, e.g.,
-//    str or long, so that pointers can be stored after the embedded data).
-// 
-//    Note that there's no memory wastage in doing this, as malloc has to
-//    return (at worst) pointer-aligned memory anyway.
-// */
-// #if ((SIZEOF_VOID_P - 1) & SIZEOF_VOID_P) != 0
-// #   error "_PyObject_VAR_SIZE requires SIZEOF_VOID_P be a power of 2"
-// #endif
-// 
-// #define _PyObject_VAR_SIZE(typeobj, nitems)	\
-// 	(size_t)				\
-// 	( ( (typeobj)->tp_basicsize +		\
-// 	    (nitems)*(typeobj)->tp_itemsize +	\
-// 	    (SIZEOF_VOID_P - 1)			\
-// 	  ) & ~(SIZEOF_VOID_P - 1)		\
-// 	)
-// 
+
+/* _PyObject_VAR_SIZE returns the number of bytes (as size_t) allocated for a
+   vrbl-size object with nitems items, exclusive of gc overhead (if any).  The
+   value is rounded up to the closest multiple of sizeof(void *), in order to
+   ensure that pointer fields at the end of the object are correctly aligned
+   for the platform (this is of special importance for subclasses of, e.g.,
+   str or long, so that pointers can be stored after the embedded data).
+
+   Note that there's no memory wastage in doing this, as malloc has to
+   return (at worst) pointer-aligned memory anyway.
+*/
+#if ((SIZEOF_VOID_P - 1) & SIZEOF_VOID_P) != 0
+#   error "_PyObject_VAR_SIZE requires SIZEOF_VOID_P be a power of 2"
+#endif
+
+#define _PyObject_VAR_SIZE(typeobj, nitems)	\
+	(size_t)				\
+	( ( (typeobj)->tp_basicsize +		\
+	    (nitems)*(typeobj)->tp_itemsize +	\
+	    (SIZEOF_VOID_P - 1)			\
+	  ) & ~(SIZEOF_VOID_P - 1)		\
+	)
+
 // #define PyObject_NEW(type, typeobj) \
 // ( (type *) PyObject_Init( \
 // 	(PyObject *) PyObject_MALLOC( _PyObject_SIZE(typeobj) ), (typeobj)) )
@@ -281,20 +281,20 @@ typedef union _gc_head {
 // 	g->gc.gc_next->gc.gc_prev = g->gc.gc_prev; \
 // 	g->gc.gc_next = NULL; \
 //     } while (0);
-// 
+
 PyAPI_FUNC(PyObject *) _PyObject_GC_Malloc(size_t);
 PyAPI_FUNC(PyObject *) _PyObject_GC_New(PyTypeObject *);
-// PyAPI_FUNC(PyVarObject *) _PyObject_GC_NewVar(PyTypeObject *, Py_ssize_t);
+PyAPI_FUNC(PyVarObject *) _PyObject_GC_NewVar(PyTypeObject *, Py_ssize_t);
 // PyAPI_FUNC(void) PyObject_GC_Track(void *);
 // PyAPI_FUNC(void) PyObject_GC_UnTrack(void *);
 // PyAPI_FUNC(void) PyObject_GC_Del(void *);
-// 
+
 #define PyObject_GC_New(type, typeobj) \
 		( (type *) _PyObject_GC_New(typeobj) )
-// #define PyObject_GC_NewVar(type, typeobj, n) \
-// 		( (type *) _PyObject_GC_NewVar((typeobj), (n)) )
-// 
-// 
+#define PyObject_GC_NewVar(type, typeobj, n) \
+		( (type *) _PyObject_GC_NewVar((typeobj), (n)) )
+
+
 // /* Utility macro to help write tp_traverse functions.
 //  * To use this macro, the tp_traverse function must name its arguments
 //  * "visit" and "arg".  This is intended to keep tp_traverse functions

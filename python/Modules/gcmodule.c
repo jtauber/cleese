@@ -1349,16 +1349,16 @@ _PyObject_GC_New(PyTypeObject *tp)
 	return op;
 }
 
-// PyVarObject *
-// _PyObject_GC_NewVar(PyTypeObject *tp, Py_ssize_t nitems)
-// {
-// 	const size_t size = _PyObject_VAR_SIZE(tp, nitems);
-// 	PyVarObject *op = (PyVarObject *) _PyObject_GC_Malloc(size);
-// 	if (op != NULL)
-// 		op = PyObject_INIT_VAR(op, tp, nitems);
-// 	return op;
-// }
-// 
+PyVarObject *
+_PyObject_GC_NewVar(PyTypeObject *tp, Py_ssize_t nitems)
+{
+	const size_t size = _PyObject_VAR_SIZE(tp, nitems);
+	PyVarObject *op = (PyVarObject *) _PyObject_GC_Malloc(size);
+	if (op != NULL)
+		op = PyObject_INIT_VAR(op, tp, nitems);
+	return op;
+}
+
 // PyVarObject *
 // _PyObject_GC_Resize(PyVarObject *op, Py_ssize_t nitems)
 // {

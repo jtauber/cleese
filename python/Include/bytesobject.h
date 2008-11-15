@@ -42,8 +42,8 @@ typedef struct {
 PyAPI_DATA(PyTypeObject) PyBytes_Type;
 // PyAPI_DATA(PyTypeObject) PyBytesIter_Type;
 // 
-// #define PyBytes_Check(op) \
-//                  PyType_FastSubclass(Py_TYPE(op), Py_TPFLAGS_BYTES_SUBCLASS)
+#define PyBytes_Check(op) \
+                 PyType_FastSubclass(Py_TYPE(op), Py_TPFLAGS_BYTES_SUBCLASS)
 // #define PyBytes_CheckExact(op) (Py_TYPE(op) == &PyBytes_Type)
 // 
 PyAPI_FUNC(PyObject *) PyBytes_FromStringAndSize(const char *, Py_ssize_t);
@@ -64,10 +64,10 @@ PyAPI_FUNC(PyObject *) PyBytes_FromStringAndSize(const char *, Py_ssize_t);
 // PyAPI_FUNC(PyObject *) PyBytes_DecodeEscape(const char *, Py_ssize_t,
 // 						   const char *, Py_ssize_t,
 // 						   const char *);
-// 
-// /* Macro, trading safety for speed */
-// #define PyBytes_AS_STRING(op) (assert(PyBytes_Check(op)), \
-//                                 (((PyBytesObject *)(op))->ob_sval))
+
+/* Macro, trading safety for speed */
+#define PyBytes_AS_STRING(op) (assert(PyBytes_Check(op)), \
+                                (((PyBytesObject *)(op))->ob_sval))
 // #define PyBytes_GET_SIZE(op)  (assert(PyBytes_Check(op)),Py_SIZE(op))
 // 
 // /* _PyBytes_Join(sep, x) is like sep.join(x).  sep must be PyBytesObject*,
