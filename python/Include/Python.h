@@ -8,16 +8,16 @@
 // #include "pyconfig.h"
 // #include "pymacconfig.h"
 // 
-// #include <limits.h>
-// 
-// #ifndef UCHAR_MAX
-// #error "Something's broken.  UCHAR_MAX should be defined in limits.h."
-// #endif
-// 
-// #if UCHAR_MAX != 255
-// #error "Python's source code assumes C's unsigned char is an 8-bit type."
-// #endif
-// 
+#include <limits.h>
+
+#ifndef UCHAR_MAX
+#error "Something's broken.  UCHAR_MAX should be defined in limits.h."
+#endif
+
+#if UCHAR_MAX != 255
+#error "Python's source code assumes C's unsigned char is an 8-bit type."
+#endif
+
 // #if defined(__sgi) && defined(WITH_THREAD) && !defined(_SGI_MP_SOURCE)
 // #define _SGI_MP_SOURCE
 // #endif
@@ -67,7 +67,7 @@
 #include "pydebug.h"
 
 // #include "bytearrayobject.h"
-// #include "bytesobject.h"
+#include "bytesobject.h"
 #include "unicodeobject.h"
 #include "longobject.h"
 #include "longintrepr.h"

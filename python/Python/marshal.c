@@ -35,7 +35,7 @@
 // #define TYPE_COMPLEX		'x'
 // #define TYPE_BINARY_COMPLEX	'y'
 // #define TYPE_LONG		'l'
-// #define TYPE_STRING		's'
+#define TYPE_STRING		's'
 // #define TYPE_TUPLE		'('
 // #define TYPE_LIST		'['
 // #define TYPE_DICT		'{'
@@ -678,15 +678,15 @@ r_object(RFILE *p)
 // 			break;
 // 		}
 // #endif
-// 
-// 	case TYPE_STRING:
-// 		n = r_long(p);
+
+	case TYPE_STRING:
+		n = r_long(p);
 // 		if (n < 0 || n > INT_MAX) {
 // 			PyErr_SetString(PyExc_ValueError, "bad marshal data");
 // 			retval = NULL;
 // 			break;
 // 		}
-// 		v = PyBytes_FromStringAndSize((char *)NULL, n);
+		v = PyBytes_FromStringAndSize((char *)NULL, n);
 // 		if (v == NULL) {
 // 			retval = NULL;
 // 			break;
@@ -698,9 +698,9 @@ r_object(RFILE *p)
 // 			retval = NULL;
 // 			break;
 // 		}
-// 		retval = v;
-// 		break;
-// 
+		retval = v;
+		break;
+
 // 	case TYPE_UNICODE:
 // 	    {
 // 		char *buffer;
@@ -920,7 +920,7 @@ r_object(RFILE *p)
 	default:
 		/* Bogus data got written, which isn't ideal.
 		   This will let you keep working and recover. */
-		printf("unimplemented marshal object type: %s\n", type); // PyErr_SetString(PyExc_ValueError, "bad marshal data");
+		printf("unimplemented marshal object type: %c\n", type); // PyErr_SetString(PyExc_ValueError, "bad marshal data");
 		retval = NULL;
 		break;
 
