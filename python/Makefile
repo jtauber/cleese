@@ -9,6 +9,7 @@ OBJECTS_OBJS =	\
 				Objects/codeobject.o \
 				Objects/dictobject.o \
 				Objects/listobject.o \
+				Objects/longobject.o \
 				Objects/moduleobject.o \
 				Objects/object.o \
 				Objects/tupleobject.o \

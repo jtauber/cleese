@@ -524,7 +524,7 @@ PyAPI_FUNC(int) PyObject_IsTrue(PyObject *);
 // 
 // /* These flags are used to determine if a type is a subclass. */
 // #define Py_TPFLAGS_INT_SUBCLASS		(1L<<23)
-// #define Py_TPFLAGS_LONG_SUBCLASS	(1L<<24)
+#define Py_TPFLAGS_LONG_SUBCLASS	(1L<<24)
 #define Py_TPFLAGS_LIST_SUBCLASS	(1L<<25)
 #define Py_TPFLAGS_TUPLE_SUBCLASS	(1L<<26)
 #define Py_TPFLAGS_BYTES_SUBCLASS	(1L<<27)
