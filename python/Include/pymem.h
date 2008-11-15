@@ -78,24 +78,24 @@
 #define PyMem_FREE		free
 
 // #endif	/* PYMALLOC_DEBUG */
-// 
-// /*
-//  * Type-oriented memory interface
-//  * ==============================
-//  *
-//  * Allocate memory for n objects of the given type.  Returns a new pointer
-//  * or NULL if the request was too large or memory allocation failed.  Use
-//  * these macros rather than doing the multiplication yourself so that proper
-//  * overflow checking is always done.
-//  */
-// 
+
+/*
+ * Type-oriented memory interface
+ * ==============================
+ *
+ * Allocate memory for n objects of the given type.  Returns a new pointer
+ * or NULL if the request was too large or memory allocation failed.  Use
+ * these macros rather than doing the multiplication yourself so that proper
+ * overflow checking is always done.
+ */
+
 // #define PyMem_New(type, n) \
 //   ( ((n) > PY_SSIZE_T_MAX / sizeof(type)) ? NULL : \
 // 	( (type *) PyMem_Malloc((n) * sizeof(type)) ) )
-// #define PyMem_NEW(type, n) \
-//   ( ((n) > PY_SSIZE_T_MAX / sizeof(type)) ? NULL : \
-// 	( (type *) PyMem_MALLOC((n) * sizeof(type)) ) )
-// 
+#define PyMem_NEW(type, n) \
+  ( ((n) > PY_SSIZE_T_MAX / sizeof(type)) ? NULL : \
+	( (type *) PyMem_MALLOC((n) * sizeof(type)) ) )
+
 // /*
 //  * The value of (p) is always clobbered by this macro regardless of success.
 //  * The caller MUST check if (p) is NULL afterwards and deal with the memory
@@ -113,7 +113,7 @@
 //  * anymore.  They're just confusing aliases for PyMem_{Free,FREE} now.
 //  */
 // #define PyMem_Del		PyMem_Free
-// #define PyMem_DEL		PyMem_FREE
+#define PyMem_DEL		PyMem_FREE
 // 
 // #ifdef __cplusplus
 // }

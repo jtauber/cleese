@@ -40,7 +40,7 @@
 // #define TYPE_LIST		'['
 // #define TYPE_DICT		'{'
 #define TYPE_CODE		'c'
-// #define TYPE_UNICODE		'u'
+#define TYPE_UNICODE		'u'
 // #define TYPE_UNKNOWN		'?'
 // #define TYPE_SET		'<'
 // #define TYPE_FROZENSET  	'>'
@@ -689,47 +689,47 @@ r_object(RFILE *p)
 // 			break;
 // 		}
 		v = PyBytes_FromStringAndSize((char *)NULL, n);
-		if (v == NULL) {
-			retval = NULL;
-			break;
-		}
+// 		if (v == NULL) {
+// 			retval = NULL;
+// 			break;
+// 		}
 		if (r_string(PyBytes_AS_STRING(v), (int)n, p) != n) {
-			Py_DECREF(v);
-			printf("EOF not expected\n"); // PyErr_SetString(PyExc_EOFError,
+// 			Py_DECREF(v);
+// 			printf("EOF not expected\n"); // PyErr_SetString(PyExc_EOFError,
 // 					"EOF read where object expected");
-			retval = NULL;
-			break;
+// 			retval = NULL;
+// 			break;
 		}
 		retval = v;
 		break;
 
-// 	case TYPE_UNICODE:
-// 	    {
-// 		char *buffer;
-// 
-// 		n = r_long(p);
+	case TYPE_UNICODE:
+	    {
+		char *buffer;
+
+		n = r_long(p);
 // 		if (n < 0 || n > INT_MAX) {
 // 			PyErr_SetString(PyExc_ValueError, "bad marshal data");
 // 			retval = NULL;
 // 			break;
 // 		}
-// 		buffer = PyMem_NEW(char, n);
+		buffer = PyMem_NEW(char, n);
 // 		if (buffer == NULL) {
 // 			retval = PyErr_NoMemory();
 // 			break;
 // 		}
-// 		if (r_string(buffer, (int)n, p) != n) {
+		if (r_string(buffer, (int)n, p) != n) {
 // 			PyMem_DEL(buffer);
 // 			PyErr_SetString(PyExc_EOFError,
 // 				"EOF read where object expected");
 // 			retval = NULL;
 // 			break;
-// 		}
-// 		v = PyUnicode_DecodeUTF8(buffer, n, NULL);
-// 		PyMem_DEL(buffer);
-// 		retval = v;
-// 		break;
-// 	    }
+		}
+		v = PyUnicode_DecodeUTF8(buffer, n, NULL);
+		PyMem_DEL(buffer);
+		retval = v;
+		break;
+	    }
 
 	case TYPE_TUPLE:
 		n = r_long(p);
