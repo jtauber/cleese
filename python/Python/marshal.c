@@ -28,7 +28,7 @@
 // #define TYPE_TRUE		'T'
 // #define TYPE_STOPITER		'S'
 // #define TYPE_ELLIPSIS   	'.'
-// #define TYPE_INT		'i'
+#define TYPE_INT		'i'
 // #define TYPE_INT64		'I'
 // #define TYPE_FLOAT		'f'
 // #define TYPE_BINARY_FLOAT	'g'
@@ -499,7 +499,7 @@ r_object(RFILE *p)
 // 		PyErr_SetString(PyExc_ValueError, "recursion limit exceeded");
 // 		return NULL;
 // 	}
-	printf("\ttype:%d\n", type);
+	printf("\ttype:%d %c\n", type, type);
 	switch (type) {
 
 // 	case EOF:
@@ -536,11 +536,11 @@ r_object(RFILE *p)
 // 		Py_INCREF(Py_True);
 // 		retval = Py_True;
 // 		break;
-// 
-// 	case TYPE_INT:
-// 		retval = PyLong_FromLong(r_long(p));
-// 		break;
-// 
+
+	case TYPE_INT:
+		retval = PyLong_FromLong(r_long(p));
+		break;
+
 // 	case TYPE_INT64:
 // 		retval = r_long64(p);
 // 		break;
