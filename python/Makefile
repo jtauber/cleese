@@ -30,7 +30,11 @@ OBJS =			\
 				$(OBJECTS_OBJS) \
 				$(PYTHON_OBJS)
 
-FLAGS = -g -fnested-functions -Wreturn-type -Wimplicit-function-declaration
+FLAGS = -g -fnested-functions -Wreturn-type -Wimplicit-function-declaration 
+# -fprofile-arcs -ftest-coverage
+#
+# then after compiling and executing, can do things like:
+# $ gcov -p Python/marshal.c -o Python/marshal
 
 1p1: oneplusone.o $(OBJS)
 	gcc $(FLAGS) -o $@ oneplusone.o $(OBJS)
@@ -40,4 +44,7 @@ FLAGS = -g -fnested-functions -Wreturn-type -Wimplicit-function-declaration
 
 clean:
 	find . -name "*.o" -exec rm -f {} \;
+	find . -name "*.gcov" -exec rm -f {} \;
+	find . -name "*.gcda" -exec rm -f {} \;
+	find . -name "*.gcno" -exec rm -f {} \;
 	rm -f 1p1
