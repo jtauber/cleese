@@ -534,29 +534,29 @@ PyEval_EvalCode(PyCodeObject *co, PyObject *globals, PyObject *locals)
 //            PyEval_EvalFrameEx() */
 // 	return PyEval_EvalFrameEx(f, 0);
 // }
-// 
-// PyObject *
-// PyEval_EvalFrameEx(PyFrameObject *f, int throwflag)
-// {
+
+PyObject *
+PyEval_EvalFrameEx(PyFrameObject *f, int throwflag)
+{
 // #ifdef DXPAIRS
 // 	int lastopcode = 0;
 // #endif
-// 	register PyObject **stack_pointer;  /* Next free slot in value stack */
-// 	register unsigned char *next_instr;
-// 	register int opcode;	/* Current opcode */
-// 	register int oparg;	/* Current opcode argument, if any */
+	register PyObject **stack_pointer;  /* Next free slot in value stack */
+	register unsigned char *next_instr;
+	register int opcode;	/* Current opcode */
+	register int oparg;	/* Current opcode argument, if any */
 // 	register enum why_code why; /* Reason for block stack unwind */
 // 	register int err;	/* Error status -- nonzero if error */
-// 	register PyObject *x;	/* Result object -- NULL if error */
-// 	register PyObject *v;	/* Temporary objects popped off stack */
-// 	register PyObject *w;
-// 	register PyObject *u;
-// 	register PyObject *t;
-// 	register PyObject **fastlocals, **freevars;
-// 	PyObject *retval = NULL;	/* Return value */
-// 	PyThreadState *tstate = PyThreadState_GET();
-// 	PyCodeObject *co;
-// 
+	register PyObject *x;	/* Result object -- NULL if error */
+	register PyObject *v;	/* Temporary objects popped off stack */
+	register PyObject *w;
+	register PyObject *u;
+	register PyObject *t;
+	register PyObject **fastlocals, **freevars;
+	PyObject *retval = NULL;	/* Return value */
+	PyThreadState *tstate = PyThreadState_GET();
+	PyCodeObject *co;
+
 // 	/* when tracing we set things up so that
 // 
 //                not (instr_lb <= current_bytecode_offset < instr_ub)
@@ -564,11 +564,11 @@ PyEval_EvalCode(PyCodeObject *co, PyObject *globals, PyObject *locals)
 // 	   is true when the line being executed has changed.  The
 //            initial values are such as to make this false the first
 //            time it is tested. */
-// 	int instr_ub = -1, instr_lb = 0, instr_prev = -1;
-// 
-// 	unsigned char *first_instr;
-// 	PyObject *names;
-// 	PyObject *consts;
+	int instr_ub = -1, instr_lb = 0, instr_prev = -1;
+
+	unsigned char *first_instr;
+	PyObject *names;
+	PyObject *consts;
 // #if defined(Py_DEBUG) || defined(LLTRACE)
 // 	/* Make it easier to find out where we are with a debugger */
 // 	char *filename;
@@ -2559,19 +2559,19 @@ PyEval_EvalCode(PyCodeObject *co, PyObject *globals, PyObject *locals)
 // 			}
 // 		}
 // 	}
-// 
-// 	/* pop frame */
-// exit_eval_frame:
-// 	Py_LeaveRecursiveCall();
-// 	tstate->frame = f->f_back;
-// 
-// 	return retval;
-// }
-// 
-// /* This is gonna seem *real weird*, but if you put some other code between
-//    PyEval_EvalFrame() and PyEval_EvalCodeEx() you will need to adjust
-//    the test in the if statements in Misc/gdbinit (pystack and pystackv). */
-// 
+
+	/* pop frame */
+exit_eval_frame:
+	Py_LeaveRecursiveCall();
+	tstate->frame = f->f_back;
+
+	return retval;
+}
+
+/* This is gonna seem *real weird*, but if you put some other code between
+   PyEval_EvalFrame() and PyEval_EvalCodeEx() you will need to adjust
+   the test in the if statements in Misc/gdbinit (pystack and pystackv). */
+
 PyObject *
 PyEval_EvalCodeEx(PyCodeObject *co, PyObject *globals, PyObject *locals,
 	   PyObject **args, int argcount, PyObject **kws, int kwcount,
@@ -2830,9 +2830,9 @@ PyEval_EvalCodeEx(PyCodeObject *co, PyObject *globals, PyObject *locals,
 // 		 * and return that as the value. */
 // 		return PyGen_New(f);
 // 	}
-// 
-// 	retval = PyEval_EvalFrameEx(f,0);
-// 
+
+	retval = PyEval_EvalFrameEx(f,0);
+
 // fail: /* Jump here from prelude on failure */
 // 
 // 	/* decref'ing the frame can cause __del__ methods to get invoked,
