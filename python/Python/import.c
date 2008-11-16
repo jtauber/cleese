@@ -696,13 +696,13 @@ PyImport_ExecCodeModule(char *name, PyObject *co)
 
 PyObject *
 PyImport_ExecCodeModuleEx(char *name, PyObject *co, char *pathname)
-{ printf("PyImport_ExecCodeModuleEx\n"); return NULL; // {
-// 	PyObject *modules = PyImport_GetModuleDict();
-// 	PyObject *m, *d, *v;
-// 
-// 	m = PyImport_AddModule(name);
-// 	if (m == NULL)
-// 		return NULL;
+{
+	PyObject *modules = PyImport_GetModuleDict();
+	PyObject *m, *d, *v;
+
+	m = PyImport_AddModule(name);
+	if (m == NULL)
+		return NULL;
 // 	/* If the module is being reloaded, we get the old module back
 // 	   and re-use its dict to exec the new code. */
 // 	d = PyModule_GetDict(m);
@@ -737,16 +737,16 @@ PyImport_ExecCodeModuleEx(char *name, PyObject *co, char *pathname)
 // 			     name);
 // 		return NULL;
 // 	}
-// 
-// 	Py_INCREF(m);
-// 
-// 	return m;
+
+	Py_INCREF(m);
+
+	return m;
 // 
 //   error:
 // 	_RemoveModule(name);
 // 	return NULL;
 }
-// 
+
 // 
 // /* Given a pathname for a Python source file, fill a buffer with the
 //    pathname for the corresponding compiled file.  Return the pathname
