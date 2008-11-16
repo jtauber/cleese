@@ -2196,7 +2196,7 @@ PyLong_FromLong(long ival)
 
 static void
 long_dealloc(PyObject *v)
-{ printf("long_dealloc\n"); // {
+{
 // 	Py_TYPE(v)->tp_free(v);
 }
 

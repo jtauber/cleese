@@ -28,11 +28,11 @@ typedef struct {
     void *co_zombieframe;     /* for optimization only (see frameobject.c) */
 } PyCodeObject;
 
-// /* Masks for co_flags above */
+/* Masks for co_flags above */
 // #define CO_OPTIMIZED	0x0001
 // #define CO_NEWLOCALS	0x0002
-// #define CO_VARARGS	0x0004
-// #define CO_VARKEYWORDS	0x0008
+#define CO_VARARGS	0x0004
+#define CO_VARKEYWORDS	0x0008
 // #define CO_NESTED       0x0010
 // #define CO_GENERATOR    0x0020
 // /* The CO_NOFREE flag is set if there are no free or cell variables.

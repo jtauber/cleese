@@ -159,15 +159,15 @@ PyTuple_New(register Py_ssize_t size)
 
 static void
 tupledealloc(register PyTupleObject *op)
-{ printf("tupledealloc\n"); // {
-// 	register Py_ssize_t i;
-// 	register Py_ssize_t len =  Py_SIZE(op);
+{
+	register Py_ssize_t i;
+	register Py_ssize_t len =  Py_SIZE(op);
 // 	PyObject_GC_UnTrack(op);
 // 	Py_TRASHCAN_SAFE_BEGIN(op)
-// 	if (len > 0) {
-// 		i = len;
-// 		while (--i >= 0)
-// 			Py_XDECREF(op->ob_item[i]);
+	if (len > 0) {
+		i = len;
+		while (--i >= 0)
+			Py_XDECREF(op->ob_item[i]);
 // #if PyTuple_MAXSAVESIZE > 0
 // 		if (len < PyTuple_MAXSAVESIZE &&
 // 		    numfree[len] < PyTuple_MAXFREELIST &&
@@ -179,7 +179,7 @@ tupledealloc(register PyTupleObject *op)
 // 			goto done; /* return */
 // 		}
 // #endif
-// 	}
+	}
 // 	Py_TYPE(op)->tp_free((PyObject *)op);
 // done:
 // 	Py_TRASHCAN_SAFE_END(op)

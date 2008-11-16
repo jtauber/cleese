@@ -272,19 +272,19 @@ PyCode_New(int argcount, int kwonlyargcount,
 // 
 static void
 code_dealloc(PyCodeObject *co)
-{ printf("code_dealloc\n"); // {
-// 	Py_XDECREF(co->co_code);
-// 	Py_XDECREF(co->co_consts);
-// 	Py_XDECREF(co->co_names);
-// 	Py_XDECREF(co->co_varnames);
-// 	Py_XDECREF(co->co_freevars);
-// 	Py_XDECREF(co->co_cellvars);
-// 	Py_XDECREF(co->co_filename);
-// 	Py_XDECREF(co->co_name);
-// 	Py_XDECREF(co->co_lnotab);
+{
+	Py_XDECREF(co->co_code);
+	Py_XDECREF(co->co_consts);
+	Py_XDECREF(co->co_names);
+	Py_XDECREF(co->co_varnames);
+	Py_XDECREF(co->co_freevars);
+	Py_XDECREF(co->co_cellvars);
+	Py_XDECREF(co->co_filename);
+	Py_XDECREF(co->co_name);
+	Py_XDECREF(co->co_lnotab);
 //         if (co->co_zombieframe != NULL)
 //                 PyObject_GC_Del(co->co_zombieframe);
-// 	PyObject_DEL(co);
+	PyObject_DEL(co);
 }
 
 // static PyObject *
