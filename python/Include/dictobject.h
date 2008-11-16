@@ -121,23 +121,23 @@ PyAPI_FUNC(int) PyDict_SetItem(PyObject *mp, PyObject *key, PyObject *item);
 // PyAPI_FUNC(PyObject *) PyDict_Values(PyObject *mp);
 // PyAPI_FUNC(PyObject *) PyDict_Items(PyObject *mp);
 // PyAPI_FUNC(Py_ssize_t) PyDict_Size(PyObject *mp);
-// PyAPI_FUNC(PyObject *) PyDict_Copy(PyObject *mp);
+PyAPI_FUNC(PyObject *) PyDict_Copy(PyObject *mp);
 // PyAPI_FUNC(int) PyDict_Contains(PyObject *mp, PyObject *key);
 // PyAPI_FUNC(int) _PyDict_Contains(PyObject *mp, PyObject *key, long hash);
 // PyAPI_FUNC(PyObject *) _PyDict_NewPresized(Py_ssize_t minused);
 // 
 // /* PyDict_Update(mp, other) is equivalent to PyDict_Merge(mp, other, 1). */
 // PyAPI_FUNC(int) PyDict_Update(PyObject *mp, PyObject *other);
-// 
-// /* PyDict_Merge updates/merges from a mapping object (an object that
-//    supports PyMapping_Keys() and PyObject_GetItem()).  If override is true,
-//    the last occurrence of a key wins, else the first.  The Python
-//    dict.update(other) is equivalent to PyDict_Merge(dict, other, 1).
-// */
-// PyAPI_FUNC(int) PyDict_Merge(PyObject *mp,
-// 				   PyObject *other,
-// 				   int override);
-// 
+
+/* PyDict_Merge updates/merges from a mapping object (an object that
+   supports PyMapping_Keys() and PyObject_GetItem()).  If override is true,
+   the last occurrence of a key wins, else the first.  The Python
+   dict.update(other) is equivalent to PyDict_Merge(dict, other, 1).
+*/
+PyAPI_FUNC(int) PyDict_Merge(PyObject *mp,
+				   PyObject *other,
+				   int override);
+
 // /* PyDict_MergeFromSeq2 updates/merges from an iterable object producing
 //    iterable objects of length 2.  If override is true, the last occurrence
 //    of a key wins, else the first.  The Python dict constructor dict(seq2)

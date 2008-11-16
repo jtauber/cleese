@@ -210,17 +210,17 @@ PyModule_GetDict(PyObject *m)
 // 	}
 // 	return _PyUnicode_AsString(fileobj);
 // }
-// 
-// PyModuleDef*
-// PyModule_GetDef(PyObject* m)
-// {
+
+PyModuleDef*
+PyModule_GetDef(PyObject* m)
+{
 // 	if (!PyModule_Check(m)) {
 // 		PyErr_BadArgument();
 // 		return NULL;
 // 	}
-// 	return ((PyModuleObject *)m)->md_def;
-// }
-// 
+	return ((PyModuleObject *)m)->md_def;
+}
+
 // void*
 // PyModule_GetState(PyObject* m)
 // {
@@ -400,7 +400,7 @@ PyTypeObject PyModule_Type = {
 // 	0,					/* tp_methods */
 // 	module_members,				/* tp_members */
 // 	0,					/* tp_getset */
-// 	0,					/* tp_base */
+	0,					/* tp_base */
 // 	0,					/* tp_dict */
 // 	0,					/* tp_descr_get */
 // 	0,					/* tp_descr_set */

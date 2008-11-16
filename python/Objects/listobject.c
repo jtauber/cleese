@@ -2588,7 +2588,7 @@ PyTypeObject PyList_Type = {
 // 	list_methods,				/* tp_methods */
 // 	0,					/* tp_members */
 // 	0,					/* tp_getset */
-// 	0,					/* tp_base */
+	0,					/* tp_base */
 // 	0,					/* tp_dict */
 // 	0,					/* tp_descr_get */
 // 	0,					/* tp_descr_set */

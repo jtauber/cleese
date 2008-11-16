@@ -224,10 +224,10 @@ Py_InitializeEx(int install_sigs)
 	bimod = _PyBuiltin_Init();
 	if (bimod == NULL)
 		Py_FatalError("Py_Initialize: can't initialize builtins modules");
-// 	_PyImport_FixupExtension(bimod, "builtins", "builtins");
+	_PyImport_FixupExtension(bimod, "builtins", "builtins");
 	interp->builtins = PyModule_GetDict(bimod);
-// 	if (interp->builtins == NULL)
-// 		Py_FatalError("Py_Initialize: can't initialize builtins dict");
+	if (interp->builtins == NULL)
+		Py_FatalError("Py_Initialize: can't initialize builtins dict");
 	Py_INCREF(interp->builtins);
 // 
 // 	/* initialize builtin exceptions */

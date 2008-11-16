@@ -94,10 +94,10 @@
 //    value of this global to accommodate for alterations of how the
 //    compiler works which are enabled by command line switches. */
 // static long pyc_magic = MAGIC;
-// 
-// /* See _PyImport_FixupExtension() below */
-// static PyObject *extensions = NULL;
-// 
+
+/* See _PyImport_FixupExtension() below */
+static PyObject *extensions = NULL;
+
 // /* This table is defined in config.c: */
 // extern struct _inittab _PyImport_Inittab[];
 // 
@@ -236,16 +236,16 @@ _PyImport_Init(void)
 // 	}
 // 	Py_DECREF(path_hooks);
 // }
-// 
+
 void
 _PyImport_Fini(void)
 {
-// 	Py_XDECREF(extensions);
-// 	extensions = NULL;
+	Py_XDECREF(extensions);
+	extensions = NULL;
 // 	PyMem_DEL(_PyImport_Filetab);
 // 	_PyImport_Filetab = NULL;
 }
-// 
+
 // 
 // /* Locking primitives to prevent parallel imports of the same module
 //    in different threads to return with a partially loaded module.
@@ -533,50 +533,50 @@ PyImport_Cleanup(void)
 // 	return pyc_magic;
 // }
 // 
-// 
-// /* Magic for extension modules (built-in as well as dynamically
-//    loaded).  To prevent initializing an extension module more than
-//    once, we keep a static dictionary 'extensions' keyed by module name
-//    (for built-in modules) or by filename (for dynamically loaded
-//    modules), containing these modules.  A copy of the module's
-//    dictionary is stored by calling _PyImport_FixupExtension()
-//    immediately after the module initialization function succeeds.  A
-//    copy can be retrieved from there by calling
-//    _PyImport_FindExtension(). 
-// 
-//    Modules which do support multiple multiple initialization set
-//    their m_size field to a non-negative number (indicating the size
-//    of the module-specific state). They are still recorded in the
-//    extensions dictionary, to avoid loading shared libraries twice.
-// */
-// 
-// int
-// _PyImport_FixupExtension(PyObject *mod, char *name, char *filename)
-// {
-// 	PyObject *modules, *dict;
-// 	struct PyModuleDef *def;
-// 	if (extensions == NULL) {
-// 		extensions = PyDict_New();
+
+/* Magic for extension modules (built-in as well as dynamically
+   loaded).  To prevent initializing an extension module more than
+   once, we keep a static dictionary 'extensions' keyed by module name
+   (for built-in modules) or by filename (for dynamically loaded
+   modules), containing these modules.  A copy of the module's
+   dictionary is stored by calling _PyImport_FixupExtension()
+   immediately after the module initialization function succeeds.  A
+   copy can be retrieved from there by calling
+   _PyImport_FindExtension(). 
+
+   Modules which do support multiple multiple initialization set
+   their m_size field to a non-negative number (indicating the size
+   of the module-specific state). They are still recorded in the
+   extensions dictionary, to avoid loading shared libraries twice.
+*/
+
+int
+_PyImport_FixupExtension(PyObject *mod, char *name, char *filename)
+{
+	PyObject *modules, *dict;
+	struct PyModuleDef *def;
+	if (extensions == NULL) {
+		extensions = PyDict_New();
 // 		if (extensions == NULL)
 // 			return -1;
-// 	}
+	}
 // 	if (mod == NULL || !PyModule_Check(mod)) {
 // 		PyErr_BadInternalCall();
 // 		return -1;
 // 	}
-// 	def = PyModule_GetDef(mod);
+	def = PyModule_GetDef(mod);
 // 	if (!def) {
 // 		PyErr_BadInternalCall();
 // 		return -1;
 // 	}
-// 	modules = PyImport_GetModuleDict();
-// 	if (PyDict_SetItemString(modules, name, mod) < 0)
-// 		return -1;
+	modules = PyImport_GetModuleDict();
+	if (PyDict_SetItemString(modules, name, mod) < 0)
+		return -1;
 // 	if (_PyState_AddModule(mod, def) < 0) {
 // 		PyDict_DelItemString(modules, name);
 // 		return -1;
 // 	}
-// 	if (def->m_size == -1) {
+	if (def->m_size == -1) {
 // 		if (def->m_base.m_copy) {
 // 			/* Somebody already imported the module, 
 // 			   likely under a different name.
@@ -584,17 +584,17 @@ PyImport_Cleanup(void)
 // 			Py_DECREF(def->m_base.m_copy);
 // 			def->m_base.m_copy = NULL;
 // 		}
-// 		dict = PyModule_GetDict(mod);
-// 		if (dict == NULL)
-// 			return -1;
-// 		def->m_base.m_copy = PyDict_Copy(dict);
-// 		if (def->m_base.m_copy == NULL)
-// 			return -1;
-// 	}
-// 	PyDict_SetItemString(extensions, filename, (PyObject*)def);
-// 	return 0;
-// }
-// 
+		dict = PyModule_GetDict(mod);
+		if (dict == NULL)
+			return -1;
+		def->m_base.m_copy = PyDict_Copy(dict);
+		if (def->m_base.m_copy == NULL)
+			return -1;
+	}
+	PyDict_SetItemString(extensions, filename, (PyObject*)def);
+	return 0;
+}
+
 // PyObject *
 // _PyImport_FindExtension(char *name, char *filename)
 // {
@@ -648,13 +648,14 @@ PyImport_Cleanup(void)
 
 PyObject *
 PyImport_AddModule(const char *name)
-{
+{ printf("add module %s\n", name);
 	PyObject *modules = PyImport_GetModuleDict();
 	PyObject *m;
 
 	if ((m = PyDict_GetItemString(modules, name)) != NULL &&
 	    PyModule_Check(m))
 		return m;
+	printf("module is new\n");
 	m = PyModule_New(name);
 	if (m == NULL)
 		return NULL;
@@ -703,14 +704,17 @@ PyImport_ExecCodeModuleEx(char *name, PyObject *co, char *pathname)
 	m = PyImport_AddModule(name);
 	if (m == NULL)
 		return NULL;
+	
+	printf("exec %s\n", name);
+	
 // 	/* If the module is being reloaded, we get the old module back
 // 	   and re-use its dict to exec the new code. */
 	d = PyModule_GetDict(m);
-// 	if (PyDict_GetItemString(d, "__builtins__") == NULL) {
-// 		if (PyDict_SetItemString(d, "__builtins__",
-// 					 PyEval_GetBuiltins()) != 0)
-// 			goto error;
-// 	}
+	if (PyDict_GetItemString(d, "__builtins__") == NULL) {
+		if (PyDict_SetItemString(d, "__builtins__",
+					 PyEval_GetBuiltins()) != 0)
+			goto error;
+	}
 // 	/* Remember the filename as the __file__ attribute */
 // 	v = NULL;
 // 	if (pathname != NULL) {
@@ -741,10 +745,11 @@ PyImport_ExecCodeModuleEx(char *name, PyObject *co, char *pathname)
 	Py_INCREF(m);
 
 	return m;
-// 
-//   error:
+
+  error:
+	printf("ERROR!\n");
 // 	_RemoveModule(name);
-// 	return NULL;
+	return NULL;
 }
 
 // 
@@ -2684,7 +2689,7 @@ PyImport_Import(PyObject *module_name)
 // 	PyObject *globals = NULL;
 // 	PyObject *import = NULL;
 // 	PyObject *builtins = NULL;
-	PyObject *r = NULL;
+// 	PyObject *r = NULL;
 // 
 // 	/* Initialize constant string objects */
 // 	if (silly_list == NULL) {
@@ -2741,7 +2746,7 @@ PyImport_Import(PyObject *module_name)
 // 	Py_XDECREF(builtins);
 // 	Py_XDECREF(import);
 // 
-	return r;
+// 	return r;
 }
 
 

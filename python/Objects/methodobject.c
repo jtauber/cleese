@@ -276,7 +276,7 @@ PyTypeObject PyCFunction_Type = {
 // 	0,					/* tp_methods */
 // 	meth_members,				/* tp_members */
 // 	meth_getsets,				/* tp_getset */
-// 	0,					/* tp_base */
+	0,					/* tp_base */
 // 	0,					/* tp_dict */
 };
 

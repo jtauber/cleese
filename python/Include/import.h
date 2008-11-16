@@ -33,8 +33,8 @@ PyAPI_FUNC(int) PyImport_ImportFrozenModule(char *);
 // PyAPI_FUNC(void) _PyImport_ReInitLock(void);
 // 
 // PyAPI_FUNC(PyObject *)_PyImport_FindExtension(char *, char *);
-// PyAPI_FUNC(int)_PyImport_FixupExtension(PyObject*, char *, char *);
-// 
+PyAPI_FUNC(int)_PyImport_FixupExtension(PyObject*, char *, char *);
+
 // struct _inittab {
 //     char *name;
 //     PyObject* (*initfunc)(void);

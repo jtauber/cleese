@@ -3175,17 +3175,17 @@ PyEval_EvalCodeEx(PyCodeObject *co, PyObject *globals, PyObject *locals,
 // 	tstate->use_tracing = ((func != NULL)
 // 			       || (tstate->c_profilefunc != NULL));
 // }
-// 
-// PyObject *
-// PyEval_GetBuiltins(void)
-// {
-// 	PyFrameObject *current_frame = PyEval_GetFrame();
-// 	if (current_frame == NULL)
-// 		return PyThreadState_GET()->interp->builtins;
-// 	else
-// 		return current_frame->f_builtins;
-// }
-// 
+
+PyObject *
+PyEval_GetBuiltins(void)
+{
+	PyFrameObject *current_frame = PyEval_GetFrame();
+	if (current_frame == NULL)
+		return PyThreadState_GET()->interp->builtins;
+	else
+		return current_frame->f_builtins;
+}
+
 // PyObject *
 // PyEval_GetLocals(void)
 // {
@@ -3206,13 +3206,13 @@ PyEval_EvalCodeEx(PyCodeObject *co, PyObject *globals, PyObject *locals,
 // 		return current_frame->f_globals;
 // }
 // 
-// PyFrameObject *
-// PyEval_GetFrame(void)
-// {
-// 	PyThreadState *tstate = PyThreadState_GET();
-// 	return _PyThreadState_GetFrame(tstate);
-// }
-// 
+PyFrameObject *
+PyEval_GetFrame(void)
+{
+	PyThreadState *tstate = PyThreadState_GET();
+	return _PyThreadState_GetFrame(tstate);
+}
+
 // int
 // PyEval_MergeCompilerFlags(PyCompilerFlags *cf)
 // {

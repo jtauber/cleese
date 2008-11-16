@@ -1406,56 +1406,56 @@ dict_dealloc(register PyDictObject *mp)
 // {
 // 	return PyDict_Merge(a, b, 1);
 // }
-// 
-// int
-// PyDict_Merge(PyObject *a, PyObject *b, int override)
-// {
-// 	register PyDictObject *mp, *other;
-// 	register Py_ssize_t i;
-// 	PyDictEntry *entry;
-// 
-// 	/* We accept for the argument either a concrete dictionary object,
-// 	 * or an abstract "mapping" object.  For the former, we can do
-// 	 * things quite efficiently.  For the latter, we only require that
-// 	 * PyMapping_Keys() and PyObject_GetItem() be supported.
-// 	 */
+
+int
+PyDict_Merge(PyObject *a, PyObject *b, int override)
+{
+	register PyDictObject *mp, *other;
+	register Py_ssize_t i;
+	PyDictEntry *entry;
+
+	/* We accept for the argument either a concrete dictionary object,
+	 * or an abstract "mapping" object.  For the former, we can do
+	 * things quite efficiently.  For the latter, we only require that
+	 * PyMapping_Keys() and PyObject_GetItem() be supported.
+	 */
 // 	if (a == NULL || !PyDict_Check(a) || b == NULL) {
 // 		PyErr_BadInternalCall();
 // 		return -1;
 // 	}
-// 	mp = (PyDictObject*)a;
+	mp = (PyDictObject*)a;
 // 	if (PyDict_Check(b)) {
-// 		other = (PyDictObject*)b;
-// 		if (other == mp || other->ma_used == 0)
-// 			/* a.update(a) or a.update({}); nothing to do */
-// 			return 0;
-// 		if (mp->ma_used == 0)
-// 			/* Since the target dict is empty, PyDict_GetItem()
-// 			 * always returns NULL.  Setting override to 1
-// 			 * skips the unnecessary test.
-// 			 */
-// 			override = 1;
-// 		/* Do one big resize at the start, rather than
-// 		 * incrementally resizing as we insert new items.  Expect
-// 		 * that there will be no (or few) overlapping keys.
-// 		 */
-// 		if ((mp->ma_fill + other->ma_used)*3 >= (mp->ma_mask+1)*2) {
-// 		   if (dictresize(mp, (mp->ma_used + other->ma_used)*2) != 0)
-// 			   return -1;
-// 		}
-// 		for (i = 0; i <= other->ma_mask; i++) {
-// 			entry = &other->ma_table[i];
-// 			if (entry->me_value != NULL &&
-// 			    (override ||
-// 			     PyDict_GetItem(a, entry->me_key) == NULL)) {
-// 				Py_INCREF(entry->me_key);
-// 				Py_INCREF(entry->me_value);
-// 				if (insertdict(mp, entry->me_key,
-// 					       (long)entry->me_hash,
-// 					       entry->me_value) != 0)
-// 					return -1;
-// 			}
-// 		}
+		other = (PyDictObject*)b;
+		if (other == mp || other->ma_used == 0)
+			/* a.update(a) or a.update({}); nothing to do */
+			return 0;
+		if (mp->ma_used == 0)
+			/* Since the target dict is empty, PyDict_GetItem()
+			 * always returns NULL.  Setting override to 1
+			 * skips the unnecessary test.
+			 */
+			override = 1;
+		/* Do one big resize at the start, rather than
+		 * incrementally resizing as we insert new items.  Expect
+		 * that there will be no (or few) overlapping keys.
+		 */
+		if ((mp->ma_fill + other->ma_used)*3 >= (mp->ma_mask+1)*2) {
+		   if (dictresize(mp, (mp->ma_used + other->ma_used)*2) != 0)
+			   return -1;
+		}
+		for (i = 0; i <= other->ma_mask; i++) {
+			entry = &other->ma_table[i];
+			if (entry->me_value != NULL &&
+			    (override ||
+			     PyDict_GetItem(a, entry->me_key) == NULL)) {
+				Py_INCREF(entry->me_key);
+				Py_INCREF(entry->me_value);
+				if (insertdict(mp, entry->me_key,
+					       (long)entry->me_hash,
+					       entry->me_value) != 0)
+					return -1;
+			}
+		}
 // 	}
 // 	else {
 // 		/* Do it the generic, slower way */
@@ -1501,33 +1501,33 @@ dict_dealloc(register PyDictObject *mp)
 // 			/* Iterator completed, via error */
 // 			return -1;
 // 	}
-// 	return 0;
-// }
-// 
+	return 0;
+}
+
 // static PyObject *
 // dict_copy(register PyDictObject *mp)
 // {
 // 	return PyDict_Copy((PyObject*)mp);
 // }
-// 
-// PyObject *
-// PyDict_Copy(PyObject *o)
-// {
-// 	PyObject *copy;
-// 
+
+PyObject *
+PyDict_Copy(PyObject *o)
+{
+	PyObject *copy;
+
 // 	if (o == NULL || !PyDict_Check(o)) {
 // 		PyErr_BadInternalCall();
 // 		return NULL;
 // 	}
-// 	copy = PyDict_New();
-// 	if (copy == NULL)
-// 		return NULL;
-// 	if (PyDict_Merge(copy, o, 1) == 0)
-// 		return copy;
-// 	Py_DECREF(copy);
-// 	return NULL;
-// }
-// 
+	copy = PyDict_New();
+	if (copy == NULL)
+		return NULL;
+	if (PyDict_Merge(copy, o, 1) == 0)
+		return copy;
+	Py_DECREF(copy);
+	return NULL;
+}
+
 // Py_ssize_t
 // PyDict_Size(PyObject *mp)
 // {
@@ -2055,7 +2055,7 @@ PyTypeObject PyDict_Type = {
 // 	mapp_methods,				/* tp_methods */
 // 	0,					/* tp_members */
 // 	0,					/* tp_getset */
-// 	0,					/* tp_base */
+	0,					/* tp_base */
 // 	0,					/* tp_dict */
 // 	0,					/* tp_descr_get */
 // 	0,					/* tp_descr_set */

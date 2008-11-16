@@ -568,7 +568,7 @@ PyTypeObject PyFrame_Type = {
 // 	frame_methods,				/* tp_methods */
 // 	frame_memberlist,			/* tp_members */
 // 	frame_getsetlist,			/* tp_getset */
-// 	0,					/* tp_base */
+	0,					/* tp_base */
 // 	0,					/* tp_dict */
 };
 

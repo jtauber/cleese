@@ -1079,33 +1079,33 @@
 
 int
 PyType_IsSubtype(PyTypeObject *a, PyTypeObject *b)
-{ printf("PyType_IsSubtype\n"); return 0; // {
-// 	PyObject *mro;
-// 
-// 	mro = a->tp_mro;
-// 	if (mro != NULL) {
-// 		/* Deal with multiple inheritance without recursion
-// 		   by walking the MRO tuple */
-// 		Py_ssize_t i, n;
-// 		assert(PyTuple_Check(mro));
-// 		n = PyTuple_GET_SIZE(mro);
-// 		for (i = 0; i < n; i++) {
-// 			if (PyTuple_GET_ITEM(mro, i) == (PyObject *)b)
-// 				return 1;
-// 		}
-// 		return 0;
-// 	}
-// 	else {
-// 		/* a is not completely initilized yet; follow tp_base */
-// 		do {
-// 			if (a == b)
-// 				return 1;
-// 			a = a->tp_base;
-// 		} while (a != NULL);
-// 		return b == &PyBaseObject_Type;
-// 	}
+{
+	PyObject *mro;
+
+	mro = a->tp_mro;
+	if (mro != NULL) {
+		/* Deal with multiple inheritance without recursion
+		   by walking the MRO tuple */
+		Py_ssize_t i, n;
+		assert(PyTuple_Check(mro));
+		n = PyTuple_GET_SIZE(mro);
+		for (i = 0; i < n; i++) {
+			if (PyTuple_GET_ITEM(mro, i) == (PyObject *)b)
+				return 1;
+		}
+		return 0;
+	}
+	else {
+		/* a is not completely initilized yet; follow tp_base */
+		do {
+			if (a == b)
+				return 1;
+			a = a->tp_base;
+		} while (a != NULL);
+		return b == &PyBaseObject_Type;
+	}
 }
-// 
+
 // /* Internal routines to do a method lookup in the type
 //    without looking in the instance dictionary
 //    (so we can't use PyObject_GetAttr) but still binding
@@ -1662,7 +1662,7 @@ PyType_IsSubtype(PyTypeObject *a, PyTypeObject *b)
 // 		return base;
 // }
 // 
-// static void object_dealloc(PyObject *);
+static void object_dealloc(PyObject *);
 // static int object_init(PyObject *, PyObject *, PyObject *);
 // static int update_slot(PyTypeObject *, PyObject *);
 // static void fixup_slot_dispatchers(PyTypeObject *);
@@ -2607,7 +2607,7 @@ PyTypeObject PyType_Type = {
 // 	type_methods,				/* tp_methods */
 // 	type_members,				/* tp_members */
 // 	type_getsets,				/* tp_getset */
-// 	0,					/* tp_base */
+	0,					/* tp_base */
 // 	0,					/* tp_dict */
 // 	0,					/* tp_descr_get */
 // 	0,					/* tp_descr_set */
@@ -2768,12 +2768,12 @@ PyTypeObject PyType_Type = {
 // 	return type->tp_alloc(type, 0);
 // }
 // 
-// static void
-// object_dealloc(PyObject *self)
-// {
+static void
+object_dealloc(PyObject *self)
+{ printf("object_dealloc\n");
 // 	Py_TYPE(self)->tp_free(self);
-// }
-// 
+}
+
 // static PyObject *
 // object_repr(PyObject *self)
 // {
@@ -3348,12 +3348,12 @@ PyTypeObject PyType_Type = {
 // };
 // 
 // 
-// PyTypeObject PyBaseObject_Type = {
-// 	PyVarObject_HEAD_INIT(&PyType_Type, 0)
-// 	"object",				/* tp_name */
-// 	sizeof(PyObject),			/* tp_basicsize */
-// 	0,					/* tp_itemsize */
-// 	object_dealloc,				/* tp_dealloc */
+PyTypeObject PyBaseObject_Type = {
+	PyVarObject_HEAD_INIT(&PyType_Type, 0)
+	"object",				/* tp_name */
+	sizeof(PyObject),			/* tp_basicsize */
+	0,					/* tp_itemsize */
+	object_dealloc,				/* tp_dealloc */
 // 	0,					/* tp_print */
 // 	0,					/* tp_getattr */
 // 	0,					/* tp_setattr */
@@ -3361,17 +3361,17 @@ PyTypeObject PyType_Type = {
 // 	object_repr,				/* tp_repr */
 // 	0,					/* tp_as_number */
 // 	0,					/* tp_as_sequence */
-// 	0,					/* tp_as_mapping */
-// 	(hashfunc)_Py_HashPointer,		/* tp_hash */
+	0,					/* tp_as_mapping */
+	0, // (hashfunc)_Py_HashPointer,		/* tp_hash */
 // 	0,					/* tp_call */
 // 	object_str,				/* tp_str */
 // 	PyObject_GenericGetAttr,		/* tp_getattro */
 // 	PyObject_GenericSetAttr,		/* tp_setattro */
 // 	0,					/* tp_as_buffer */
-// 	Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /* tp_flags */
+	Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /* tp_flags */
 // 	PyDoc_STR("The most base type"),	/* tp_doc */
-// 	0,					/* tp_traverse */
-// 	0,					/* tp_clear */
+	0,					/* tp_traverse */
+	0,					/* tp_clear */
 // 	object_richcompare,			/* tp_richcompare */
 // 	0,					/* tp_weaklistoffset */
 // 	0,					/* tp_iter */
@@ -3379,7 +3379,7 @@ PyTypeObject PyType_Type = {
 // 	object_methods,				/* tp_methods */
 // 	0,					/* tp_members */
 // 	object_getsets,				/* tp_getset */
-// 	0,					/* tp_base */
+	0,					/* tp_base */
 // 	0,					/* tp_dict */
 // 	0,					/* tp_descr_get */
 // 	0,					/* tp_descr_set */
@@ -3388,8 +3388,8 @@ PyTypeObject PyType_Type = {
 // 	PyType_GenericAlloc,			/* tp_alloc */
 // 	object_new,				/* tp_new */
 // 	PyObject_Del,				/* tp_free */
-// };
-// 
+};
+
 // 
 // /* Add the methods from tp_methods to the __dict__ in a type object */
 // 

@@ -342,7 +342,7 @@ typedef struct _typeobject {
 // 	struct PyMethodDef *tp_methods;
 // 	struct PyMemberDef *tp_members;
 // 	struct PyGetSetDef *tp_getset;
-// 	struct _typeobject *tp_base;
+	struct _typeobject *tp_base;
 // 	PyObject *tp_dict;
 // 	descrgetfunc tp_descr_get;
 // 	descrsetfunc tp_descr_set;
@@ -353,7 +353,7 @@ typedef struct _typeobject {
 // 	freefunc tp_free; /* Low-level free-memory routine */
 	inquiry tp_is_gc; /* For PyObject_IS_GC */
 // 	PyObject *tp_bases;
-// 	PyObject *tp_mro; /* method resolution order */
+	PyObject *tp_mro; /* method resolution order */
 // 	PyObject *tp_cache;
 // 	PyObject *tp_subclasses;
 // 	PyObject *tp_weaklist;
@@ -401,7 +401,7 @@ PyAPI_FUNC(int) PyType_IsSubtype(PyTypeObject *, PyTypeObject *);
 	(Py_TYPE(ob) == (tp) || PyType_IsSubtype(Py_TYPE(ob), (tp)))
 
 PyAPI_DATA(PyTypeObject) PyType_Type; /* built-in 'type' */
-// PyAPI_DATA(PyTypeObject) PyBaseObject_Type; /* built-in 'object' */
+PyAPI_DATA(PyTypeObject) PyBaseObject_Type; /* built-in 'object' */
 // PyAPI_DATA(PyTypeObject) PySuper_Type; /* built-in 'super' */
 // 
 // #define PyType_Check(op) \

@@ -48,7 +48,7 @@
 // static PyInterpreterState *interp_head = NULL;
 
 PyThreadState *_PyThreadState_Current = NULL;
-// PyThreadFrameGetter _PyThreadState_GetFrame = NULL;
+PyThreadFrameGetter _PyThreadState_GetFrame = NULL;
 // 
 // #ifdef WITH_THREAD
 // static void _PyGILState_NoteThreadState(PyThreadState* tstate);
@@ -148,23 +148,23 @@ PyInterpreterState_Delete(PyInterpreterState *interp)
 // 	HEAD_UNLOCK();
 // 	free(interp);
 }
-// 
-// 
-// /* Default implementation for _PyThreadState_GetFrame */
-// static struct _frame *
-// threadstate_getframe(PyThreadState *self)
-// {
-// 	return self->frame;
-// }
+
+
+/* Default implementation for _PyThreadState_GetFrame */
+static struct _frame *
+threadstate_getframe(PyThreadState *self)
+{
+	return self->frame;
+}
 
 PyThreadState *
 PyThreadState_New(PyInterpreterState *interp)
 {
 	PyThreadState *tstate = (PyThreadState *)malloc(sizeof(PyThreadState));
 // 
-// 	if (_PyThreadState_GetFrame == NULL)
-// 		_PyThreadState_GetFrame = threadstate_getframe;
-// 
+	if (_PyThreadState_GetFrame == NULL)
+		_PyThreadState_GetFrame = threadstate_getframe;
+
 	if (tstate != NULL) {
 		tstate->interp = interp;
 // 

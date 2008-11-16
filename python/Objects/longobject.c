@@ -3781,7 +3781,7 @@ PyTypeObject PyLong_Type = {
 // 	long_methods,				/* tp_methods */
 // 	0,					/* tp_members */
 // 	long_getset,				/* tp_getset */
-// 	0,					/* tp_base */
+	0,					/* tp_base */
 // 	0,					/* tp_dict */
 // 	0,					/* tp_descr_get */
 // 	0,					/* tp_descr_set */
