@@ -11,9 +11,9 @@
 // 
 #include "Python.h"
 // 
-// #include "code.h"
-// #include "frameobject.h"
-// #include "eval.h"
+#include "code.h"
+#include "frameobject.h"
+#include "eval.h"
 // #include "opcode.h"
 // #include "structmember.h"
 // 
@@ -2577,12 +2577,12 @@ PyEval_EvalCodeEx(PyCodeObject *co, PyObject *globals, PyObject *locals,
 	   PyObject **args, int argcount, PyObject **kws, int kwcount,
 	   PyObject **defs, int defcount, PyObject *kwdefs, PyObject *closure)
 { printf("PyEval_EvalCodeEx\n"); return NULL;
-// 	register PyFrameObject *f;
-// 	register PyObject *retval = NULL;
-// 	register PyObject **fastlocals, **freevars;
-// 	PyThreadState *tstate = PyThreadState_GET();
-// 	PyObject *x, *u;
-// 
+	register PyFrameObject *f;
+	register PyObject *retval = NULL;
+	register PyObject **fastlocals, **freevars;
+	PyThreadState *tstate = PyThreadState_GET();
+	PyObject *x, *u;
+
 // 	if (globals == NULL) {
 // 		PyErr_SetString(PyExc_SystemError,
 // 				"PyEval_EvalCodeEx: NULL globals");
