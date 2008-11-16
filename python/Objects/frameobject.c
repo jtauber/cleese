@@ -550,7 +550,7 @@ PyTypeObject PyFrame_Type = {
 // 	0,					/* tp_repr */
 // 	0,					/* tp_as_number */
 // 	0,					/* tp_as_sequence */
-// 	0,					/* tp_as_mapping */
+	0,					/* tp_as_mapping */
 	0,					/* tp_hash */
 // 	0,					/* tp_call */
 // 	0,					/* tp_str */
@@ -572,14 +572,14 @@ PyTypeObject PyFrame_Type = {
 // 	0,					/* tp_dict */
 };
 
-// static PyObject *builtin_object;
-// 
-// int _PyFrame_Init()
-// {
-// 	builtin_object = PyUnicode_InternFromString("__builtins__");
-// 	return (builtin_object != NULL);
-// }
-// 
+static PyObject *builtin_object;
+
+int _PyFrame_Init()
+{
+	builtin_object = PyUnicode_InternFromString("__builtins__");
+	return (builtin_object != NULL);
+}
+
 PyFrameObject *
 PyFrame_New(PyThreadState *tstate, PyCodeObject *code, PyObject *globals,
 	    PyObject *locals)
@@ -596,36 +596,36 @@ PyFrame_New(PyThreadState *tstate, PyCodeObject *code, PyObject *globals,
 // 		return NULL;
 // 	}
 // #endif
-// 	if (back == NULL || back->f_globals != globals) {
-// 		builtins = PyDict_GetItem(globals, builtin_object);
-// 		if (builtins) {
-// 			if (PyModule_Check(builtins)) {
-// 				builtins = PyModule_GetDict(builtins);
-// 				assert(!builtins || PyDict_Check(builtins));
-// 			}
-// 			else if (!PyDict_Check(builtins))
-// 				builtins = NULL;
-// 		}
-// 		if (builtins == NULL) {
-// 			/* No builtins!	 Make up a minimal one
-// 			   Give them 'None', at least. */
-// 			builtins = PyDict_New();
-// 			if (builtins == NULL ||
-// 			    PyDict_SetItemString(
-// 				    builtins, "None", Py_None) < 0)
-// 				return NULL;
-// 		}
-// 		else
-// 			Py_INCREF(builtins);
-// 
-// 	}
-// 	else {
-// 		/* If we share the globals, we share the builtins.
-// 		   Save a lookup and a call. */
-// 		builtins = back->f_builtins;
-// 		assert(builtins != NULL && PyDict_Check(builtins));
-// 		Py_INCREF(builtins);
-// 	}
+	if (back == NULL || back->f_globals != globals) {
+		builtins = PyDict_GetItem(globals, builtin_object);
+		if (builtins) {
+			if (PyModule_Check(builtins)) {
+				builtins = PyModule_GetDict(builtins);
+				assert(!builtins || PyDict_Check(builtins));
+			}
+			else if (!PyDict_Check(builtins))
+				builtins = NULL;
+		}
+		if (builtins == NULL) {
+			/* No builtins!	 Make up a minimal one
+			   Give them 'None', at least. */
+			builtins = PyDict_New();
+			if (builtins == NULL ||
+			    PyDict_SetItemString(
+				    builtins, "None", Py_None) < 0)
+				return NULL;
+		}
+		else
+			Py_INCREF(builtins);
+
+	}
+	else {
+		/* If we share the globals, we share the builtins.
+  Save a lookup and a call. */
+		builtins = back->f_builtins;
+		assert(builtins != NULL && PyDict_Check(builtins));
+		Py_INCREF(builtins);
+	}
 // 	if (code->co_zombieframe != NULL) {
 // 		f = code->co_zombieframe;
 // 		code->co_zombieframe = NULL;
@@ -671,12 +671,12 @@ PyFrame_New(PyThreadState *tstate, PyCodeObject *code, PyObject *globals,
 		f->f_exc_type = f->f_exc_value = f->f_exc_traceback = NULL;
 // 	}
 	f->f_stacktop = f->f_valuestack;
-// 	f->f_builtins = builtins;
-// 	Py_XINCREF(back);
-// 	f->f_back = back;
-// 	Py_INCREF(code);
-// 	Py_INCREF(globals);
-// 	f->f_globals = globals;
+	f->f_builtins = builtins;
+	Py_XINCREF(back);
+	f->f_back = back;
+	Py_INCREF(code);
+	Py_INCREF(globals);
+	f->f_globals = globals;
 // 	/* Most functions have CO_NEWLOCALS and CO_OPTIMIZED set. */
 // 	if ((code->co_flags & (CO_NEWLOCALS | CO_OPTIMIZED)) ==
 // 		(CO_NEWLOCALS | CO_OPTIMIZED))
@@ -690,10 +690,10 @@ PyFrame_New(PyThreadState *tstate, PyCodeObject *code, PyObject *globals,
 // 		f->f_locals = locals;
 // 	}
 // 	else {
-// 		if (locals == NULL)
-// 			locals = globals;
-// 		Py_INCREF(locals);
-// 		f->f_locals = locals;
+		if (locals == NULL)
+			locals = globals;
+		Py_INCREF(locals);
+		f->f_locals = locals;
 // 	}
 	f->f_tstate = tstate;
 

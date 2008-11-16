@@ -83,7 +83,7 @@
 #include "dictobject.h"
 // #include "enumobject.h"
 // #include "setobject.h"
-// #include "methodobject.h"
+#include "methodobject.h"
 #include "moduleobject.h"
 // #include "funcobject.h"
 // #include "classobject.h"
@@ -104,15 +104,15 @@
 #include "pystate.h"
 // 
 // #include "pyarena.h"
-// #include "modsupport.h"
+#include "modsupport.h"
 #include "pythonrun.h"
 #include "ceval.h"
 // #include "sysmodule.h"
 // #include "intrcheck.h"
 #include "import.h"
-// 
-// #include "abstract.h"
-// 
+
+#include "abstract.h"
+
 // #include "compile.h"
 #include "eval.h"
 // 

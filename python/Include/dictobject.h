@@ -96,9 +96,9 @@ PyAPI_DATA(PyTypeObject) PyDict_Type;
 // PyAPI_DATA(PyTypeObject) PyDictItems_Type;
 // PyAPI_DATA(PyTypeObject) PyDictValues_Type;
 // 
-// #define PyDict_Check(op) \
-//                  PyType_FastSubclass(Py_TYPE(op), Py_TPFLAGS_DICT_SUBCLASS)
-// #define PyDict_CheckExact(op) (Py_TYPE(op) == &PyDict_Type)
+#define PyDict_Check(op) \
+                 PyType_FastSubclass(Py_TYPE(op), Py_TPFLAGS_DICT_SUBCLASS)
+#define PyDict_CheckExact(op) (Py_TYPE(op) == &PyDict_Type)
 // #define PyDictKeys_Check(op) (Py_TYPE(op) == &PyDictKeys_Type)
 // #define PyDictItems_Check(op) (Py_TYPE(op) == &PyDictItems_Type)
 // #define PyDictValues_Check(op) (Py_TYPE(op) == &PyDictValues_Type)
@@ -110,7 +110,7 @@ PyAPI_DATA(PyTypeObject) PyDict_Type;
 PyAPI_FUNC(PyObject *) PyDict_New(void);
 PyAPI_FUNC(PyObject *) PyDict_GetItem(PyObject *mp, PyObject *key);
 // PyAPI_FUNC(PyObject *) PyDict_GetItemWithError(PyObject *mp, PyObject *key);
-// PyAPI_FUNC(int) PyDict_SetItem(PyObject *mp, PyObject *key, PyObject *item);
+PyAPI_FUNC(int) PyDict_SetItem(PyObject *mp, PyObject *key, PyObject *item);
 // PyAPI_FUNC(int) PyDict_DelItem(PyObject *mp, PyObject *key);
 // PyAPI_FUNC(void) PyDict_Clear(PyObject *mp);
 // PyAPI_FUNC(int) PyDict_Next(

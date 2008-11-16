@@ -113,32 +113,32 @@ typedef struct {
 #define Py_TYPE(ob)		(((PyObject*)(ob))->ob_type)
 #define Py_SIZE(ob)		(((PyVarObject*)(ob))->ob_size)
 
-// /*
-// Type objects contain a string containing the type name (to help somewhat
-// in debugging), the allocation parameters (see PyObject_New() and
-// PyObject_NewVar()),
-// and methods for accessing objects of the type.  Methods are optional, a
-// nil pointer meaning that particular kind of access is not available for
-// this type.  The Py_DECREF() macro uses the tp_dealloc method without
-// checking for a nil pointer; it should always be implemented except if
-// the implementation can guarantee that the reference count will never
-// reach zero (e.g., for statically allocated type objects).
-// 
-// NB: the methods for certain type groups are now contained in separate
-// method blocks.
-// */
-// 
+/*
+Type objects contain a string containing the type name (to help somewhat
+in debugging), the allocation parameters (see PyObject_New() and
+PyObject_NewVar()),
+and methods for accessing objects of the type.  Methods are optional, a
+nil pointer meaning that particular kind of access is not available for
+this type.  The Py_DECREF() macro uses the tp_dealloc method without
+checking for a nil pointer; it should always be implemented except if
+the implementation can guarantee that the reference count will never
+reach zero (e.g., for statically allocated type objects).
+
+NB: the methods for certain type groups are now contained in separate
+method blocks.
+*/
+
 // typedef PyObject * (*unaryfunc)(PyObject *);
-// typedef PyObject * (*binaryfunc)(PyObject *, PyObject *);
+typedef PyObject * (*binaryfunc)(PyObject *, PyObject *);
 // typedef PyObject * (*ternaryfunc)(PyObject *, PyObject *, PyObject *);
 typedef int (*inquiry)(PyObject *);
-// typedef Py_ssize_t (*lenfunc)(PyObject *);
+typedef Py_ssize_t (*lenfunc)(PyObject *);
 // typedef PyObject *(*ssizeargfunc)(PyObject *, Py_ssize_t);
 // typedef PyObject *(*ssizessizeargfunc)(PyObject *, Py_ssize_t, Py_ssize_t);
 // typedef int(*ssizeobjargproc)(PyObject *, Py_ssize_t, PyObject *);
 // typedef int(*ssizessizeobjargproc)(PyObject *, Py_ssize_t, Py_ssize_t, PyObject *);
-// typedef int(*objobjargproc)(PyObject *, PyObject *, PyObject *);
-// 
+typedef int(*objobjargproc)(PyObject *, PyObject *, PyObject *);
+
 // 
 // /* buffer interface */
 // typedef struct bufferinfo {
@@ -252,14 +252,14 @@ typedef int (*traverseproc)(PyObject *, visitproc, void *);
 // 	binaryfunc sq_inplace_concat;
 // 	ssizeargfunc sq_inplace_repeat;
 // } PySequenceMethods;
-// 
-// typedef struct {
-// 	lenfunc mp_length;
-// 	binaryfunc mp_subscript;
-// 	objobjargproc mp_ass_subscript;
-// } PyMappingMethods;
-// 
-// 
+
+typedef struct {
+	lenfunc mp_length;
+	binaryfunc mp_subscript;
+	objobjargproc mp_ass_subscript;
+} PyMappingMethods;
+
+
 // typedef struct {
 //      getbufferproc bf_getbuffer;
 //      releasebufferproc bf_releasebuffer;
@@ -289,7 +289,7 @@ typedef struct _typeobject {
 	const char *tp_name; /* For printing, in format "<module>.<name>" */
 	Py_ssize_t tp_basicsize, tp_itemsize; /* For allocation */
 
-// 	/* Methods to implement standard operations */
+	/* Methods to implement standard operations */
 
 	destructor tp_dealloc;
 // 	printfunc tp_print;
@@ -298,11 +298,11 @@ typedef struct _typeobject {
 // 	cmpfunc tp_compare;
 // 	reprfunc tp_repr;
 // 
-// 	/* Method suites for standard classes */
-// 
+	/* Method suites for standard classes */
+
 // 	PyNumberMethods *tp_as_number;
 // 	PySequenceMethods *tp_as_sequence;
-// 	PyMappingMethods *tp_as_mapping;
+	PyMappingMethods *tp_as_mapping;
 // 
 // 	/* More standard operations (here for binary compatibility) */
 // 
@@ -699,11 +699,11 @@ PyAPI_FUNC(int) PyObject_IsTrue(PyObject *);
 //                         Py_DECREF(_py_tmp);	\
 //                 }				\
 //         } while (0)
-// 
-// /* Macros to use in case the object pointer may be NULL: */
-// #define Py_XINCREF(op) if ((op) == NULL) ; else Py_INCREF(op)
+
+/* Macros to use in case the object pointer may be NULL: */
+#define Py_XINCREF(op) if ((op) == NULL) ; else Py_INCREF(op)
 #define Py_XDECREF(op) if ((op) == NULL) ; else Py_DECREF(op)
-// 
+
 // /*
 // These are provided as conveniences to Python runtime embedders, so that
 // they can have object code that is not dependent on Python compilation flags.

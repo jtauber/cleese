@@ -573,11 +573,11 @@ PyEval_EvalFrameEx(PyFrameObject *f, int throwflag)
 // 	/* Make it easier to find out where we are with a debugger */
 // 	char *filename;
 // #endif
-// 
-// /* Tuple access macros */
-// 
+
+/* Tuple access macros */
+
 // #ifndef Py_DEBUG
-// #define GETITEM(v, i) PyTuple_GET_ITEM((PyTupleObject *)(v), (i))
+#define GETITEM(v, i) PyTuple_GET_ITEM((PyTupleObject *)(v), (i))
 // #else
 // #define GETITEM(v, i) PyTuple_GetItem((v), (i))
 // #endif
@@ -677,7 +677,7 @@ PyEval_EvalFrameEx(PyFrameObject *f, int throwflag)
 // #define SET_THIRD(v)	(stack_pointer[-3] = (v))
 // #define SET_FOURTH(v)	(stack_pointer[-4] = (v))
 // #define BASIC_STACKADJ(n)	(stack_pointer += n)
-// #define BASIC_PUSH(v)	(*stack_pointer++ = (v))
+#define BASIC_PUSH(v)	(*stack_pointer++ = (v))
 // #define BASIC_POP()	(*--stack_pointer)
 // 
 // #ifdef LLTRACE
@@ -693,7 +693,7 @@ PyEval_EvalFrameEx(PyFrameObject *f, int throwflag)
 // 				prtrace((STACK_POINTER)[-1], "ext_pop")), \
 // 				*--(STACK_POINTER))
 // #else
-// #define PUSH(v)		BASIC_PUSH(v)
+#define PUSH(v)		BASIC_PUSH(v)
 // #define POP()		BASIC_POP()
 // #define STACKADJ(n)	BASIC_STACKADJ(n)
 // #define EXT_POP(STACK_POINTER) (*--(STACK_POINTER))
@@ -1723,42 +1723,43 @@ PyEval_EvalFrameEx(PyFrameObject *f, int throwflag)
 // 				    PyExc_NameError, GLOBAL_NAME_ERROR_MSG, w);
 // 			break;
 // 
-// 		case LOAD_NAME:
-// 			w = GETITEM(names, oparg);
-// 			if ((v = f->f_locals) == NULL) {
+		case LOAD_NAME:
+			w = GETITEM(names, oparg);
+			if ((v = f->f_locals) == NULL) {
+				printf("no locals\n");
 // 				PyErr_Format(PyExc_SystemError,
 // 					     "no locals when loading %R", w);
-// 				break;
-// 			}
-// 			if (PyDict_CheckExact(v)) {
-// 				x = PyDict_GetItem(v, w);
-// 				Py_XINCREF(x);
-// 			}
-// 			else {
-// 				x = PyObject_GetItem(v, w);
+				break;
+			}
+			if (PyDict_CheckExact(v)) {
+				x = PyDict_GetItem(v, w);
+				Py_XINCREF(x);
+			}
+			else {
+				x = PyObject_GetItem(v, w);
 // 				if (x == NULL && PyErr_Occurred()) {
 // 					if (!PyErr_ExceptionMatches(
 // 							PyExc_KeyError))
 // 						break;
 // 					PyErr_Clear();
 // 				}
-// 			}
-// 			if (x == NULL) {
-// 				x = PyDict_GetItem(f->f_globals, w);
-// 				if (x == NULL) {
-// 					x = PyDict_GetItem(f->f_builtins, w);
-// 					if (x == NULL) {
+			}
+			if (x == NULL) {
+				x = PyDict_GetItem(f->f_globals, w);
+				if (x == NULL) {
+					x = PyDict_GetItem(f->f_builtins, w);
+					if (x == NULL) { printf("name error\n");
 // 						format_exc_check_arg(
 // 							    PyExc_NameError,
 // 							    NAME_ERROR_MSG, w);
-// 						break;
-// 					}
-// 				}
-// 				Py_INCREF(x);
-// 			}
-// 			PUSH(x);
-// 			continue;
-// 
+						break;
+					}
+				}
+				Py_INCREF(x);
+			}
+			PUSH(x);
+			continue;
+
 // 		case LOAD_GLOBAL:
 // 			w = GETITEM(names, oparg);
 // 			if (PyUnicode_CheckExact(w)) {

@@ -3090,7 +3090,7 @@ PyTypeObject PyBytes_Type = {
 // 	(reprfunc)string_repr, 			/* tp_repr */
 // 	0,					/* tp_as_number */
 // 	&string_as_sequence,			/* tp_as_sequence */
-// 	&string_as_mapping,			/* tp_as_mapping */
+	0, // &string_as_mapping,			/* tp_as_mapping */
 	(hashfunc)string_hash, 			/* tp_hash */
 // 	0,					/* tp_call */
 // 	string_str,				/* tp_str */

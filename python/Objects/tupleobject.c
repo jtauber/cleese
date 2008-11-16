@@ -731,7 +731,7 @@ PyTypeObject PyTuple_Type = {
 // 	(reprfunc)tuplerepr,			/* tp_repr */
 // 	0,					/* tp_as_number */
 // 	&tuple_as_sequence,			/* tp_as_sequence */
-// 	&tuple_as_mapping,			/* tp_as_mapping */
+	0, // &tuple_as_mapping,			/* tp_as_mapping */
 	(hashfunc)tuplehash,			/* tp_hash */
 // 	0,					/* tp_call */
 // 	0,					/* tp_str */

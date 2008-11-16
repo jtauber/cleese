@@ -403,7 +403,7 @@ PyTypeObject PyCode_Type = {
 // 	(reprfunc)code_repr,		/* tp_repr */
 // 	0,				/* tp_as_number */
 // 	0,				/* tp_as_sequence */
-// 	0,				/* tp_as_mapping */
+	0,				/* tp_as_mapping */
 	(hashfunc)code_hash, 		/* tp_hash */
 // 	0,				/* tp_call */
 // 	0,				/* tp_str */

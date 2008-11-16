@@ -3762,7 +3762,7 @@ PyTypeObject PyLong_Type = {
 // 	long_repr,				/* tp_repr */
 // 	&long_as_number,			/* tp_as_number */
 // 	0,					/* tp_as_sequence */
-// 	0,					/* tp_as_mapping */
+	0,					/* tp_as_mapping */
 	(hashfunc)long_hash,			/* tp_hash */
 //         0,              			/* tp_call */
 //         long_repr,				/* tp_str */

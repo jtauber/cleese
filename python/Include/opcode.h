@@ -87,7 +87,7 @@
 // #define DELETE_GLOBAL	98	/* "" */
 // #define DUP_TOPX	99	/* number of items to duplicate */
 // #define LOAD_CONST	100	/* Index in const list */
-// #define LOAD_NAME	101	/* Index in name list */
+#define LOAD_NAME	101	/* Index in name list */
 // #define BUILD_TUPLE	102	/* Number of tuple items */
 // #define BUILD_LIST	103	/* Number of list items */
 // #define BUILD_SET	104     /* Number of set items */

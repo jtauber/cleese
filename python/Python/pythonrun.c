@@ -162,7 +162,7 @@ Py_InitializeEx(int install_sigs)
 {
 	PyInterpreterState *interp;
 	PyThreadState *tstate;
-// 	PyObject *bimod, *sysmod, *pstderr;
+	PyObject *bimod; // PyObject *bimod, *sysmod, *pstderr;
 // 	char *p;
 // #if defined(HAVE_LANGINFO_H) && defined(CODESET)
 // 	char *codeset;
@@ -199,10 +199,10 @@ Py_InitializeEx(int install_sigs)
 	(void) PyThreadState_Swap(tstate);
 
 	_Py_ReadyTypes();
-// 
-// 	if (!_PyFrame_Init())
-// 		Py_FatalError("Py_Initialize: can't init frames");
-// 
+
+	if (!_PyFrame_Init())
+		Py_FatalError("Py_Initialize: can't init frames");
+
 // 	if (!_PyLong_Init())
 // 		Py_FatalError("Py_Initialize: can't init longs");
 // 
@@ -221,14 +221,14 @@ Py_InitializeEx(int install_sigs)
 	/* Init Unicode implementation; relies on the codec registry */
 	_PyUnicode_Init();
 
-// 	bimod = _PyBuiltin_Init();
-// 	if (bimod == NULL)
-// 		Py_FatalError("Py_Initialize: can't initialize builtins modules");
+	bimod = _PyBuiltin_Init();
+	if (bimod == NULL)
+		Py_FatalError("Py_Initialize: can't initialize builtins modules");
 // 	_PyImport_FixupExtension(bimod, "builtins", "builtins");
-// 	interp->builtins = PyModule_GetDict(bimod);
+	interp->builtins = PyModule_GetDict(bimod);
 // 	if (interp->builtins == NULL)
 // 		Py_FatalError("Py_Initialize: can't initialize builtins dict");
-// 	Py_INCREF(interp->builtins);
+	Py_INCREF(interp->builtins);
 // 
 // 	/* initialize builtin exceptions */
 // 	_PyExc_Init();
@@ -687,14 +687,14 @@ initmain(void)
 	m = PyImport_AddModule("__main__");
 	if (m == NULL)
 		Py_FatalError("can't create __main__ module");
-// 	d = PyModule_GetDict(m);
-// 	if (PyDict_GetItemString(d, "__builtins__") == NULL) {
-// 		PyObject *bimod = PyImport_ImportModule("builtins");
-// 		if (bimod == NULL ||
-// 		    PyDict_SetItemString(d, "__builtins__", bimod) != 0)
-// 			Py_FatalError("can't add __builtins__ to __main__");
-// 		Py_DECREF(bimod);
-// 	}
+	d = PyModule_GetDict(m);
+	if (PyDict_GetItemString(d, "__builtins__") == NULL) {
+		PyObject *bimod = PyImport_ImportModule("builtins");
+		if (bimod == NULL ||
+		    PyDict_SetItemString(d, "__builtins__", bimod) != 0)
+			Py_FatalError("can't add __builtins__ to __main__");
+		Py_DECREF(bimod);
+	}
 }
 
 // /* Import the site module (not into __main__ though) */

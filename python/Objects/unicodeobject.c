@@ -92,16 +92,16 @@ OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 // #ifdef __cplusplus
 // extern "C" {
 // #endif
-// 
-// /* This dictionary holds all interned unicode strings.  Note that references
-//    to strings in this dictionary are *not* counted in the string's ob_refcnt.
-//    When the interned string reaches a refcnt of 0 the string deallocation
-//    function will delete the reference from this dictionary.
-// 
-//    Another way to look at this is that to say that the actual reference
-//    count of a string is:  s->ob_refcnt + (s->state ? 2 : 0)
-// */
-// static PyObject *interned;
+
+/* This dictionary holds all interned unicode strings.  Note that references
+   to strings in this dictionary are *not* counted in the string's ob_refcnt.
+   When the interned string reaches a refcnt of 0 the string deallocation
+   function will delete the reference from this dictionary.
+
+   Another way to look at this is that to say that the actual reference
+   count of a string is:  s->ob_refcnt + (s->state ? 2 : 0)
+*/
+static PyObject *interned;
 
 /* Free list for Unicode objects */
 static PyUnicodeObject *free_list;
@@ -9323,7 +9323,7 @@ PyTypeObject PyUnicode_Type = {
 //     unicode_repr, 			/* tp_repr */
 //     &unicode_as_number, 		/* tp_as_number */
 //     &unicode_as_sequence, 		/* tp_as_sequence */
-//     &unicode_as_mapping, 		/* tp_as_mapping */
+	0, // &unicode_as_mapping, 		/* tp_as_mapping */
     (hashfunc) unicode_hash, 		/* tp_hash*/
 //     0, 					/* tp_call*/
 //     (reprfunc) unicode_str,	 	/* tp_str */
@@ -9430,10 +9430,10 @@ void _PyUnicode_Init(void)
 //     (void)PyUnicode_ClearFreeList();
 // }
 // 
-// void
-// PyUnicode_InternInPlace(PyObject **p)
-// {
-// 	register PyUnicodeObject *s = (PyUnicodeObject *)(*p);
+void
+PyUnicode_InternInPlace(PyObject **p)
+{
+	register PyUnicodeObject *s = (PyUnicodeObject *)(*p);
 // 	PyObject *t;
 // 	if (s == NULL || !PyUnicode_Check(s))
 // 		Py_FatalError(
@@ -9442,15 +9442,15 @@ void _PyUnicode_Init(void)
 // 	   it in the interned dict might do. */
 // 	if (!PyUnicode_CheckExact(s))
 // 		return;
-// 	if (PyUnicode_CHECK_INTERNED(s))
-// 		return;
-// 	if (interned == NULL) {
-// 		interned = PyDict_New();
+	if (PyUnicode_CHECK_INTERNED(s))
+		return;
+	if (interned == NULL) {
+		interned = PyDict_New();
 // 		if (interned == NULL) {
 // 			PyErr_Clear(); /* Don't leave an exception */
 // 			return;
 // 		}
-// 	}
+	}
 // 	/* It might be that the GetItem call fails even
 // 	   though the key is present in the dictionary,
 // 	   namely when this happens during a stack overflow. */
@@ -9466,18 +9466,18 @@ void _PyUnicode_Init(void)
 // 	}
 // 
 // 	PyThreadState_GET()->recursion_critical = 1;
-// 	if (PyDict_SetItem(interned, (PyObject *)s, (PyObject *)s) < 0) {
+	if (PyDict_SetItem(interned, (PyObject *)s, (PyObject *)s) < 0) {
 // 		PyErr_Clear();
 // 		PyThreadState_GET()->recursion_critical = 0;
-// 		return;
-// 	}
+		return;
+	}
 // 	PyThreadState_GET()->recursion_critical = 0;
 // 	/* The two references in interned are not counted by refcnt.
 // 	   The deallocator will take care of this */
-// 	Py_REFCNT(s) -= 2;
-// 	PyUnicode_CHECK_INTERNED(s) = SSTATE_INTERNED_MORTAL;
-// }
-// 
+	Py_REFCNT(s) -= 2;
+	PyUnicode_CHECK_INTERNED(s) = SSTATE_INTERNED_MORTAL;
+}
+
 // void
 // PyUnicode_InternImmortal(PyObject **p)
 // {
@@ -9487,17 +9487,17 @@ void _PyUnicode_Init(void)
 // 		Py_INCREF(*p);
 // 	}
 // }
-// 
-// PyObject *
-// PyUnicode_InternFromString(const char *cp)
-// {
-// 	PyObject *s = PyUnicode_FromString(cp);
-// 	if (s == NULL)
-// 		return NULL;
-// 	PyUnicode_InternInPlace(&s);
-// 	return s;
-// }
-// 
+
+PyObject *
+PyUnicode_InternFromString(const char *cp)
+{
+	PyObject *s = PyUnicode_FromString(cp);
+	if (s == NULL)
+		return NULL;
+	PyUnicode_InternInPlace(&s);
+	return s;
+}
+
 // void _Py_ReleaseInternedUnicodeStrings(void)
 // {
 // 	PyObject *keys;

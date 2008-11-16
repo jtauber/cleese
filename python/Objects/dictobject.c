@@ -1074,7 +1074,7 @@ dict_dealloc(register PyDictObject *mp)
 // 
 // static int
 // dict_ass_sub(PyDictObject *mp, PyObject *v, PyObject *w)
-// {
+// { 
 // 	if (w == NULL)
 // 		return PyDict_DelItem((PyObject *)mp, v);
 // 	else
@@ -2036,7 +2036,7 @@ PyTypeObject PyDict_Type = {
 // 	(reprfunc)dict_repr,			/* tp_repr */
 // 	0,					/* tp_as_number */
 // 	&dict_as_sequence,			/* tp_as_sequence */
-// 	&dict_as_mapping,			/* tp_as_mapping */
+	0, // &dict_as_mapping,			/* tp_as_mapping */
 	(hashfunc)PyObject_HashNotImplemented,	/* tp_hash */
 // 	0,					/* tp_call */
 // 	0,					/* tp_str */

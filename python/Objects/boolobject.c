@@ -143,7 +143,7 @@ PyTypeObject PyBool_Type = {
 // 	bool_repr,				/* tp_repr */
 // 	&bool_as_number,			/* tp_as_number */
 // 	0,					/* tp_as_sequence */
-// 	0,					/* tp_as_mapping */
+	0,					/* tp_as_mapping */
 	0,					/* tp_hash */
 //         0,					/* tp_call */
 //         bool_repr,				/* tp_str */

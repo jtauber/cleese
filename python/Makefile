@@ -4,6 +4,7 @@ MODULES_OBJS =	\
 				Modules/gcmodule.o
 
 OBJECTS_OBJS =	\
+				Objects/abstract.o \
 				Objects/boolobject.o \
 				Objects/bytesobject.o \
 				Objects/codeobject.o \
@@ -11,6 +12,7 @@ OBJECTS_OBJS =	\
 				Objects/frameobject.o \
 				Objects/listobject.o \
 				Objects/longobject.o \
+				Objects/methodobject.o \
 				Objects/moduleobject.o \
 				Objects/object.o \
 				Objects/tupleobject.o \
@@ -18,6 +20,7 @@ OBJECTS_OBJS =	\
 				Objects/unicodeobject.o
 
 PYTHON_OBJS = 	\
+				Python/bltinmodule.o \
 				Python/ceval.o \
 				Python/errors.o \
 				Python/frozenmain.o \

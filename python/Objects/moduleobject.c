@@ -4,8 +4,8 @@
 #include "Python.h"
 // #include "structmember.h"
 // 
-// static Py_ssize_t max_module_number;
-// 
+static Py_ssize_t max_module_number;
+
 typedef struct {
 	PyObject_HEAD
 	PyObject *md_dict;
@@ -60,24 +60,24 @@ PyModule_New(const char *name)
 // "Python C API version mismatch for module %.100s:\
 //  This Python has API version %d, module %.100s has version %d.";
 // 
-// PyObject *
-// PyModule_Create2(struct PyModuleDef* module, int module_api_version)
-// {
-// 	PyObject *d, *v, *n;
-// 	PyMethodDef *ml;
-// 	const char* name;
-// 	PyModuleObject *m;
+PyObject *
+PyModule_Create2(struct PyModuleDef* module, int module_api_version)
+{
+	PyObject *d, *v, *n;
+	PyMethodDef *ml;
+	const char* name;
+	PyModuleObject *m;
 // 	if (!Py_IsInitialized())
 // 	    Py_FatalError("Interpreter not initialized (version mismatch?)");
-// 	if (PyType_Ready(&moduledef_type) < 0)
-// 		return NULL;
-// 	if (module->m_base.m_index == 0) {
-// 		max_module_number++;
-// 		Py_REFCNT(module) = 1;
-// 		Py_TYPE(module) = &moduledef_type;
-// 		module->m_base.m_index = max_module_number;
-// 	}
-// 	name = module->m_name;
+	if (PyType_Ready(&moduledef_type) < 0)
+		return NULL;
+	if (module->m_base.m_index == 0) {
+		max_module_number++;
+		Py_REFCNT(module) = 1;
+		Py_TYPE(module) = &moduledef_type;
+		module->m_base.m_index = max_module_number;
+	}
+	name = module->m_name;
 // 	if (module_api_version != PYTHON_API_VERSION) {
 // 		char message[512];
 // 		PyOS_snprintf(message, sizeof(message), 
@@ -103,25 +103,25 @@ PyModule_New(const char *name)
 // 			_Py_PackageContext = NULL;
 // 		}
 // 	}
-// 	if ((m = (PyModuleObject*)PyModule_New(name)) == NULL)
-// 		return NULL;
-// 
-// 	if (module->m_size > 0) {
-// 		m->md_state = PyMem_MALLOC(module->m_size);
+	if ((m = (PyModuleObject*)PyModule_New(name)) == NULL)
+		return NULL;
+
+	if (module->m_size > 0) {
+		m->md_state = PyMem_MALLOC(module->m_size);
 // 		if (!m->md_state) {
 // 			PyErr_NoMemory();
 // 			Py_DECREF(m);
 // 			return NULL;
 // 		}
-// 		memset(m->md_state, 0, module->m_size);
-// 	}
-// 			
-// 	d = PyModule_GetDict((PyObject*)m);
-// 	if (module->m_methods != NULL) {
-// 		n = PyUnicode_FromString(name);
-// 		if (n == NULL)
-// 			return NULL;
-// 		for (ml = module->m_methods; ml->ml_name != NULL; ml++) {
+		memset(m->md_state, 0, module->m_size);
+	}
+			
+	d = PyModule_GetDict((PyObject*)m);
+	if (module->m_methods != NULL) {
+		n = PyUnicode_FromString(name);
+		if (n == NULL)
+			return NULL;
+		for (ml = module->m_methods; ml->ml_name != NULL; ml++) {
 // 			if ((ml->ml_flags & METH_CLASS) ||
 // 			    (ml->ml_flags & METH_STATIC)) {
 // 				PyErr_SetString(PyExc_ValueError,
@@ -130,20 +130,20 @@ PyModule_New(const char *name)
 // 				Py_DECREF(n);
 // 				return NULL;
 // 			}
-// 			v = PyCFunction_NewEx(ml, (PyObject*)m, n);
-// 			if (v == NULL) {
-// 				Py_DECREF(n);
-// 				return NULL;
-// 			}
-// 			if (PyDict_SetItemString(d, ml->ml_name, v) != 0) {
-// 				Py_DECREF(v);
-// 				Py_DECREF(n);
-// 				return NULL;
-// 			}
-// 			Py_DECREF(v);
-// 		}
-// 		Py_DECREF(n);
-// 	}
+			v = PyCFunction_NewEx(ml, (PyObject*)m, n);
+			if (v == NULL) {
+				Py_DECREF(n);
+				return NULL;
+			}
+			if (PyDict_SetItemString(d, ml->ml_name, v) != 0) {
+				Py_DECREF(v);
+				Py_DECREF(n);
+				return NULL;
+			}
+			Py_DECREF(v);
+		}
+		Py_DECREF(n);
+	}
 // 	if (module->m_doc != NULL) {
 // 		v = PyUnicode_FromString(module->m_doc);
 // 		if (v == NULL || PyDict_SetItemString(d, "__doc__", v) != 0) {
@@ -152,10 +152,10 @@ PyModule_New(const char *name)
 // 		}
 // 		Py_DECREF(v);
 // 	}
-// 	m->md_def = module;
-// 	return (PyObject*)m;
-// }
-// 
+	m->md_def = module;
+	return (PyObject*)m;
+}
+
 
 PyObject *
 PyModule_GetDict(PyObject *m)
@@ -381,7 +381,7 @@ PyTypeObject PyModule_Type = {
 // 	(reprfunc)module_repr,			/* tp_repr */
 // 	0,					/* tp_as_number */
 // 	0,					/* tp_as_sequence */
-// 	0,					/* tp_as_mapping */
+	0,					/* tp_as_mapping */
 	0,					/* tp_hash */
 // 	0,					/* tp_call */
 // 	0,					/* tp_str */

@@ -444,11 +444,11 @@ typedef struct {
 
 PyAPI_DATA(PyTypeObject) PyUnicode_Type;
 // PyAPI_DATA(PyTypeObject) PyUnicodeIter_Type;
-// 
+
 // #define SSTATE_NOT_INTERNED 0
-// #define SSTATE_INTERNED_MORTAL 1
+#define SSTATE_INTERNED_MORTAL 1
 // #define SSTATE_INTERNED_IMMORTAL 2
-// 
+
 #define PyUnicode_Check(op) \
                  PyType_FastSubclass(Py_TYPE(op), Py_TPFLAGS_UNICODE_SUBCLASS)
 #define PyUnicode_CheckExact(op) (Py_TYPE(op) == &PyUnicode_Type)
@@ -587,14 +587,14 @@ PyAPI_FUNC(int) PyUnicode_Resize(
 //                                                  Py_UNICODE *format_spec,
 //                                                  Py_ssize_t format_spec_len);
 // 
-// PyAPI_FUNC(void) PyUnicode_InternInPlace(PyObject **);
+PyAPI_FUNC(void) PyUnicode_InternInPlace(PyObject **);
 // PyAPI_FUNC(void) PyUnicode_InternImmortal(PyObject **);
-// PyAPI_FUNC(PyObject *) PyUnicode_InternFromString(const char *);
+PyAPI_FUNC(PyObject *) PyUnicode_InternFromString(const char *);
 // PyAPI_FUNC(void) _Py_ReleaseInternedUnicodeStrings(void);
-// 
-// /* Use only if you know it's a string */
-// #define PyUnicode_CHECK_INTERNED(op) (((PyUnicodeObject *)(op))->state)
-// 
+
+/* Use only if you know it's a string */
+#define PyUnicode_CHECK_INTERNED(op) (((PyUnicodeObject *)(op))->state)
+
 // /* --- wchar_t support for platforms which support it --------------------- */
 // 
 // #ifdef HAVE_WCHAR_H

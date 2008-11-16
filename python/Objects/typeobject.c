@@ -2588,7 +2588,7 @@ PyTypeObject PyType_Type = {
 // 	(reprfunc)type_repr,			/* tp_repr */
 // 	0,					/* tp_as_number */
 // 	0,					/* tp_as_sequence */
-// 	0,					/* tp_as_mapping */
+	0,					/* tp_as_mapping */
 	0,					/* tp_hash */
 // 	(ternaryfunc)type_call,			/* tp_call */
 // 	0,					/* tp_str */

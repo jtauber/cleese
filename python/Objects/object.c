@@ -1514,7 +1514,7 @@ static PyTypeObject PyNone_Type = {
 // 	none_repr,	/*tp_repr*/
 // 	0,		/*tp_as_number*/
 // 	0,		/*tp_as_sequence*/
-// 	0,		/*tp_as_mapping*/
+	0,		/*tp_as_mapping*/
 	0,		/*tp_hash */
 };
 
