@@ -207,18 +207,18 @@
 // {
 //     Py_XDECREF(o);
 // }
-// 
-// PyObject *
-// PyObject_Init(PyObject *op, PyTypeObject *tp)
-// {
+
+PyObject *
+PyObject_Init(PyObject *op, PyTypeObject *tp)
+{
 // 	if (op == NULL)
 // 		return PyErr_NoMemory();
-// 	/* Any changes should be reflected in PyObject_INIT (objimpl.h) */
-// 	Py_TYPE(op) = tp;
-// 	_Py_NewReference(op);
-// 	return op;
-// }
-// 
+	/* Any changes should be reflected in PyObject_INIT (objimpl.h) */
+	Py_TYPE(op) = tp;
+	_Py_NewReference(op);
+	return op;
+}
+
 // PyVarObject *
 // PyObject_InitVar(PyVarObject *op, PyTypeObject *tp, Py_ssize_t size)
 // {

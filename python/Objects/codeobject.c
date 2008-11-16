@@ -49,10 +49,10 @@ PyCode_New(int argcount, int kwonlyargcount,
 	   PyObject *varnames, PyObject *freevars, PyObject *cellvars,
 	   PyObject *filename, PyObject *name, int firstlineno,
 	   PyObject *lnotab)
-{ printf("PyCode_New\n"); return NULL; // {
-// 	PyCodeObject *co;
-// 	Py_ssize_t i;
-// 
+{
+	PyCodeObject *co;
+	Py_ssize_t i;
+
 // 	/* Check argument types */
 // 	if (argcount < 0 || nlocals < 0 ||
 // 	    code == NULL ||
@@ -81,35 +81,35 @@ PyCode_New(int argcount, int kwonlyargcount,
 // 			continue;
 // 		PyUnicode_InternInPlace(&PyTuple_GET_ITEM(consts, i));
 // 	}
-// 	co = PyObject_NEW(PyCodeObject, &PyCode_Type);
-// 	if (co != NULL) {
-// 		co->co_argcount = argcount;
-// 		co->co_kwonlyargcount = kwonlyargcount;
-// 		co->co_nlocals = nlocals;
-// 		co->co_stacksize = stacksize;
-// 		co->co_flags = flags;
-// 		Py_INCREF(code);
-// 		co->co_code = code;
-// 		Py_INCREF(consts);
-// 		co->co_consts = consts;
-// 		Py_INCREF(names);
-// 		co->co_names = names;
-// 		Py_INCREF(varnames);
-// 		co->co_varnames = varnames;
-// 		Py_INCREF(freevars);
-// 		co->co_freevars = freevars;
-// 		Py_INCREF(cellvars);
-// 		co->co_cellvars = cellvars;
-// 		Py_INCREF(filename);
-// 		co->co_filename = filename;
-// 		Py_INCREF(name);
-// 		co->co_name = name;
-// 		co->co_firstlineno = firstlineno;
-// 		Py_INCREF(lnotab);
-// 		co->co_lnotab = lnotab;
-//                 co->co_zombieframe = NULL;
-// 	}
-// 	return co;
+	co = PyObject_NEW(PyCodeObject, &PyCode_Type);
+	if (co != NULL) {
+		co->co_argcount = argcount;
+		co->co_kwonlyargcount = kwonlyargcount;
+		co->co_nlocals = nlocals;
+		co->co_stacksize = stacksize;
+		co->co_flags = flags;
+		Py_INCREF(code);
+		co->co_code = code;
+		Py_INCREF(consts);
+		co->co_consts = consts;
+		Py_INCREF(names);
+		co->co_names = names;
+		Py_INCREF(varnames);
+		co->co_varnames = varnames;
+		Py_INCREF(freevars);
+		co->co_freevars = freevars;
+		Py_INCREF(cellvars);
+		co->co_cellvars = cellvars;
+		Py_INCREF(filename);
+		co->co_filename = filename;
+		Py_INCREF(name);
+		co->co_name = name;
+		co->co_firstlineno = firstlineno;
+		Py_INCREF(lnotab);
+		co->co_lnotab = lnotab;
+                co->co_zombieframe = NULL;
+	}
+	return co;
 }
 
 
@@ -270,9 +270,9 @@ PyCode_New(int argcount, int kwonlyargcount,
 // 	return co;
 // }
 // 
-// static void
-// code_dealloc(PyCodeObject *co)
-// {
+static void
+code_dealloc(PyCodeObject *co)
+{ printf("code_dealloc\n"); // {
 // 	Py_XDECREF(co->co_code);
 // 	Py_XDECREF(co->co_consts);
 // 	Py_XDECREF(co->co_names);
@@ -285,8 +285,8 @@ PyCode_New(int argcount, int kwonlyargcount,
 //         if (co->co_zombieframe != NULL)
 //                 PyObject_GC_Del(co->co_zombieframe);
 // 	PyObject_DEL(co);
-// }
-// 
+}
+
 // static PyObject *
 // code_repr(PyCodeObject *co)
 // {
@@ -362,10 +362,10 @@ PyCode_New(int argcount, int kwonlyargcount,
 // 	Py_INCREF(res);
 // 	return res;
 // }
-// 
-// static long
-// code_hash(PyCodeObject *co)
-// {
+
+static long
+code_hash(PyCodeObject *co)
+{ printf("code_hash\n"); return 0; // {
 // 	long h, h0, h1, h2, h3, h4, h5, h6;
 // 	h0 = PyObject_Hash(co->co_name);
 // 	if (h0 == -1) return -1;
@@ -386,16 +386,16 @@ PyCode_New(int argcount, int kwonlyargcount,
 // 		co->co_nlocals ^ co->co_flags;
 // 	if (h == -1) h = -2;
 // 	return h;
-// }
-// 
-// /* XXX code objects need to participate in GC? */
-// 
-// PyTypeObject PyCode_Type = {
-// 	PyVarObject_HEAD_INIT(&PyType_Type, 0)
-// 	"code",
-// 	sizeof(PyCodeObject),
-// 	0,
-// 	(destructor)code_dealloc, 	/* tp_dealloc */
+}
+
+/* XXX code objects need to participate in GC? */
+
+PyTypeObject PyCode_Type = {
+	PyVarObject_HEAD_INIT(&PyType_Type, 0)
+	"code",
+	sizeof(PyCodeObject),
+	0,
+	(destructor)code_dealloc, 	/* tp_dealloc */
 // 	0,				/* tp_print */
 // 	0, 				/* tp_getattr */
 // 	0,				/* tp_setattr */
@@ -404,16 +404,16 @@ PyCode_New(int argcount, int kwonlyargcount,
 // 	0,				/* tp_as_number */
 // 	0,				/* tp_as_sequence */
 // 	0,				/* tp_as_mapping */
-// 	(hashfunc)code_hash, 		/* tp_hash */
+	(hashfunc)code_hash, 		/* tp_hash */
 // 	0,				/* tp_call */
 // 	0,				/* tp_str */
 // 	PyObject_GenericGetAttr,	/* tp_getattro */
 // 	0,				/* tp_setattro */
 // 	0,				/* tp_as_buffer */
-// 	Py_TPFLAGS_DEFAULT,		/* tp_flags */
+	Py_TPFLAGS_DEFAULT,		/* tp_flags */
 // 	code_doc,			/* tp_doc */
-// 	0,				/* tp_traverse */
-// 	0,				/* tp_clear */
+	0,				/* tp_traverse */
+	0,				/* tp_clear */
 // 	code_richcompare,		/* tp_richcompare */
 // 	0,				/* tp_weaklistoffset */
 // 	0,				/* tp_iter */
@@ -429,8 +429,8 @@ PyCode_New(int argcount, int kwonlyargcount,
 // 	0,				/* tp_init */
 // 	0,				/* tp_alloc */
 // 	code_new,			/* tp_new */
-// };
-// 
+};
+
 // /* All about c_lnotab.
 // 
 // c_lnotab is an array of unsigned bytes disguised as a Python string.  In -O

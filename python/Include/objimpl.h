@@ -179,10 +179,10 @@ PyAPI_FUNC(PyObject *) _PyObject_New(PyTypeObject *);
 	  ) & ~(SIZEOF_VOID_P - 1)		\
 	)
 
-// #define PyObject_NEW(type, typeobj) \
-// ( (type *) PyObject_Init( \
-// 	(PyObject *) PyObject_MALLOC( _PyObject_SIZE(typeobj) ), (typeobj)) )
-// 
+#define PyObject_NEW(type, typeobj) \
+( (type *) PyObject_Init( \
+	(PyObject *) PyObject_MALLOC( _PyObject_SIZE(typeobj) ), (typeobj)) )
+
 // #define PyObject_NEW_VAR(type, typeobj, n) \
 // ( (type *) PyObject_InitVar( \
 //       (PyVarObject *) PyObject_MALLOC(_PyObject_VAR_SIZE((typeobj),(n)) ),\
