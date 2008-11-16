@@ -2840,11 +2840,11 @@ PyEval_EvalCodeEx(PyCodeObject *co, PyObject *globals, PyObject *locals,
 // 	   current Python frame (f), the associated C stack is still in use,
 // 	   so recursion_depth must be boosted for the duration.
 // 	*/
-// 	assert(tstate != NULL);
-// 	++tstate->recursion_depth;
-// 	Py_DECREF(f);
-// 	--tstate->recursion_depth;
-// 	return retval;
+	assert(tstate != NULL);
+	++tstate->recursion_depth;
+	Py_DECREF(f);
+	--tstate->recursion_depth;
+	return retval;
 }
 
 // 
