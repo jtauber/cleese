@@ -20,7 +20,7 @@ unsigned char x[] = {
 };
 
 static struct _frozen frozenModules[] = {
-        {"__main__", x, 93}, 
+        {"__main__", x, 135}, 
 	{0, 0, 0} /* sentinel */
 };
 
