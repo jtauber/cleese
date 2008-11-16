@@ -696,7 +696,7 @@ PyImport_ExecCodeModule(char *name, PyObject *co)
 
 PyObject *
 PyImport_ExecCodeModuleEx(char *name, PyObject *co, char *pathname)
-{ printf("PyImport_ExecCodeModuleEx\n"); return NULL;
+{ printf("PyImport_ExecCodeModuleEx\n"); return NULL; // {
 // 	PyObject *modules = PyImport_GetModuleDict();
 // 	PyObject *m, *d, *v;
 // 

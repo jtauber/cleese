@@ -292,7 +292,7 @@ PyList_New(Py_ssize_t size)
 
 static void
 list_dealloc(PyListObject *op)
-{ printf("list_dealloc\n");
+{ printf("list_dealloc\n"); // {
 // 	Py_ssize_t i;
 // 	PyObject_GC_UnTrack(op);
 // 	Py_TRASHCAN_SAFE_BEGIN(op)
@@ -536,7 +536,7 @@ list_dealloc(PyListObject *op)
 
 static int
 list_clear(PyListObject *a)
-{ printf("list_clear\n"); return 0;
+{ printf("list_clear\n"); return 0; // {
 // 	Py_ssize_t i;
 // 	PyObject **item = a->ob_item;
 // 	if (item != NULL) {
@@ -2153,7 +2153,7 @@ list_clear(PyListObject *a)
 
 static int
 list_traverse(PyListObject *o, visitproc visit, void *arg)
-{ printf("list_traverse\n"); return 0;
+{ printf("list_traverse\n"); return 0; // {
 // 	Py_ssize_t i;
 // 
 // 	for (i = Py_SIZE(o); --i >= 0; )

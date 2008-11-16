@@ -612,7 +612,7 @@ _PyObject_New(PyTypeObject *tp)
    operator is not supported. */
 static PyObject *
 do_richcompare(PyObject *v, PyObject *w, int op)
-{ printf("do_richcompare\n"); return NULL;
+{ printf("do_richcompare\n"); return NULL; // {
 // 	richcmpfunc f;
 // 	PyObject *res;
 // 
@@ -822,7 +822,7 @@ PyObject_RichCompareBool(PyObject *v, PyObject *w, int op)
 
 long
 PyObject_HashNotImplemented(PyObject *v)
-{ printf("unhashable type\n");
+{ printf("unhashable type\n"); // {
 // 	PyErr_Format(PyExc_TypeError, "unhashable type: '%.200s'",
 // 		     Py_TYPE(v)->tp_name);
 	return -1;
@@ -1187,7 +1187,7 @@ PyObject_Hash(PyObject *v)
 
 int
 PyObject_IsTrue(PyObject *v)
-{ printf("PyObject_IsTrue\n"); return 0;
+{ printf("PyObject_IsTrue\n"); return 0; // {
 // 	Py_ssize_t res;
 // 	if (v == Py_True)
 // 		return 1;

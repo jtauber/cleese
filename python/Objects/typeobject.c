@@ -1079,7 +1079,7 @@
 
 int
 PyType_IsSubtype(PyTypeObject *a, PyTypeObject *b)
-{ printf("PyType_IsSubtype\n"); return 0;
+{ printf("PyType_IsSubtype\n"); return 0; // {
 // 	PyObject *mro;
 // 
 // 	mro = a->tp_mro;
@@ -2438,7 +2438,7 @@ PyType_IsSubtype(PyTypeObject *a, PyTypeObject *b)
 
 static void
 type_dealloc(PyTypeObject *type)
-{ printf("type_dealloc\n");
+{ printf("type_dealloc\n"); // {
 // 	PyHeapTypeObject *et;
 // 
 // 	/* Assert this is a heap-allocated type object */
@@ -2513,7 +2513,7 @@ type_dealloc(PyTypeObject *type)
 
 static int
 type_traverse(PyTypeObject *type, visitproc visit, void *arg)
-{ printf("type_traverse\n"); return 0;
+{ printf("type_traverse\n"); return 0; // {
 // 	/* Because of type_is_gc(), the collector only calls this
 // 	   for heaptypes. */
 // 	assert(type->tp_flags & Py_TPFLAGS_HEAPTYPE);
@@ -2534,7 +2534,7 @@ type_traverse(PyTypeObject *type, visitproc visit, void *arg)
 
 static int
 type_clear(PyTypeObject *type)
-{ printf("type_clear\n"); return 0;
+{ printf("type_clear\n"); return 0; // {
 // 	/* Because of type_is_gc(), the collector only calls this
 // 	   for heaptypes. */
 // 	assert(type->tp_flags & Py_TPFLAGS_HEAPTYPE);

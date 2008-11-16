@@ -411,7 +411,6 @@ r_string(char *s, int n, RFILE *p)
 		n = (int)(p->end - p->ptr);
 	memcpy(s, p->ptr, n);
 	p->ptr += n;
-	printf("r_string: %s %d\n", s, n);
 	return n;
 }
 
@@ -447,7 +446,6 @@ r_long(RFILE *p)
 // 	/* Sign extension for 64-bit machines */
 // 	x |= -(x & 0x80000000L);
 // #endif
-	printf("r_long:%d\n", x);
 	return x;
 }
 
@@ -484,7 +482,7 @@ r_long(RFILE *p)
 // 
 static PyObject *
 r_object(RFILE *p)
-{ printf("r_object\n");
+{
 	/* NULL is a valid return value, it does not necessarily means that
 	   an exception is set. */
 	PyObject *v, *v2;
@@ -499,7 +497,7 @@ r_object(RFILE *p)
 // 		PyErr_SetString(PyExc_ValueError, "recursion limit exceeded");
 // 		return NULL;
 // 	}
-	printf("\ttype:%d %c\n", type, type);
+
 	switch (type) {
 
 // 	case EOF:
@@ -695,7 +693,7 @@ r_object(RFILE *p)
 // 		}
 		if (r_string(PyBytes_AS_STRING(v), (int)n, p) != n) {
 // 			Py_DECREF(v);
-// 			printf("EOF not expected\n"); // PyErr_SetString(PyExc_EOFError,
+// 			PyErr_SetString(PyExc_EOFError,
 // 					"EOF read where object expected");
 // 			retval = NULL;
 // 			break;

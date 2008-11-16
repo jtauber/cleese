@@ -2196,7 +2196,7 @@ PyLong_FromLong(long ival)
 
 static void
 long_dealloc(PyObject *v)
-{ printf("long_dealloc\n");
+{ printf("long_dealloc\n"); // {
 // 	Py_TYPE(v)->tp_free(v);
 }
 
@@ -2244,7 +2244,7 @@ long_dealloc(PyObject *v)
 
 static long
 long_hash(PyLongObject *v)
-{ printf("long_hash\n"); return 0;
+{ printf("long_hash\n"); return 0; // {
 // 	long x;
 // 	Py_ssize_t i;
 // 	int sign;

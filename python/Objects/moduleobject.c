@@ -339,7 +339,7 @@ module_dealloc(PyModuleObject *m)
 
 static int
 module_traverse(PyModuleObject *m, visitproc visit, void *arg)
-{ printf("module_traverse\n"); return 0;
+{ printf("module_traverse\n"); return 0; // {
 // 	if (m->md_def && m->md_def->m_traverse) {
 // 		int res = m->md_def->m_traverse((PyObject*)m, visit, arg);
 // 		if (res)
@@ -351,7 +351,7 @@ module_traverse(PyModuleObject *m, visitproc visit, void *arg)
 
 static int
 module_clear(PyModuleObject *m)
-{ printf("module_clear\n"); return 0;
+{ printf("module_clear\n"); return 0; // {
 // 	if (m->md_def && m->md_def->m_clear) {
 // 		int res = m->md_def->m_clear((PyObject*)m);
 // 		if (res)

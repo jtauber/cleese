@@ -159,7 +159,7 @@ PyTuple_New(register Py_ssize_t size)
 
 static void
 tupledealloc(register PyTupleObject *op)
-{ printf("tupledealloc\n");
+{ printf("tupledealloc\n"); // {
 // 	register Py_ssize_t i;
 // 	register Py_ssize_t len =  Py_SIZE(op);
 // 	PyObject_GC_UnTrack(op);
@@ -263,7 +263,7 @@ tupledealloc(register PyTupleObject *op)
 
 static long
 tuplehash(PyTupleObject *v)
-{ printf("tuplehash\n"); return 0;
+{ printf("tuplehash\n"); return 0; // {
 // 	register long x, y;
 // 	register Py_ssize_t len = Py_SIZE(v);
 // 	register PyObject **p;
@@ -480,7 +480,7 @@ tuplehash(PyTupleObject *v)
 
 static int
 tupletraverse(PyTupleObject *o, visitproc visit, void *arg)
-{ printf("tupletraverse\n"); return 0;
+{ printf("tupletraverse\n"); return 0; // {
 // 	Py_ssize_t i;
 // 
 // 	for (i = Py_SIZE(o); --i >= 0; )

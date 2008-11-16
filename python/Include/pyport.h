@@ -1,9 +1,8 @@
 #ifndef Py_PYPORT_H
 #define Py_PYPORT_H
-// 
-// #include "pyconfig.h" /* include for defines */
-#define SIZEOF_VOID_P 4
-// 
+
+#define SIZEOF_VOID_P 4 // #include "pyconfig.h" /* include for defines */
+
 // #ifdef HAVE_STDINT_H
 // #include <stdint.h>
 // #endif
