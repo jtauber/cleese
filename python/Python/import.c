@@ -9,9 +9,9 @@
 // #include "pythonrun.h"
 // #include "errcode.h"
 #include "marshal.h"
-// #include "code.h"
+#include "code.h"
 // #include "compile.h"
-// #include "eval.h"
+#include "eval.h"
 // #include "osdefs.h"
 // #include "importdl.h"
 // 
@@ -726,7 +726,7 @@ PyImport_ExecCodeModuleEx(char *name, PyObject *co, char *pathname)
 // 		PyErr_Clear(); /* Not important enough to report */
 // 	Py_DECREF(v);
 // 
-// 	v = PyEval_EvalCode((PyCodeObject *)co, d, d);
+	v = PyEval_EvalCode((PyCodeObject *)co, d, d);
 // 	if (v == NULL)
 // 		goto error;
 // 	Py_DECREF(v);

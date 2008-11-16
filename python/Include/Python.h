@@ -114,7 +114,7 @@
 // #include "abstract.h"
 // 
 // #include "compile.h"
-// #include "eval.h"
+#include "eval.h"
 // 
 // #include "pystrtod.h"
 // #include "pystrcmp.h"

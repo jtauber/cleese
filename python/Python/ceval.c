@@ -512,18 +512,18 @@ _Py_CheckRecursiveCall(char *where)
 //    per thread, now just a pair o' globals */
 // int _Py_CheckInterval = 100;
 // volatile int _Py_Ticker = 100;
-// 
-// PyObject *
-// PyEval_EvalCode(PyCodeObject *co, PyObject *globals, PyObject *locals)
-// {
-// 	return PyEval_EvalCodeEx(co,
-// 			  globals, locals,
-// 			  (PyObject **)NULL, 0,
-// 			  (PyObject **)NULL, 0,
-// 			  (PyObject **)NULL, 0,
-// 			  NULL, NULL);
-// }
-// 
+
+PyObject *
+PyEval_EvalCode(PyCodeObject *co, PyObject *globals, PyObject *locals)
+{
+	return PyEval_EvalCodeEx(co,
+			  globals, locals,
+			  (PyObject **)NULL, 0,
+			  (PyObject **)NULL, 0,
+			  (PyObject **)NULL, 0,
+			  NULL, NULL);
+}
+
 // 
 // /* Interpreter main loop */
 // 
@@ -2572,11 +2572,11 @@ _Py_CheckRecursiveCall(char *where)
 //    PyEval_EvalFrame() and PyEval_EvalCodeEx() you will need to adjust
 //    the test in the if statements in Misc/gdbinit (pystack and pystackv). */
 // 
-// PyObject *
-// PyEval_EvalCodeEx(PyCodeObject *co, PyObject *globals, PyObject *locals,
-// 	   PyObject **args, int argcount, PyObject **kws, int kwcount,
-// 	   PyObject **defs, int defcount, PyObject *kwdefs, PyObject *closure)
-// {
+PyObject *
+PyEval_EvalCodeEx(PyCodeObject *co, PyObject *globals, PyObject *locals,
+	   PyObject **args, int argcount, PyObject **kws, int kwcount,
+	   PyObject **defs, int defcount, PyObject *kwdefs, PyObject *closure)
+{ printf("PyEval_EvalCodeEx\n"); return NULL;
 // 	register PyFrameObject *f;
 // 	register PyObject *retval = NULL;
 // 	register PyObject **fastlocals, **freevars;
@@ -2846,8 +2846,8 @@ _Py_CheckRecursiveCall(char *where)
 // 	Py_DECREF(f);
 // 	--tstate->recursion_depth;
 // 	return retval;
-// }
-// 
+}
+
 // 
 // /* Logic for the raise statement (too complicated for inlining).
 //    This *consumes* a reference count to each of its arguments. */
