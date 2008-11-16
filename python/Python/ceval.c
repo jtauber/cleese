@@ -2576,7 +2576,7 @@ PyObject *
 PyEval_EvalCodeEx(PyCodeObject *co, PyObject *globals, PyObject *locals,
 	   PyObject **args, int argcount, PyObject **kws, int kwcount,
 	   PyObject **defs, int defcount, PyObject *kwdefs, PyObject *closure)
-{ printf("PyEval_EvalCodeEx\n"); return NULL;
+{
 	register PyFrameObject *f;
 	register PyObject *retval = NULL;
 	register PyObject **fastlocals, **freevars;
@@ -2588,16 +2588,17 @@ PyEval_EvalCodeEx(PyCodeObject *co, PyObject *globals, PyObject *locals,
 // 				"PyEval_EvalCodeEx: NULL globals");
 // 		return NULL;
 // 	}
-// 
-// 	assert(tstate != NULL);
-// 	assert(globals != NULL);
-// 	f = PyFrame_New(tstate, co, globals, locals);
-// 	if (f == NULL)
-// 		return NULL;
-// 
-// 	fastlocals = f->f_localsplus;
-// 	freevars = f->f_localsplus + co->co_nlocals;
-// 
+
+	assert(tstate != NULL);
+	assert(globals != NULL);
+	f = PyFrame_New(tstate, co, globals, locals);
+	if (f == NULL)
+		return NULL;
+	fastlocals = f->f_localsplus;
+	freevars = f->f_localsplus + co->co_nlocals;
+	
+	return NULL;
+	
 // 	if (co->co_argcount > 0 ||
 // 	    co->co_kwonlyargcount > 0 ||
 // 	    co->co_flags & (CO_VARARGS | CO_VARKEYWORDS)) {

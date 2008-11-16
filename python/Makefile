@@ -8,6 +8,7 @@ OBJECTS_OBJS =	\
 				Objects/bytesobject.o \
 				Objects/codeobject.o \
 				Objects/dictobject.o \
+				Objects/frameobject.o \
 				Objects/listobject.o \
 				Objects/longobject.o \
 				Objects/moduleobject.o \

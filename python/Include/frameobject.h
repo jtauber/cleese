@@ -53,8 +53,8 @@ typedef struct _frame {
 // 
 // #define PyFrame_Check(op) (Py_TYPE(op) == &PyFrame_Type)
 // 
-// PyAPI_FUNC(PyFrameObject *) PyFrame_New(PyThreadState *, PyCodeObject *,
-//                                        PyObject *, PyObject *);
+PyAPI_FUNC(PyFrameObject *) PyFrame_New(PyThreadState *, PyCodeObject *,
+                                       PyObject *, PyObject *);
 // 
 // 
 // /* The rest of the interface is specific for frame objects */
