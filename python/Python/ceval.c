@@ -492,19 +492,19 @@ _Py_CheckRecursiveCall(char *where)
 // 	}
 // 	return 0;
 }
-// 
-// /* Status code for main loop (reason for stack unwind) */
-// enum why_code {
-// 		WHY_NOT =	0x0001,	/* No error */
-// 		WHY_EXCEPTION = 0x0002,	/* Exception occurred */
+
+/* Status code for main loop (reason for stack unwind) */
+enum why_code {
+		WHY_NOT =	0x0001,	/* No error */
+		WHY_EXCEPTION = 0x0002,	/* Exception occurred */
 // 		WHY_RERAISE =	0x0004,	/* Exception re-raised by 'finally' */
-// 		WHY_RETURN =	0x0008,	/* 'return' statement */
+		WHY_RETURN =	0x0008,	/* 'return' statement */
 // 		WHY_BREAK =	0x0010,	/* 'break' statement */
 // 		WHY_CONTINUE =	0x0020,	/* 'continue' statement */
 // 		WHY_YIELD =	0x0040,	/* 'yield' operator */
 // 		WHY_SILENCED = 0x0080 /* Exception silenced by 'with' */
-// };
-// 
+};
+
 // static enum why_code do_raise(PyObject *, PyObject *);
 // static int unpack_iterable(PyObject *, int, int, PyObject **);
 // 
@@ -545,7 +545,7 @@ PyEval_EvalFrameEx(PyFrameObject *f, int throwflag)
 	register unsigned char *next_instr;
 	register int opcode;	/* Current opcode */
 	register int oparg;	/* Current opcode argument, if any */
-// 	register enum why_code why; /* Reason for block stack unwind */
+	register enum why_code why; /* Reason for block stack unwind */
 // 	register int err;	/* Error status -- nonzero if error */
 	register PyObject *x;	/* Result object -- NULL if error */
 	register PyObject *v;	/* Temporary objects popped off stack */
@@ -862,7 +862,7 @@ PyEval_EvalFrameEx(PyFrameObject *f, int throwflag)
 // 	filename = _PyUnicode_AsString(co->co_filename);
 // #endif
 // 
-// 	why = WHY_NOT;
+	why = WHY_NOT;
 // 	err = 0;
 	x = Py_None;	/* Not a reference, just anything non-NULL */
 	w = NULL;
@@ -2363,7 +2363,7 @@ PyEval_EvalFrameEx(PyFrameObject *f, int throwflag)
 // 				PyCode_Addr2Line(f->f_code, f->f_lasti),
 // 				opcode);
 // 			PyErr_SetString(PyExc_SystemError, "unknown opcode");
-// 			why = WHY_EXCEPTION;
+			why = WHY_EXCEPTION;
 			break;
 // 
 // #ifdef CASE_TOO_BIG
@@ -2512,8 +2512,8 @@ PyEval_EvalFrameEx(PyFrameObject *f, int throwflag)
 // 
 // 		/* End the loop if we still have an error (or return) */
 // 
-// 		if (why != WHY_NOT)
-// 			break;
+		if (why != WHY_NOT)
+			break;
 // 		READ_TIMESTAMP(loop1);
 // 
 	} /* main loop */
@@ -2525,9 +2525,9 @@ PyEval_EvalFrameEx(PyFrameObject *f, int throwflag)
 // 		Py_XDECREF(v);
 // 	}
 // 
-// 	if (why != WHY_RETURN)
-// 		retval = NULL;
-// 
+	if (why != WHY_RETURN)
+		retval = NULL;
+
 // fast_yield:
 // 	if (tstate->use_tracing) {
 // 		if (tstate->c_tracefunc) {
