@@ -408,9 +408,9 @@
 // /* max value for numfree */
 // #define PyFrame_MAXFREELIST 200	
 // 
-// static void
-// frame_dealloc(PyFrameObject *f)
-// {
+static void
+frame_dealloc(PyFrameObject *f)
+{
 // 	PyObject **p, **valuestack;
 // 	PyCodeObject *co;
 // 
@@ -449,11 +449,11 @@
 // 
 // 	Py_DECREF(co);
 // 	Py_TRASHCAN_SAFE_END(f)
-// }
-// 
-// static int
-// frame_traverse(PyFrameObject *f, visitproc visit, void *arg)
-// {
+}
+
+static int
+frame_traverse(PyFrameObject *f, visitproc visit, void *arg)
+{
 // 	PyObject **fastlocals, **p;
 // 	int i, slots;
 // 
@@ -478,12 +478,12 @@
 // 		for (p = f->f_valuestack; p < f->f_stacktop; p++)
 // 			Py_VISIT(*p);
 // 	}
-// 	return 0;
-// }
-// 
-// static void
-// frame_clear(PyFrameObject *f)
-// {
+	return 0;
+}
+
+static void
+frame_clear(PyFrameObject *f)
+{
 // 	PyObject **fastlocals, **p, **oldtop;
 // 	int i, slots;
 // 
@@ -511,8 +511,8 @@
 // 		for (p = f->f_valuestack; p < oldtop; p++)
 // 			Py_CLEAR(*p);
 // 	}
-// }
-// 
+}
+
 // static PyObject *
 // frame_sizeof(PyFrameObject *f)
 // {
@@ -536,13 +536,13 @@
 // 	 sizeof__doc__},
 // 	{NULL,		NULL}	/* sentinel */
 // };
-// 
-// PyTypeObject PyFrame_Type = {
-// 	PyVarObject_HEAD_INIT(&PyType_Type, 0)
-// 	"frame",
-// 	sizeof(PyFrameObject),
-// 	sizeof(PyObject *),
-// 	(destructor)frame_dealloc,		/* tp_dealloc */
+
+PyTypeObject PyFrame_Type = {
+	PyVarObject_HEAD_INIT(&PyType_Type, 0)
+	"frame",
+	sizeof(PyFrameObject),
+	sizeof(PyObject *),
+	(destructor)frame_dealloc,		/* tp_dealloc */
 // 	0,					/* tp_print */
 // 	0,					/* tp_getattr */
 // 	0,					/* tp_setattr */
@@ -551,16 +551,16 @@
 // 	0,					/* tp_as_number */
 // 	0,					/* tp_as_sequence */
 // 	0,					/* tp_as_mapping */
-// 	0,					/* tp_hash */
+	0,					/* tp_hash */
 // 	0,					/* tp_call */
 // 	0,					/* tp_str */
 // 	PyObject_GenericGetAttr,		/* tp_getattro */
 // 	PyObject_GenericSetAttr,		/* tp_setattro */
 // 	0,					/* tp_as_buffer */
-// 	Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HAVE_GC,/* tp_flags */
+	Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HAVE_GC,/* tp_flags */
 // 	0,					/* tp_doc */
-// 	(traverseproc)frame_traverse,		/* tp_traverse */
-// 	(inquiry)frame_clear,			/* tp_clear */
+	(traverseproc)frame_traverse,		/* tp_traverse */
+	(inquiry)frame_clear,			/* tp_clear */
 // 	0,					/* tp_richcompare */
 // 	0,					/* tp_weaklistoffset */
 // 	0,					/* tp_iter */
@@ -570,8 +570,8 @@
 // 	frame_getsetlist,			/* tp_getset */
 // 	0,					/* tp_base */
 // 	0,					/* tp_dict */
-// };
-// 
+};
+
 // static PyObject *builtin_object;
 // 
 // int _PyFrame_Init()
@@ -633,14 +633,14 @@ PyFrame_New(PyThreadState *tstate, PyCodeObject *code, PyObject *globals,
 // 		assert(f->f_code == code);
 // 	}
 // 	else {
-// 		Py_ssize_t extras, ncells, nfrees;
-// 		ncells = PyTuple_GET_SIZE(code->co_cellvars);
-// 		nfrees = PyTuple_GET_SIZE(code->co_freevars);
-// 		extras = code->co_stacksize + code->co_nlocals + ncells +
-// 		    nfrees;
+		Py_ssize_t extras, ncells, nfrees;
+		ncells = PyTuple_GET_SIZE(code->co_cellvars);
+		nfrees = PyTuple_GET_SIZE(code->co_freevars);
+		extras = code->co_stacksize + code->co_nlocals + ncells +
+		    nfrees;
 // 		if (free_list == NULL) {
-// 		    f = PyObject_GC_NewVar(PyFrameObject, &PyFrame_Type,
-// 			extras);
+		    f = PyObject_GC_NewVar(PyFrameObject, &PyFrame_Type,
+			extras);
 // 		    if (f == NULL) {
 // 			    Py_DECREF(builtins);
 // 			    return NULL;
@@ -661,16 +661,16 @@ PyFrame_New(PyThreadState *tstate, PyCodeObject *code, PyObject *globals,
 // 		    _Py_NewReference((PyObject *)f);
 // 		}
 // 
-// 		f->f_code = code;
-// 		extras = code->co_nlocals + ncells + nfrees;
-// 		f->f_valuestack = f->f_localsplus + extras;
-// 		for (i=0; i<extras; i++)
-// 			f->f_localsplus[i] = NULL;
-// 		f->f_locals = NULL;
-// 		f->f_trace = NULL;
-// 		f->f_exc_type = f->f_exc_value = f->f_exc_traceback = NULL;
+		f->f_code = code;
+		extras = code->co_nlocals + ncells + nfrees;
+		f->f_valuestack = f->f_localsplus + extras;
+		for (i=0; i<extras; i++)
+			f->f_localsplus[i] = NULL;
+		f->f_locals = NULL;
+		f->f_trace = NULL;
+		f->f_exc_type = f->f_exc_value = f->f_exc_traceback = NULL;
 // 	}
-// 	f->f_stacktop = f->f_valuestack;
+	f->f_stacktop = f->f_valuestack;
 // 	f->f_builtins = builtins;
 // 	Py_XINCREF(back);
 // 	f->f_back = back;
@@ -695,12 +695,12 @@ PyFrame_New(PyThreadState *tstate, PyCodeObject *code, PyObject *globals,
 // 		Py_INCREF(locals);
 // 		f->f_locals = locals;
 // 	}
-// 	f->f_tstate = tstate;
-// 
-// 	f->f_lasti = -1;
-// 	f->f_lineno = code->co_firstlineno;
-// 	f->f_iblock = 0;
-// 
+	f->f_tstate = tstate;
+
+	f->f_lasti = -1;
+	f->f_lineno = code->co_firstlineno;
+	f->f_iblock = 0;
+
 // 	_PyObject_GC_TRACK(f);
 	return f;
 }

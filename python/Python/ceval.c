@@ -14,7 +14,7 @@
 #include "code.h"
 #include "frameobject.h"
 #include "eval.h"
-// #include "opcode.h"
+#include "opcode.h"
 // #include "structmember.h"
 // 
 // #include <ctype.h>
@@ -511,7 +511,7 @@ _Py_CheckRecursiveCall(char *where)
 // /* for manipulating the thread switch and periodic "stuff" - used to be
 //    per thread, now just a pair o' globals */
 // int _Py_CheckInterval = 100;
-// volatile int _Py_Ticker = 100;
+volatile int _Py_Ticker = 100;
 
 PyObject *
 PyEval_EvalCode(PyCodeObject *co, PyObject *globals, PyObject *locals)
@@ -621,12 +621,12 @@ PyEval_EvalFrameEx(PyFrameObject *f, int throwflag)
 // 	/* shut up the compiler */
 // 	opcode = 0;
 // #endif
-// 
-// /* Code access macros */
-// 
-// #define INSTR_OFFSET()	((int)(next_instr - first_instr))
-// #define NEXTOP()	(*next_instr++)
-// #define NEXTARG()	(next_instr += 2, (next_instr[-1]<<8) + next_instr[-2])
+
+/* Code access macros */
+
+#define INSTR_OFFSET()	((int)(next_instr - first_instr))
+#define NEXTOP()	(*next_instr++)
+#define NEXTARG()	(next_instr += 2, (next_instr[-1]<<8) + next_instr[-2])
 // #define PEEKARG()	((next_instr[2]<<8) + next_instr[1])
 // #define JUMPTO(x)	(next_instr = first_instr + (x))
 // #define JUMPBY(x)	(next_instr += (x))
@@ -769,18 +769,18 @@ PyEval_EvalFrameEx(PyFrameObject *f, int throwflag)
 // 		tstate->exc_traceback = f->f_exc_traceback; \
 // 		f->f_exc_traceback = tmp; \
 // 	}
-// 
-// /* Start of code */
-// 
-// 	if (f == NULL)
-// 		return NULL;
-// 
-// 	/* push frame */
-// 	if (Py_EnterRecursiveCall(""))
-// 		return NULL;
-// 
-// 	tstate->frame = f;
-// 
+
+/* Start of code */
+
+	if (f == NULL)
+		return NULL;
+
+	/* push frame */
+	if (Py_EnterRecursiveCall(""))
+		return NULL;
+
+	tstate->frame = f;
+
 // 	if (tstate->use_tracing) {
 // 		if (tstate->c_tracefunc != NULL) {
 // 			/* tstate->c_tracefunc, if defined, is a
@@ -815,34 +815,34 @@ PyEval_EvalFrameEx(PyFrameObject *f, int throwflag)
 // 		}
 // 	}
 // 
-// 	co = f->f_code;
-// 	names = co->co_names;
-// 	consts = co->co_consts;
-// 	fastlocals = f->f_localsplus;
-// 	freevars = f->f_localsplus + co->co_nlocals;
-// 	first_instr = (unsigned char*) PyBytes_AS_STRING(co->co_code);
-// 	/* An explanation is in order for the next line.
-// 
-// 	   f->f_lasti now refers to the index of the last instruction
-// 	   executed.  You might think this was obvious from the name, but
-// 	   this wasn't always true before 2.3!  PyFrame_New now sets
-// 	   f->f_lasti to -1 (i.e. the index *before* the first instruction)
-// 	   and YIELD_VALUE doesn't fiddle with f_lasti any more.  So this
-// 	   does work.  Promise.
-// 
-// 	   When the PREDICT() macros are enabled, some opcode pairs follow in
-//            direct succession without updating f->f_lasti.  A successful
-//            prediction effectively links the two codes together as if they
-//            were a single new opcode; accordingly,f->f_lasti will point to
-//            the first code in the pair (for instance, GET_ITER followed by
-//            FOR_ITER is effectively a single opcode and f->f_lasti will point
-//            at to the beginning of the combined pair.)
-// 	*/
-// 	next_instr = first_instr + f->f_lasti + 1;
-// 	stack_pointer = f->f_stacktop;
-// 	assert(stack_pointer != NULL);
-// 	f->f_stacktop = NULL;	/* remains NULL unless yield suspends frame */
-// 
+	co = f->f_code;
+	names = co->co_names;
+	consts = co->co_consts;
+	fastlocals = f->f_localsplus;
+	freevars = f->f_localsplus + co->co_nlocals;
+	first_instr = (unsigned char*) PyBytes_AS_STRING(co->co_code);
+	/* An explanation is in order for the next line.
+
+	   f->f_lasti now refers to the index of the last instruction
+	   executed.  You might think this was obvious from the name, but
+	   this wasn't always true before 2.3!  PyFrame_New now sets
+	   f->f_lasti to -1 (i.e. the index *before* the first instruction)
+	   and YIELD_VALUE doesn't fiddle with f_lasti any more.  So this
+	   does work.  Promise.
+
+	   When the PREDICT() macros are enabled, some opcode pairs follow in
+           direct succession without updating f->f_lasti.  A successful
+           prediction effectively links the two codes together as if they
+           were a single new opcode; accordingly,f->f_lasti will point to
+           the first code in the pair (for instance, GET_ITER followed by
+           FOR_ITER is effectively a single opcode and f->f_lasti will point
+           at to the beginning of the combined pair.)
+	*/
+	next_instr = first_instr + f->f_lasti + 1;
+	stack_pointer = f->f_stacktop;
+	assert(stack_pointer != NULL);
+	f->f_stacktop = NULL;	/* remains NULL unless yield suspends frame */
+
 // 	if (f->f_code->co_flags & CO_GENERATOR) {
 // 		if (f->f_exc_type != NULL && f->f_exc_type != Py_None) {
 // 			/* We were in an except handler when we left,
@@ -864,15 +864,15 @@ PyEval_EvalFrameEx(PyFrameObject *f, int throwflag)
 // 
 // 	why = WHY_NOT;
 // 	err = 0;
-// 	x = Py_None;	/* Not a reference, just anything non-NULL */
-// 	w = NULL;
-// 
+	x = Py_None;	/* Not a reference, just anything non-NULL */
+	w = NULL;
+
 // 	if (throwflag) { /* support for generator.throw() */
 // 		why = WHY_EXCEPTION;
 // 		goto on_error;
 // 	}
-// 
-// 	for (;;) {
+
+	for (;;) {
 // #ifdef WITH_TSC
 // 		if (inst1 == 0) {
 // 			/* Almost surely, the opcode executed a break
@@ -892,16 +892,16 @@ PyEval_EvalFrameEx(PyFrameObject *f, int throwflag)
 // #endif
 // 		assert(stack_pointer >= f->f_valuestack); /* else underflow */
 // 		assert(STACK_LEVEL() <= co->co_stacksize);  /* else overflow */
-// 
-// 		/* Do periodic things.  Doing this every time through
-// 		   the loop would add too much overhead, so we do it
-// 		   only every Nth instruction.  We also do it if
-// 		   ``things_to_do'' is set, i.e. when an asynchronous
-// 		   event needs attention (e.g. a signal handler or
-// 		   async I/O handler); see Py_AddPendingCall() and
-// 		   Py_MakePendingCalls() above. */
-// 
-// 		if (--_Py_Ticker < 0) {
+
+		/* Do periodic things.  Doing this every time through
+		   the loop would add too much overhead, so we do it
+		   only every Nth instruction.  We also do it if
+		   ``things_to_do'' is set, i.e. when an asynchronous
+		   event needs attention (e.g. a signal handler or
+		   async I/O handler); see Py_AddPendingCall() and
+		   Py_MakePendingCalls() above. */
+
+		if (--_Py_Ticker < 0) { printf("ticker\n");
 // 			if (*next_instr == SETUP_FINALLY) {
 // 				/* Make the last opcode before
 // 				   a try: finally: block uninterruptable. */
@@ -950,11 +950,11 @@ PyEval_EvalFrameEx(PyFrameObject *f, int throwflag)
 // 				}
 // 			}
 // #endif
-// 		}
-// 
-// 	fast_next_opcode:
-// 		f->f_lasti = INSTR_OFFSET();
-// 
+		}
+
+	fast_next_opcode:
+		f->f_lasti = INSTR_OFFSET();
+
 // 		/* line-by-line tracing support */
 // 
 // 		if (tstate->c_tracefunc != NULL && !tstate->tracing) {
@@ -977,14 +977,14 @@ PyEval_EvalFrameEx(PyFrameObject *f, int throwflag)
 // 				goto on_error;
 // 			}
 // 		}
-// 
-// 		/* Extract opcode and argument */
-// 
-// 		opcode = NEXTOP();
-// 		oparg = 0;   /* allows oparg to be stored in a register because
-// 			it doesn't have to be remembered across a full loop */
-// 		if (HAS_ARG(opcode))
-// 			oparg = NEXTARG();
+
+		/* Extract opcode and argument */
+
+		opcode = NEXTOP();
+		oparg = 0;   /* allows oparg to be stored in a register because
+			it doesn't have to be remembered across a full loop */
+		if (HAS_ARG(opcode))
+			oparg = NEXTARG();
 // 	  dispatch_opcode:
 // #ifdef DYNAMIC_EXECUTION_PROFILE
 // #ifdef DXPAIRS
@@ -1011,8 +1011,8 @@ PyEval_EvalFrameEx(PyFrameObject *f, int throwflag)
 // 
 // 		/* Main switch on opcode */
 // 		READ_TIMESTAMP(inst0);
-// 
-// 		switch (opcode) {
+		printf("OPCODE: %d\n", opcode);
+		switch (opcode) {
 // 
 // 		/* BEWARE!
 // 		   It is essential that any operation that fails sets either
@@ -2356,20 +2356,21 @@ PyEval_EvalFrameEx(PyFrameObject *f, int throwflag)
 // 			oparg = oparg<<16 | NEXTARG();
 // 			goto dispatch_opcode;
 // 
-// 		default:
+		default:
+			printf("UNKNOWN OPCODE\n");
 // 			fprintf(stderr,
 // 				"XXX lineno: %d, opcode: %d\n",
 // 				PyCode_Addr2Line(f->f_code, f->f_lasti),
 // 				opcode);
 // 			PyErr_SetString(PyExc_SystemError, "unknown opcode");
 // 			why = WHY_EXCEPTION;
-// 			break;
+			break;
 // 
 // #ifdef CASE_TOO_BIG
 // 		}
 // #endif
 // 
-// 		} /* switch */
+		} /* switch */
 // 
 // 	    on_error:
 // 
@@ -2515,7 +2516,7 @@ PyEval_EvalFrameEx(PyFrameObject *f, int throwflag)
 // 			break;
 // 		READ_TIMESTAMP(loop1);
 // 
-// 	} /* main loop */
+	} /* main loop */
 // 
 // 	assert(why != WHY_YIELD);
 // 	/* Pop remaining stack entries. */
