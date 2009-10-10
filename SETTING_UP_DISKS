@@ -12,14 +12,15 @@ Unmount the disk image from the finder.
 
 cp cleese.dmg cleese.img
 
-(Assuming you have a custom VM setup in VMWare Fusion) Set the floppy to
-grub.img. Boot it up. You will be dropped in a grub shell. Note the version is
-0.96 (I obtained the newer version of GRUB from ftp://alpha.gnu.org:21//gnu/grub/grub-0.97-i386-pc.tar.gz)
-I am not sure why the version shows 0.96 in VMWare.
+In VirtualBox, create an other/other VM (no harddrive)
 
-Once you have the prompt ready change the floppy to cleese.img. Then type in
+Add both grub.img and cleese.dmg as floppies in Virtual Media Manager.
+
+Mount grub.img as floppy and boot.
+
+Once you have the prompt ready change the floppy to cleese.dmg. Then type in
 the shell:
 
     setup (fd0)
 
-It should tell you it was successful at this task. Restart the VM and viola.
+It should tell you it was successful at this task. Restart the VM and voila.
