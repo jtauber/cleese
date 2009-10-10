@@ -7,8 +7,10 @@ make
 cat boot/grub/stage1 boot/grub/stage2 > grub.img
 hdiutil create -size 5M -fs "MS-DOS" -layout NONE cleese
 
-Open cleese.dmg in the finder and copy KERNEL.BIN and boot to the disk image.
-Unmount the disk image from the finder.
+Open cleese.dmg in the finder and copy KERNEL.BIN and boot/grub/menu.lst to
+the disk image.
+
+Unmount the disk image from the Finder.
 
 In VirtualBox, create an other/other VM (no harddrive)
 
