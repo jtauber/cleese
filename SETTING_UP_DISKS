@@ -10,8 +10,6 @@ hdiutil create -size 5M -fs "MS-DOS" -layout NONE cleese
 Open cleese.dmg in the finder and copy KERNEL.BIN and boot to the disk image.
 Unmount the disk image from the finder.
 
-cp cleese.dmg cleese.img
-
 In VirtualBox, create an other/other VM (no harddrive)
 
 Add both grub.img and cleese.dmg as floppies in Virtual Media Manager.
