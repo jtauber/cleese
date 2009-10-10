@@ -1,0 +1,11 @@
+See
+
+http://code.google.com/p/cleese/
+
+for the older, working version.
+
+This is a reboot of the project, starting essentially from scratch.
+
+Most experimentation is happening on branches rather than master.
+
+All that's in master now is a bootable "hello world" kernel.
