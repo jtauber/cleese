@@ -1,0 +1,9 @@
+For some reason OS X may give you the following (other times it works fine):
+
+    /System/Library/Extensions/msdosfs.kext failed to load - (libkern/kext) not privileged; check the system/kernel logs for errors or try kextutil(8).
+
+when running make empty-disk. Sounds straight-forward to correct this run:
+
+    sudo kextload /System/Library/Extensions/msdosfs.kext
+
+then you can run make empty-disk correctly.
