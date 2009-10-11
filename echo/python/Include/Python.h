@@ -21,7 +21,7 @@ PyAPI_FUNC(void) Py_FatalError(const char *message);
 /* from ? */
 #define offsetof(type, member) ( (int) & ((type*)0) -> member )
 
-#define LOG(msg) //print(msg)
+#define LOG(msg) //printf(msg)
 #define LOGF(format, arg1) //printf(format, arg1)
 
 #include "pymem.h"
