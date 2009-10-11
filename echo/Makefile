@@ -1,8 +1,12 @@
 .SUFFIXES:	.boa
 
 LDSCRIPT = cleese.ld
-CC       = gcc -Wall -O2 -nostdinc -fno-builtin #-DVERBOSE_MALLOC -DVERBOSE_MEMCPY -DVERBOSE_MARSHAL
-LD       = ld -T $(LDSCRIPT) -nostdlib
+NASM     = nasm -f elf
+CC       = i386-elf-gcc -Wall -O2 -nostdinc -fno-builtin
+LD       = i386-elf-ld -T $(LDSCRIPT) -nostdlib
+NM       = i386-elf-nm
+STRIP    = i386-elf-strip
+OBJS     = kstart.o main.o video.o ports.o
 
 KERNEL_OBJS =	\
 		kernel/res.o \
@@ -58,7 +62,7 @@ OBJS =		\
 		$(PYTHON_OBJS) \
 		$(MODULE_OBJS)
 
-all: c.img
+all: KERNEL.BIN
 
 clean:
 	-rm -f KERNEL.BIN
@@ -66,21 +70,44 @@ clean:
 	find . -name '*.o' -exec rm -f {} ';'
 	find . -name '*.s' -exec rm -f {} ';'
 
-clobber: clean
-	-rm -f bochsout.txt
-	-rm -f disk/*.img
-	find . -name '*~' -exec rm -f {} ';'
-
 .c.o:
 	$(CC) -c -I./include -I./python/Include -o $@ $<
 
 .boa.o:
 	python util/boa < $< | as -o $@
 
-c.img: KERNEL.BIN
-	MTOOLSRC=disk/mtools.conf mtools -c mcopy -o $< C:
 
 KERNEL.BIN: kernel/kstart.o $(OBJS) $(LDSCRIPT) 
 	$(LD) -Map kernel.map -o $@ kernel/kstart.o $(OBJS)
-	nm $@ | sort > kernel.lst
-	strip $@
+	$(NM) $@ | sort > kernel.lst
+	$(STRIP) $@
+
+
+
+
+images: grub.img cleese.img
+
+.asm.o:
+	$(NASM) -o $@ $<
+
+grub.img: boot/grub/stage1 boot/grub/stage2
+	cat boot/grub/stage1 boot/grub/stage2 > grub.img
+
+cleese.img: KERNEL.BIN
+	hdiutil create -size 5M -fs "MS-DOS" -layout NONE cleese
+	mv cleese.dmg cleese.img
+	mkdir -p mnt
+	mount_msdos -o nosync `hdid -nomount cleese.img` ./mnt
+	cp -r boot KERNEL.BIN ./mnt
+	umount -f ./mnt
+	rm -r ./mnt
+
+update-image:
+	mkdir -p mnt
+	mount_msdos -o nosync `hdid -nomount cleese.img` ./mnt
+	cp KERNEL.BIN ./mnt
+	umount -f ./mnt
+	rm -r ./mnt
+
+
+
