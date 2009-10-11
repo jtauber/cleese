@@ -94,31 +94,6 @@ def bpt():
 	printf("[%x: eax=%x]\n",ebx,eax)
 	popa; db(0xcf)
 
-def igf():
-	""" ignored processor trap w/ fault code """
-	esp += 4
-	db(0xcf)
-
-def gpf():
-	cli; pusha
-	""" general protection fault"""
-
-	xor(eax,eax)
-	esi = [esp + 0x24]
-	lodsw
-
-	if xor(eax,0x80cd) is z:	# linux system call: int $0x80
-		[esp + 0x24] = esi
-		fake_syscall(esp)
-		popa
-		esp += 4
-		db(0xcf)
-
-	eax = [esp + 0x20]
-	ebx = [esp + 0x24]
-	printf("[GPF:%x fault=%x]\n",ebx,eax)
-	dw(0xfeeb)
-
 #-------------------------------------------------------------------------------
 
 def icoda():
@@ -172,7 +147,7 @@ idt_desc = dw(0x7f); dd(
 	ign, 0x00108f00, ign, 0x00108f00, ign, 0x00108f00, ign, 0x00108f00,
 
 	clk, 0x00108f00, key, 0x00108f00, igp, 0x00108f00, igp, 0x00108f00,
-	igp, 0x00108f00, gpf, 0x00108f00, igp, 0x00108f00, igp, 0x00108f00))
+	igp, 0x00108f00, igp, 0x00108f00, igp, 0x00108f00, igp, 0x00108f00))
 
 #===============================================================================
 
