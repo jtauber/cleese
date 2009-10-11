@@ -5,3 +5,7 @@ title   Hello World
 title   Echo
         root    (fd0)
         kernel  /echo.bin
+
+title   One plus one
+        root    (fd0)
+        kernel  /oneplusone.bin
