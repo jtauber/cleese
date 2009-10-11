@@ -522,7 +522,7 @@ eval_frame(PyFrameObject *f)
 				if (x == NULL) {
 					x = PyDict_GetItem(f->f_builtins, w);
 					if (x == NULL) {
-						printf("can't find %s", ((PyStringObject *)w)->ob_sval);
+						printf("can't find %s\n", ((PyStringObject *)w)->ob_sval);
 						/* format_exc_check_arg */
 						break;
 					}
