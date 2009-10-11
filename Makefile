@@ -2,9 +2,17 @@ images: grub.img cleese.img
 
 clean:
 	-rm -f grub.img cleese.img
+	$(MAKE) -C hello_world clean
+	$(MAKE) -C echo clean
 
 grub.img: boot/grub/stage1 boot/grub/stage2
 	cat boot/grub/stage1 boot/grub/stage2 > grub.img
+
+hello_world/KERNEL.BIN:
+	$(MAKE) -C hello_world
+
+echo/KERNEL.BIN:
+	$(MAKE) -C echo
 
 cleese.img: hello_world/KERNEL.BIN echo/KERNEL.BIN
 	hdiutil create -size 5M -fs "MS-DOS" -layout NONE cleese
