@@ -3,3 +3,4 @@ KERNEL.BIN
 *.dmg
 *.img
 kernel.lst
+kernel.map
