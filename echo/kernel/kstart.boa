@@ -45,7 +45,7 @@ def startC():
 
 	#----------------------------------------------
 	# TEMPORARY: busy wait to pause for boot screen 
-	ecx = 0x100000
+	ecx = 0x10000000
 	while dec(ecx) is nz: pass
 	#----------------------------------------------
 
