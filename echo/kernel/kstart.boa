@@ -26,12 +26,12 @@ def entry():
 def startC():
 	""" builds C environment and calls main() """
 
-	set320x200x256
+	# set320x200x256
 
-	esi = bootscreen
-	edi = 0xA0000
-	ecx = 0x0FA00
-	rep; movsb
+	# esi = bootscreen
+	# edi = 0xA0000
+	# ecx = 0x0FA00
+	# rep; movsb
 
         edi = bss               # zero out BSS
         ecx = end
@@ -45,8 +45,8 @@ def startC():
 
 	#----------------------------------------------
 	# TEMPORARY: busy wait to pause for boot screen 
-	ecx = 0x80000000
-	while dec(ecx) is nz: pass
+	# ecx = 0x80000000
+	# while dec(ecx) is nz: pass
 	#----------------------------------------------
 
 	set80x25
