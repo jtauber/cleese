@@ -1,6 +1,3 @@
-/* let the linker use its 'native' format (ELF/COFF/PE)
-OUTPUT_FORMAT("coff-go32") */
-/* no leading underscore for symbols handled in asm: */
 
 ENTRY(entry)
 
@@ -55,18 +52,6 @@ SECTIONS
         *(COMMON)
         
         . = ALIGN(4096);
-    }
-    
-    /* bug in MinGW? I get a bad executable file unless these
-    sections are here... */
-    .stab :
-    {
-        *(.stab)
-    }
-    
-    .stabstr :
-    {
-        *(.stabstr)
     }
     
     /* symbols to mark end of kernel */
