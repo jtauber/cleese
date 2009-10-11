@@ -2,6 +2,8 @@
 import parser
 import symbol
 import token
+import sys
+import os
 
 ################################################################################
 # Basically Obscure Assembler
@@ -11,6 +13,7 @@ import token
 # 18 Sep 2003 - NASM style pseudo-ops; also comparisons, (op)= assignments
 # 20 Sep 2003 - NASM style string initializers, ord('x') for character constants
 # 21 Sep 2003 - NASM argument order; dx(), resx(), string literals
+# 18 Oct 2003 - offset(), incbin()
 ################################################################################
 # TODO: find how to get more informative parser errors
 ################################################################################
@@ -20,13 +23,13 @@ import token
 #-------------------------------------------------------------------------------
 
 opcodes = """
-    add andl cli cld cmp dec inb inc int lea lodsb lodsw movsb movsl movl
-    nop orl outb pop popa push pusha rep ret shl shr std sti stosb stosw
-    stosl sub test xlat xor
+    add andl cli cld cmp dec inb inc int inw lea lodsb lodsw lodsl
+    movsb movsl movl nop orl outb outw pop popa push pusha rep ret
+    shl shr std sti stosb stosw stosl sub test xlat xor
 	  """.split()
 
 reversed = """
-    add andl cmp inb lea movl orl outb shl shr sub test xor
+    add andl cmp inb inw lea movl orl outb outw shl shr sub test xor
 	   """.split()
 
 #-------------------------------------------------------------------------------
@@ -57,6 +60,12 @@ def arg(t):
 	elif x == 'reg':	return y
 	else:			return "$" + y
 
+def size(t):
+	""" return size byte for at&t """
+	(x,y) = t
+	if x == 'reg':	return ''
+	else:		return 'l'
+
 def cint(s):
 	""" return value of a C-style numeric constant """
 	if s[0] == '0':
@@ -73,6 +82,7 @@ def section(s):
 #-------------------------------------------------------------------------------
 # pseudo-ops have a d/w/b suffix, for 32/16/8 bit values
 #	dd, dw, db:		initialized data
+#	incbin:			initialized data from external file
 #	resd, resw, resb:	reserve space (optional arguments multiply)
 #	align:			align to 
 #
@@ -109,6 +119,17 @@ def gpseudo(op, argl, s, c):
 	elif res.has_key(op) and s:
 		n = reduce(lambda v,t: v * cint(t[1]), argl, res[op])
 		print ".comm %s,%s" % (s,n)
+	elif op == 'incbin':
+		if s: print "%s:" % s
+		(t, v) = argl[0]
+		f = open(os.path.join(dir, v[1:-1]), "r")
+		while 1:
+			l = f.read(16)
+			if not len(l):
+				break
+			print ".ascii \"%s\"" % \
+				repr(l)[1:-1].replace('"',r'\"')
+		f.close()
 	if nested: section(sect)
 
 #-------------------------------------------------------------------------------
@@ -155,7 +176,7 @@ def gcode():
 	elif equals.has_key(x):
 		a = toks.pop()
 		b = toks.pop()
-		print "%s %s,%s" % (equals[x], arg(a), arg(b))
+		print "%s%s %s,%s" % (equals[x], size(b), arg(a), arg(b))
 	elif x == token.STRING:	pass
 	else:
 		toks.append((x,y))
@@ -280,7 +301,7 @@ def prterm(tup,c):
 				     "cs","ds","es","fs","gs","ss"]:
 		tup = ('reg', "%" + tup[1])
 	elif x == token.STRING and len(toks):
-		if flags not in ['db', 'dw', 'dd', 'ord', 'asm']:
+		if flags not in ['db', 'dw', 'dd', 'ord', 'asm', 'incbin']:
 			litsym = "l%d" % nextlab()
 			gpseudo('db', [(token.NUMBER, 0), tup], litsym, c)
 			tup = (token.NAME, litsym)
@@ -289,6 +310,8 @@ def prterm(tup,c):
 #-------------------------------------------------------------------------------
 # collect argument lists into a python list
 # ord(STRING) is rewritten to be a NUMBER character constant
+# asm(STRING) is an escape to the underlying assembler
+# offset(NUM) assembles an offset from the current location ('.')
 # pseudo-ops are written out and, if literals, rewritten to their address
 #-------------------------------------------------------------------------------
 
@@ -301,15 +324,20 @@ def prlist(op, c):
 		elif x == token.LPAR:   break
 		else:                   l.append((x,y))
 
+	def sarg(l):
+		toks.pop()
+		(t, v) = l[0]
+		return v[1:-1]
+
 	if op == 'ord':
-		toks.pop()
-		(t, v) = l[0]
-		toks.append((token.NUMBER, "\'%s\'" % v[1:-1]))
+		toks.append((token.NUMBER, "\'%s\'" % sarg(l)))
 	elif op == 'asm':
+		print sarg(l)
+	elif op == 'offset':
 		toks.pop()
 		(t, v) = l[0]
-		print v[1:-1]
-	elif pseudo.has_key(op) or res.has_key(op):
+		toks.append((token.NUMBER, "(.+%s)" % v))
+	elif pseudo.has_key(op) or res.has_key(op) or op == 'incbin':
 		toks.pop()
 		if len(toks) == 0:
 			gpseudo(op, l, None, c)
@@ -422,10 +450,16 @@ def prtup(tup,c):
 
 ################################################################################
 
-import sys
+if len(sys.argv) == 1 or sys.argv[1] == '-':
+	src = sys.stdin
+	dir = "."
+else:
+	src = open(sys.argv[1], "r")
+	dir = os.path.dirname(sys.argv[1])
+	print ".file \"%s\"" % os.path.basename(sys.argv[1])
 
 try:
-	prtup(parser.suite(sys.stdin.read()).totuple(),(0,-1,None))
+	prtup(parser.suite(src.read()).totuple(),(0,-1,None))
 except parser.ParserError, err:
 	print ".err"
 	sys.stderr.write("parser.suite() gave up.  Where?  Who knows.\n")
