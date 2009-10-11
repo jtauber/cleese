@@ -2,7 +2,7 @@
 # you need to do 'make empty-disk' then manually setup grub on it before
 # running 'make'
 
-BUILD_OS := `uname -s`
+BUILD_OS := $(shell uname -s)
 
 all: cleese.img
 
@@ -28,7 +28,7 @@ oneplusone/KERNEL.BIN:
 
 echo/KERNEL.BIN:
 	$(MAKE) -C echo
-	
+
 empty-disk:
 ifeq ($(BUILD_OS), Darwin)
 	hdiutil create -size 5M -fs "MS-DOS" -layout NONE empty
