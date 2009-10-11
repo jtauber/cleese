@@ -1,16 +1,5 @@
-.SUFFIXES:	.boa
-
-CC       = gcc -Wall -O2 -nostdinc -fno-builtin
-CC	 += -fno-strict-aliasing
-#CC      += -fno-leading-underscore
-#CC	 += -DVERBOSE_MALLOC -DVERBOSE_MEMCPY -DVERBOSE_MARSHAL
-LD       = ld -nostdlib
 SYMTAB	 = -defsym symtab=defsyms
 PYTHON	 = python
-
-# gcc on cygwin doesn't seem to obey '-fno-leading-underscore'
-#-------------------------------------------------------------
-CYGWIN_KLUDGE = objcopy --remove-leading-char $@ tmp.o; mv tmp.o $@
 
 LED_PY = \
 		kernel/led.py \
@@ -128,31 +117,11 @@ LIB_OBJS +=	\
 		lib/bochs/ports.o \
 		lib/bochs/mem.o
 
-OBJS =		\
+OBJS =	\
 		$(KERNEL_OBJS) \
 		$(PYTHON_OBJS) \
 		$(LIB_OBJS) \
 		$(RES_OBJS)
-
-all: grub
-
-clean:
-	-rm -f KERNEL.BIN cleese cleese.map kernel_bytecode.c
-	-rm -f kernel/kernel_bytecode.c
-	find . -name '*.o' -exec rm -f {} ';'
-	find . -name '*.s' -exec rm -f {} ';'
-
-clobber: clean
-	-rm -f bochsout.txt
-	-rm -f disk/*.img
-	find . -name '*~' -exec rm -f {} ';'
-
-.c.o:
-	$(CC) -c -I./include -I./python/Include -o $@ $<
-	$(CYGWIN_KLUDGE)
-
-.boa.o:
-	$(PYTHON) util/boa $< | as -o $@
 
 kernel/kernel_bytecode.c: $(KERNEL_PY)
 	$(PYTHON) util/freeze.py $^
@@ -161,16 +130,4 @@ kernel/kernel_bytecode.c: $(KERNEL_PY)
 cleese: $(LDSCRIPT) $(CRT0) $(OBJS) # order is important!
 	$(LD) -Map cleese.map $(SYMTAB) -o $@ -T $^
 
-grub: cleese FORCE
-	objcopy -R .note -R .comment -S -O elf32-i386 $< KERNEL.BIN
-	util/push KERNEL.BIN $@
-
-bootp: cleese FORCE
-	objcopy -R .note -R .comment -S -O binary $< KERNEL.BIN
-	util/push KERNEL.BIN $@
-
-FORCE:
-
-p:	$(PYTHON_OBJS)
-k:	$(KERNEL_OBJS)
-l:	$(LIB_OBJS)
+include ../Makefile.common
