@@ -14,7 +14,6 @@ clean:
 	-rm -f KERNEL.BIN
 	-rm -f kernel.lst kernel.map
 	find . -name '*.o' -exec rm -f {} ';'
-	find . -name '*.s' -exec rm -f {} ';'
 
 KERNEL.BIN: $(OBJS) $(LDSCRIPT) 
 	$(LD) -Map kernel.map -o $@ $(OBJS)
