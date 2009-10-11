@@ -11,7 +11,8 @@ AS       = i386-elf-as
 KERNEL_OBJS =	\
 		kernel/res.o \
 		kernel/main.o \
-		kernel/kernel_bytecode.o
+		kernel/kernel_bytecode.o \
+		kernel/isrmodule.o
 
 MACH_OBJS =	\
 		mach/video.o \
