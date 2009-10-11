@@ -15,6 +15,7 @@ static PyObject *load_args(PyObject ***, int);
 
 /* @@@ need to investigate need for this */
 PyObject *PyEval_CallObjectWithKeywords(PyObject *, PyObject *, PyObject *);
+static int assign_slice(PyObject *, PyObject *, PyObject *, PyObject *);
 
 /* Mechanism whereby asynchronously executing callbacks (e.g. UNIX
    signal handlers or Mac I/O completion routines) can schedule calls
