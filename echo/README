@@ -1,0 +1,14 @@
+$Id: README 97 2003-09-18 16:35:58Z jtauber $
+
+Bootable Python VM running echo script
+
+To build:
+	cd disk
+	unzip grub.zip
+	unzip c.zip
+	cd ..
+	make
+
+To run:
+	bochs -f bochs/cleese.bxrc
+

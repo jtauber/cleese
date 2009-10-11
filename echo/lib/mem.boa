@@ -1,0 +1,39 @@
+def bcopy():
+	push(esi)
+	push(edi)
+
+	esi = [esp + 0x0C]	# src
+	edi = [esp + 0x10]	# dst
+	ecx = [esp + 0x14]	# cnt
+	cld
+
+	if esi < edi:			# check overlap?
+		esi += ecx
+		if esi >= edi:		# if overlapping ...
+			edi += ecx
+			ypocb		# ... copy backwards
+			pop(edi)
+			pop(esi)
+			ret
+		esi -= ecx
+
+	eax = ecx
+	ecx >>= 2		# first copy whole words
+	rep
+	movsl
+
+	ecx = eax
+	ecx &= 3		# and then any remainder
+	rep
+	movsb
+
+	pop(edi)
+	pop(esi)
+
+	def ypocb():
+		std
+		dec(esi)
+		dec(edi)
+		rep
+		movsb
+		cld
