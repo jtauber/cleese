@@ -1,9 +1,4 @@
-.SUFFIXES: .asm
-
-LDSCRIPT = krnl1m.ld
-NASM     = nasm -f elf
-CC       = gcc -Wall -O2 -nostdinc -fno-builtin #-DVERBOSE_MALLOC -DVERBOSE_MEMCPY
-LD       = ld -T $(LDSCRIPT) -nostdlib
+INCLUDE_FLAGS = -I./Include
 
 OBJECT_OBJS =	\
 		Objects/frameobject.o \
@@ -38,37 +33,13 @@ MACH_OBJS =	\
 		mach/malloc.o
 
 OBJS =	\
+	kstart.o \
+	Modules/python.o \
 	$(OBJECT_OBJS) \
 	$(PYTHON_OBJS) \
 	$(MODULE_OBJS) \
 	$(LIB_OBJS) \
 	$(MACH_OBJS)
 
-all: c.img
 
-clean:
-	-rm -f *.o KERNEL.BIN kernel.lst kernel.map Objects/*.o Python/*.o Modules/*.o lib/*.o mach/*.o
-
-clobber:
-	-rm -f *.o KERNEL.BIN kernel.lst kernel.map Objects/*.o Python/*.o Modules/*.o lib/*.o mach/*.o
-	-rm -f bochsout.txt c.img grub.img *~ Object/*~ Python/*~ Modules/*~ lib/*~ mach/*~
-
-.asm.o:
-	$(NASM) -o $@ $<
-
-.c.o:
-	$(CC) -c -I./Include -o $@ $<
-
-c.img: KERNEL.BIN
-	MTOOLSRC=mtools.conf mtools -c mcopy -o $< C:
-
-KERNEL.BIN: kstart.o Modules/python.o $(OBJS) $(LDSCRIPT) 
-	$(LD) -Map kernel.map -o $@ kstart.o Modules/python.o $(OBJS)
-	nm $@ | sort > kernel.lst
-	strip $@
-
-
-
-
-
-
+include ../Makefile.common
