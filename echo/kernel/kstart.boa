@@ -12,11 +12,11 @@
 
 def entry():
     """ takes control from the bootloader """
-        db(0x0f,0x01,0x15)      # use our descriptor table (lgdt [gdt])
-        dd(gdt)
+    db(0x0f,0x01,0x15)      # use our descriptor table (lgdt [gdt])
+    dd(gdt)
 
-        ax = 0x18       # load ds
-        ds = ax; es = ax; ss = ax
+    ax = 0x18       # load ds
+    ds = ax; es = ax; ss = ax
     xor(ax,ax)
     fs = ax; gs = ax
 
@@ -33,15 +33,15 @@ def startC():
     # ecx = 0x0FA00
     # rep; movsb
 
-        edi = bss               # zero out BSS
-        ecx = end
-        ecx -= edi
-        ecx >>= 2               # (assume sections are word aligned)
-        eax = 0
-        rep; stosl
+    edi = bss               # zero out BSS
+    ecx = end
+    ecx -= edi
+    ecx >>= 2               # (assume sections are word aligned)
+    eax = 0
+    rep; stosl
 
-        esp = resb(0x1000)      # set up a stack
-        esp +=     0x0ffc
+    esp = resb(0x1000)      # set up a stack
+    esp +=     0x0ffc
 
     #----------------------------------------------
     # TEMPORARY: busy wait to pause for boot screen 
@@ -51,8 +51,8 @@ def startC():
 
     set80x25
 
-        main(ebx)               # and call C code
-        dw(0xfeeb)              # infinite loop (jmp $-2)
+    main(ebx)               # and call C code
+    dw(0xfeeb)              # infinite loop (jmp $-2)
 
 #-------------------------------------------------------------------------------
 # Multiboot header for GRUB bootloader. This must be in the first 8K
