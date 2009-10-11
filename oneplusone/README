@@ -1,0 +1,12 @@
+$Id: README 93 2003-09-16 21:45:36Z jtauber $
+
+experimental/grub_boot2py is an attempt to merge experimental/grub_boot and experimental/oneplusone
+
+To build:
+	unzip grub.zip
+	unzip c.zip
+	make
+
+To run:
+	bochs -f grub.bxrc
+
