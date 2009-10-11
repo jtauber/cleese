@@ -6,7 +6,7 @@ CC       = i386-elf-gcc -Wall -O2 -nostdinc -fno-builtin
 LD       = i386-elf-ld -T $(LDSCRIPT) -nostdlib
 NM       = i386-elf-nm
 STRIP    = i386-elf-strip
-OBJS     = kstart.o main.o video.o ports.o
+AS       = i386-elf-as
 
 KERNEL_OBJS =	\
 		kernel/res.o \
@@ -74,7 +74,7 @@ clean:
 	$(CC) -c -I./include -I./python/Include -o $@ $<
 
 .boa.o:
-	python util/boa < $< | as -o $@
+	python util/boa < $< | $(AS) -o $@
 
 
 KERNEL.BIN: kernel/kstart.o $(OBJS) $(LDSCRIPT) 
