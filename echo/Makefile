@@ -1,5 +1,3 @@
-include ../Makefile.common
-
 INCLUDE_FLAGS = -I./include -I./python/Include
 
 KERNEL_OBJS =	\
@@ -57,3 +55,5 @@ OBJS =	\
 		$(OBJECT_OBJS) \
 		$(PYTHON_OBJS) \
 		$(MODULE_OBJS)
+
+include ../Makefile.common
