@@ -1,13 +1,11 @@
 
-Quick instructions on getting things going. I am assuming a lot is already
-done before even running make. This has only been tested on OS X 10.5.X with
-a custom built toolchain (binutils-2.19/gcc-4.2.4). Buyer beware at this point.
+After you have built the custom toolchain for i386-elf, run
 
-make
-make grub.img
-make cleese.img
+(cd hello_world; make)
+(cd echo; make)
+make images
 
-In VirtualBox, create an other/other VM (no harddrive)
+In VirtualBox, create an other/unknown VM (no harddrive)
 
 Add both grub.img and cleese.img as floppies in Virtual Media Manager.
 
@@ -20,3 +18,5 @@ the shell:
     reboot
 
 From that point on, just booting cleese.img floppy will work.
+
+If you rebuilt any kernels, run make update-image to update cleese.img

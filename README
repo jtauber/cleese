@@ -1,11 +1,15 @@
-See
+Cleese is a project to build a functioning operating system written almost
+entirely in Python. The basic idea is to have a microkernel mostly based on
+the Python VM and all other operating system functionality written in Python.
 
-http://code.google.com/p/cleese/
+James Tauber and Dave Long successfully built a proof-of-concept back in 2003.
 
-for the older, working version.
+You can see that work, along with some historical information at:
 
-This is a reboot of the project, starting essentially from scratch.
+	http://code.google.com/p/cleese/
 
-Most experimentation is happening on branches rather than master.
 
-All that's in master now is a bootable "hello world" kernel.
+This is a reboot of the project, starting largely from scratch. James Tauber
+is now joined by Brian Rosner.
+
+To get started, see BUILDING_TOOLCHAIN and SETTING_UP_DISKS.
