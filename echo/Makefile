@@ -82,33 +82,3 @@ KERNEL.BIN: kernel/kstart.o $(OBJS) $(LDSCRIPT)
 	$(LD) -Map kernel.map -o $@ kernel/kstart.o $(OBJS)
 	$(NM) $@ | sort > kernel.lst
 	$(STRIP) $@
-
-
-
-
-images: grub.img cleese.img
-
-.asm.o:
-	$(NASM) -o $@ $<
-
-grub.img: boot/grub/stage1 boot/grub/stage2
-	cat boot/grub/stage1 boot/grub/stage2 > grub.img
-
-cleese.img: KERNEL.BIN
-	hdiutil create -size 5M -fs "MS-DOS" -layout NONE cleese
-	mv cleese.dmg cleese.img
-	mkdir -p mnt
-	mount_msdos -o nosync `hdid -nomount cleese.img` ./mnt
-	cp -r boot KERNEL.BIN ./mnt
-	umount -f ./mnt
-	rm -r ./mnt
-
-update-image:
-	mkdir -p mnt
-	mount_msdos -o nosync `hdid -nomount cleese.img` ./mnt
-	cp KERNEL.BIN ./mnt
-	umount -f ./mnt
-	rm -r ./mnt
-
-
-
