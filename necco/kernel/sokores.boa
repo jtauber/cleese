@@ -1,14 +1,14 @@
 sokosyms = dd(
-	db("splashscreen",0), bootscreen,           0xfa00,
-	db("sokoscreen",0),   incbin('sokobg.dat'), 0xfa00,
-	db("sokotile",0),     sokotile,             0x40,
-	db("sokogoal",0),     sokogoal,             0x40,
-	db("stonetile",0),    stonetile,            0x40,
-	db("stonegoal",0),    stonegoal,            0x40,
-	db("wall",0),         wall,                 0x40,
-	db("goal",0),         goal,                 0x40,
-	db("floor",0),        floor,                0x40,
-	0, 0, 0)
+    db("splashscreen",0), bootscreen,           0xfa00,
+    db("sokoscreen",0),   incbin('sokobg.dat'), 0xfa00,
+    db("sokotile",0),     sokotile,             0x40,
+    db("sokogoal",0),     sokogoal,             0x40,
+    db("stonetile",0),    stonetile,            0x40,
+    db("stonegoal",0),    stonegoal,            0x40,
+    db("wall",0),         wall,                 0x40,
+    db("goal",0),         goal,                 0x40,
+    db("floor",0),        floor,                0x40,
+    0, 0, 0)
 
 sokotile = db(
 0, 0, 1, 1, 1, 1, 0, 0,

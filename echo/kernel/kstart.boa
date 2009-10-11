@@ -11,27 +11,27 @@
 #-------------------------------------------------------------------------------
 
 def entry():
-	""" takes control from the bootloader """
+    """ takes control from the bootloader """
         db(0x0f,0x01,0x15)      # use our descriptor table (lgdt [gdt])
         dd(gdt)
 
-        ax = 0x18		# load ds
-        ds = ax; es = ax; ss = ax           
-	xor(ax,ax)
-	fs = ax; gs = ax
+        ax = 0x18       # load ds
+        ds = ax; es = ax; ss = ax
+    xor(ax,ax)
+    fs = ax; gs = ax
 
-	db(0xea)
-	dd(startC); dw(0x10)
+    db(0xea)
+    dd(startC); dw(0x10)
 
 def startC():
-	""" builds C environment and calls main() """
+    """ builds C environment and calls main() """
 
-	# set320x200x256
+    # set320x200x256
 
-	# esi = bootscreen
-	# edi = 0xA0000
-	# ecx = 0x0FA00
-	# rep; movsb
+    # esi = bootscreen
+    # edi = 0xA0000
+    # ecx = 0x0FA00
+    # rep; movsb
 
         edi = bss               # zero out BSS
         ecx = end
@@ -43,13 +43,13 @@ def startC():
         esp = resb(0x1000)      # set up a stack
         esp +=     0x0ffc
 
-	#----------------------------------------------
-	# TEMPORARY: busy wait to pause for boot screen 
-	# ecx = 0x80000000
-	# while dec(ecx) is nz: pass
-	#----------------------------------------------
+    #----------------------------------------------
+    # TEMPORARY: busy wait to pause for boot screen 
+    # ecx = 0x80000000
+    # while dec(ecx) is nz: pass
+    #----------------------------------------------
 
-	set80x25
+    set80x25
 
         main(ebx)               # and call C code
         dw(0xfeeb)              # infinite loop (jmp $-2)
@@ -59,8 +59,8 @@ def startC():
 # of the kernel file.
 #-------------------------------------------------------------------------------
 
-	align(4)
-	dd(0x1BADB002,          # magic
+    align(4)
+    dd(0x1BADB002,          # magic
            0x00010003,          # AOUT_KLUDGE(16)|MEMORY_INFO(1)|PAGE_ALIGN(0)
            0xe4514ffb,          # checksum: -(magic + flags)
            entry, bss, end,
@@ -76,66 +76,66 @@ gdt = dw(0x20);  dd(gdt);  dw(0,        # overlay: len + address
 #===============================================================================
 
 def initirqs():
-	""" initialize interrupts """
-	db(0x0f,0x01,0x1d)	# set up vectors (lidt [idt_desc])
-	dd(idt_desc)
-	sti			# enable interrupts
+    """ initialize interrupts """
+    db(0x0f,0x01,0x1d)  # set up vectors (lidt [idt_desc])
+    dd(idt_desc)
+    sti         # enable interrupts
 
 #-------------------------------------------------------------------------------
 
 def ign():
-	""" ignored processor trap """
-	db(0xcf)		# (iret)
+    """ ignored processor trap """
+    db(0xcf)        # (iret)
 
 def bpt():
-	cli; pusha
-	""" breakpoint """
-	ebx = [esp + 0x24]
-	printf("[%x: eax=%x]\n",ebx,eax)
-	popa; db(0xcf)
+    cli; pusha
+    """ breakpoint """
+    ebx = [esp + 0x24]
+    printf("[%x: eax=%x]\n",ebx,eax)
+    popa; db(0xcf)
 
 #-------------------------------------------------------------------------------
 
 def icoda():
-	""" common interrupt exit code """
-	# clear the interrupt
-	al = 0x20	# EO1
-	outb(0x20,al)	# PIC1
+    """ common interrupt exit code """
+    # clear the interrupt
+    al = 0x20   # EO1
+    outb(0x20,al)   # PIC1
 
-	# restore the state
-	esp += 4
-	popa
-	db(0xcf)	# iret
+    # restore the state
+    esp += 4
+    popa
+    db(0xcf)    # iret
 
 #-------------------------------------------------------------------------------
 
 def igp():
-	""" ignored PIC interrupt """
-	cli; pusha
-	icoda
+    """ ignored PIC interrupt """
+    cli; pusha
+    icoda
 
 def clk():
-	""" clock tick """
-	cli; pusha
-	clickticker
-	[isr_mask] |= 1
-	Py_AddPendingCall(python_isr, 0)
-	icoda
+    """ clock tick """
+    cli; pusha
+    clickticker
+    [isr_mask] |= 1
+    Py_AddPendingCall(python_isr, 0)
+    icoda
 
 def key():
-	""" keyboard """
-	cli; pusha
-	[isr_mask] |= 2
-	Py_AddPendingCall(python_isr, 0)
-	icoda
+    """ keyboard """
+    cli; pusha
+    [isr_mask] |= 2
+    Py_AddPendingCall(python_isr, 0)
+    icoda
 
 def isrs_pending():
-	""" returns (and resets) the pending isr flag vector """
-	cli
-	eax = [isr_mask]
-	xor(edx,edx)
-	[isr_mask] = edx
-	sti
+    """ returns (and resets) the pending isr flag vector """
+    cli
+    eax = [isr_mask]
+    xor(edx,edx)
+    [isr_mask] = edx
+    sti
 
 #-------------------------------------------------------------------------------
 # due to the split offsets in the Intel interrupt table,
@@ -144,154 +144,154 @@ def isrs_pending():
 
 idt_desc = dw(0x7f); dd(
   dd(ign, 0x00108f00, ign, 0x00108f00, ign, 0x00108f00, bpt, 0x00108f00,
-	ign, 0x00108f00, ign, 0x00108f00, ign, 0x00108f00, ign, 0x00108f00,
+    ign, 0x00108f00, ign, 0x00108f00, ign, 0x00108f00, ign, 0x00108f00,
 
-	clk, 0x00108f00, key, 0x00108f00, igp, 0x00108f00, igp, 0x00108f00,
-	igp, 0x00108f00, igp, 0x00108f00, igp, 0x00108f00, igp, 0x00108f00))
+    clk, 0x00108f00, key, 0x00108f00, igp, 0x00108f00, igp, 0x00108f00,
+    igp, 0x00108f00, igp, 0x00108f00, igp, 0x00108f00, igp, 0x00108f00))
 
 #===============================================================================
 
 def clickticker():
-	edx = [ticker]
-	if test(edx,edx) is nz:
-		eax = [edx]
-		inc(eax)
-		[edx] = eax
+    edx = [ticker]
+    if test(edx,edx) is nz:
+        eax = [edx]
+        inc(eax)
+        [edx] = eax
 
 #===============================================================================
 # experimental: VGA graphics
 #===============================================================================
 
 def outn():
-	ebx = [esp + 16]
-	xor(ecx,ecx)
-	while ecx < [esp + 12]:
-		eax = ecx
-		edx = [esp+4]
-		outb(dx,al)
-		eax = [ebx + ecx]
-		edx = [esp+8]
-		outb(dx,al)
-		inc(ecx)
+    ebx = [esp + 16]
+    xor(ecx,ecx)
+    while ecx < [esp + 12]:
+        eax = ecx
+        edx = [esp+4]
+        outb(dx,al)
+        eax = [ebx + ecx]
+        edx = [esp+8]
+        outb(dx,al)
+        inc(ecx)
 
 def palette():
-	eax = [esp + 4]
-	if test(eax,eax) is z:
-		edx = 0x3DA; inb(al, dx)
-		eax =    0; edx = 0x3C0; outb(dx,al)
-	else:
-		eax = 0x20; edx = 0x3C0; outb(dx,al)
+    eax = [esp + 4]
+    if test(eax,eax) is z:
+        edx = 0x3DA; inb(al, dx)
+        eax =    0; edx = 0x3C0; outb(dx,al)
+    else:
+        eax = 0x20; edx = 0x3C0; outb(dx,al)
 
 def sequenceron():
-	edx = 0x3C2; outb(dx, al)
-	outn(0x3C4,0x3C5,1,db(3))
-	
+    edx = 0x3C2; outb(dx, al)
+    outn(0x3C4,0x3C5,1,db(3))
+    
 def set640x480x16():
-	palette(0)
+    palette(0)
 
-	outn(0x3C4,0x3C5,5,db(1,1,0x04,0,6))
+    outn(0x3C4,0x3C5,5,db(1,1,0x04,0,6))
 
-	eax = 0xe3; sequenceron
+    eax = 0xe3; sequenceron
 
-	eax = 0x11; edx =0x3D4; outb(dx,al)
-	eax =    0; edx =0x3D5; outb(dx,al)
-	outn(0x3D4,0x3D5,25,db(
-		0x5f, 0x4f, 0x50, 0x82,  0x54, 0x80, 0x0b, 0x3e,
-		0x00, 0x40, 0x00, 0x00,  0x00, 0x00, 0x00, 0x00,
-		0xea, 0x8c, 0xdf, 0x28,  0x00, 0xe7, 0x04, 0xe3,
-		0xff))
+    eax = 0x11; edx =0x3D4; outb(dx,al)
+    eax =    0; edx =0x3D5; outb(dx,al)
+    outn(0x3D4,0x3D5,25,db(
+        0x5f, 0x4f, 0x50, 0x82,  0x54, 0x80, 0x0b, 0x3e,
+        0x00, 0x40, 0x00, 0x00,  0x00, 0x00, 0x00, 0x00,
+        0xea, 0x8c, 0xdf, 0x28,  0x00, 0xe7, 0x04, 0xe3,
+        0xff))
 
-	outn(0x3CC,0x3CA,1,db(1))
-	outn(0x3CE,0x3CF,9,db(
-		0x00, 0x00, 0x00, 0x00,  0x00, 0x00, 0x05, 0x0f,
-		0xff))
+    outn(0x3CC,0x3CA,1,db(1))
+    outn(0x3CE,0x3CF,9,db(
+        0x00, 0x00, 0x00, 0x00,  0x00, 0x00, 0x05, 0x0f,
+        0xff))
 
-	edx = 0x3DA; inb(al, dx)
+    edx = 0x3DA; inb(al, dx)
 
-	outn(0x3C0,0x3C0,20,db(
-		0x00, 0x01, 0x02, 0x03,  0x04, 0x05, 0x06, 0x07,
-		0x08, 0x09, 0x0A, 0x0B,  0x0C, 0x0D, 0x0E, 0x0F,
-		0x01, 0x00, 0x0F, 0x00))
+    outn(0x3C0,0x3C0,20,db(
+        0x00, 0x01, 0x02, 0x03,  0x04, 0x05, 0x06, 0x07,
+        0x08, 0x09, 0x0A, 0x0B,  0x0C, 0x0D, 0x0E, 0x0F,
+        0x01, 0x00, 0x0F, 0x00))
 
-	palette(1)
+    palette(1)
 
 
 def set80x25():
-	palette(0)
+    palette(0)
 
-	outn(0x3C4,0x3C5,5,db(1,0,0x03,0,2))
+    outn(0x3C4,0x3C5,5,db(1,0,0x03,0,2))
 
-	eax = 0x67; sequenceron
+    eax = 0x67; sequenceron
 
-	eax = 0x11; edx =0x3D4; outb(dx,al)
-	eax =    0; edx =0x3D5; outb(dx,al)
-	outn(0x3D4,0x3D5,25,db(
-		0x5f, 0x4f, 0x50, 0x82,  0x55, 0x81, 0xbf, 0x1f,
-		0x00, 0x4f, 0x0d, 0x0e,  0x00, 0x00, 0x00, 0x00,
-		0x9c, 0x8e, 0x8f, 0x28,  0x1f, 0x96, 0xb9, 0xa3,
-		0xff))
+    eax = 0x11; edx =0x3D4; outb(dx,al)
+    eax =    0; edx =0x3D5; outb(dx,al)
+    outn(0x3D4,0x3D5,25,db(
+        0x5f, 0x4f, 0x50, 0x82,  0x55, 0x81, 0xbf, 0x1f,
+        0x00, 0x4f, 0x0d, 0x0e,  0x00, 0x00, 0x00, 0x00,
+        0x9c, 0x8e, 0x8f, 0x28,  0x1f, 0x96, 0xb9, 0xa3,
+        0xff))
 
-	outn(0x3CC,0x3CA,1,db(1))
-	outn(0x3CE,0x3CF,9,db(
-		0x00, 0x00, 0x00, 0x00,  0x00, 0x10, 0x0e, 0x00,
-		0xff))
+    outn(0x3CC,0x3CA,1,db(1))
+    outn(0x3CE,0x3CF,9,db(
+        0x00, 0x00, 0x00, 0x00,  0x00, 0x10, 0x0e, 0x00,
+        0xff))
 
-	edx = 0x3DA; inb(al, dx)
-	outn(0x3C0,0x3C0,20,db(
-		0x00, 0x01, 0x02, 0x03,  0x04, 0x05, 0x06, 0x07,
-		0x08, 0x09, 0x0A, 0x0B,  0x0C, 0x0D, 0x0E, 0x0F,
-		0x0C, 0x00, 0x0F, 0x08))
+    edx = 0x3DA; inb(al, dx)
+    outn(0x3C0,0x3C0,20,db(
+        0x00, 0x01, 0x02, 0x03,  0x04, 0x05, 0x06, 0x07,
+        0x08, 0x09, 0x0A, 0x0B,  0x0C, 0x0D, 0x0E, 0x0F,
+        0x0C, 0x00, 0x0F, 0x08))
 
-	palette(1)
+    palette(1)
 
 def set320x200x256():
-	palette(0)
+    palette(0)
 
-	outn(0x3C4,0x3C5,5,db(3,1,0xf,0,0xe)) # .., 0x6) for mode X
-	
-	eax = 0x63; sequenceron
+    outn(0x3C4,0x3C5,5,db(3,1,0xf,0,0xe)) # .., 0x6) for mode X
+    
+    eax = 0x63; sequenceron
 
-	eax = 0x11; edx =0x3D4; outb(dx,al)
-	eax =    0; edx =0x3D5; outb(dx,al)
-	outn(0x3D4,0x3D5,25,db(
-		0x5f, 0x4f, 0x50, 0x82,  0x54, 0x80, 0xbf, 0x1f,
-		0x00, 0x41, 0x00, 0x00,  0x00, 0x00, 0x00, 0x00,
-		0x9c, 0x0e, 0x8f, 0x28,  0x40, 0x96, 0xb9, 0xa3,
-					# 0x00, ..., 0xe3 for mode X
-		0xff))
+    eax = 0x11; edx =0x3D4; outb(dx,al)
+    eax =    0; edx =0x3D5; outb(dx,al)
+    outn(0x3D4,0x3D5,25,db(
+        0x5f, 0x4f, 0x50, 0x82,  0x54, 0x80, 0xbf, 0x1f,
+        0x00, 0x41, 0x00, 0x00,  0x00, 0x00, 0x00, 0x00,
+        0x9c, 0x0e, 0x8f, 0x28,  0x40, 0x96, 0xb9, 0xa3,
+                    # 0x00, ..., 0xe3 for mode X
+        0xff))
 
-	outn(0x3CC,0x3CA,1,db(1))
-	outn(0x3CE,0x3CF,9,db(
-		0x00, 0x00, 0x00, 0x00,  0x00, 0x40, 0x05, 0x0f,
-		0xff))
+    outn(0x3CC,0x3CA,1,db(1))
+    outn(0x3CE,0x3CF,9,db(
+        0x00, 0x00, 0x00, 0x00,  0x00, 0x40, 0x05, 0x0f,
+        0xff))
 
-	edx = 0x3DA; inb(al, dx)
-	outn(0x3C0,0x3C0,20,db(
-		0x00, 0x01, 0x02, 0x03,  0x04, 0x05, 0x06, 0x07,
-		0x08, 0x09, 0x0A, 0x0B,  0x0C, 0x0D, 0x0E, 0x0F,
-		0x41, 0x00, 0x0F, 0x00))
+    edx = 0x3DA; inb(al, dx)
+    outn(0x3C0,0x3C0,20,db(
+        0x00, 0x01, 0x02, 0x03,  0x04, 0x05, 0x06, 0x07,
+        0x08, 0x09, 0x0A, 0x0B,  0x0C, 0x0D, 0x0E, 0x0F,
+        0x41, 0x00, 0x0F, 0x00))
 
-	esi = paldata
-	xor(ecx,ecx)
-	while ecx < 256:
-		eax = ecx; edx = 0x3C8; outb(dx,al)
-		lodsb;     edx = 0x3C9; outb(dx,al)
-		lodsb;     edx = 0x3C9; outb(dx,al)
-		lodsb;     edx = 0x3C9; outb(dx,al)
-		inc(ecx)
+    esi = paldata
+    xor(ecx,ecx)
+    while ecx < 256:
+        eax = ecx; edx = 0x3C8; outb(dx,al)
+        lodsb;     edx = 0x3C9; outb(dx,al)
+        lodsb;     edx = 0x3C9; outb(dx,al)
+        lodsb;     edx = 0x3C9; outb(dx,al)
+        inc(ecx)
 
-	palette(1)
+    palette(1)
 
 def setrplane():
-	eax = 4
-	edx = 0x3CE; outb(dx,al) # VGA_GC_INDEX
-	eax = [esp + 4]
-	inc(edx); outb(dx,al)
+    eax = 4
+    edx = 0x3CE; outb(dx,al) # VGA_GC_INDEX
+    eax = [esp + 4]
+    inc(edx); outb(dx,al)
 
 def setwplane():
-	eax = 2
-	edx = 0x3C4; outb(dx,al) # VGA_SEQ_INDEX
-	eax = [esp + 4]
-	ebx = "\001\002\004\008"
-	xlat
-	inc(edx); outb(dx,al)
+    eax = 2
+    edx = 0x3C4; outb(dx,al) # VGA_SEQ_INDEX
+    eax = [esp + 4]
+    ebx = "\001\002\004\008"
+    xlat
+    inc(edx); outb(dx,al)

@@ -3,36 +3,36 @@
 #===============================================================================
 
 def vgarplane():
-	eax = 4
-	edx = 0x3CE; outb(dx,al) # VGA_GC_INDEX
-	eax = [esp + 4]
-	inc(edx); outb(dx,al)
+    eax = 4
+    edx = 0x3CE; outb(dx,al) # VGA_GC_INDEX
+    eax = [esp + 4]
+    inc(edx); outb(dx,al)
 
 def vgawplane():
-	eax = 2
-	edx = 0x3C4; outb(dx,al) # VGA_SEQ_INDEX
-	eax = [esp + 4]
-	ebx = "\001\002\004\008"
-	xlat
-	inc(edx); outb(dx,al)
+    eax = 2
+    edx = 0x3C4; outb(dx,al) # VGA_SEQ_INDEX
+    eax = [esp + 4]
+    ebx = "\001\002\004\008"
+    xlat
+    inc(edx); outb(dx,al)
 
 # I need BuildTuple before this can go in pyvga.py
 ####################################################
 def vgadefaultpalette():
-	# edx = 0x3DA; inb(al,dx)
-	# eax = 0; edx = 0x3C0; outb(dx,al)
+    # edx = 0x3DA; inb(al,dx)
+    # eax = 0; edx = 0x3C0; outb(dx,al)
 
-	esi = paldata
-	xor(ecx,ecx)
-	while ecx < 256:
-		eax = ecx; edx = 0x3C8; outb(dx,al)
-		lodsb;     edx = 0x3C9; outb(dx,al)
-		lodsb;     edx = 0x3C9; outb(dx,al)
-		lodsb;     edx = 0x3C9; outb(dx,al)
-		inc(ecx)
+    esi = paldata
+    xor(ecx,ecx)
+    while ecx < 256:
+        eax = ecx; edx = 0x3C8; outb(dx,al)
+        lodsb;     edx = 0x3C9; outb(dx,al)
+        lodsb;     edx = 0x3C9; outb(dx,al)
+        lodsb;     edx = 0x3C9; outb(dx,al)
+        inc(ecx)
 
-	# edx = 0x3DA; inb(al,dx)
-	# eax = 0x20; edx = 0x3C0; outb(dx,al)
+    # edx = 0x3DA; inb(al,dx)
+    # eax = 0x20; edx = 0x3C0; outb(dx,al)
 
 paldata = db(
 0, 0, 0,

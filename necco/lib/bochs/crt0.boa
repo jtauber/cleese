@@ -11,20 +11,20 @@
 #-------------------------------------------------------------------------------
 
 def entry():
-	""" takes control from the bootloader """
+    """ takes control from the bootloader """
         db(0x0f,0x01,0x15)      # use our descriptor table (lgdt [gdt])
         dd(gdt)
 
-        ax = 0x18		# load ds
+        ax = 0x18       # load ds
         ds = ax; es = ax; ss = ax           
-	xor(ax,ax)
-	fs = ax; gs = ax
+    xor(ax,ax)
+    fs = ax; gs = ax
 
-	db(0xea)		# load cs (jmp 10h:startC)
-	dd(startC); dw(0x10)
+    db(0xea)        # load cs (jmp 10h:startC)
+    dd(startC); dw(0x10)
 
 def startC():
-	""" builds C environment and calls main() """
+    """ builds C environment and calls main() """
 
         edi = bss               # zero out BSS
         ecx = end
@@ -44,11 +44,11 @@ def startC():
 # of the kernel file.
 #-------------------------------------------------------------------------------
 
-	align(4)
-	dd(0x1BADB002,          # magic
+    align(4)
+    dd(0x1BADB002,          # magic
            0x00010003,          # AOUT_KLUDGE(16)|MEMORY_INFO(1)|PAGE_ALIGN(0)
            0xe4514ffb,          # checksum: -(magic + flags)
-	   offset(0xfffffff4),	# address of bootblock start
+       offset(0xfffffff4),  # address of bootblock start
            entry, bss, end,
            entry)
 
