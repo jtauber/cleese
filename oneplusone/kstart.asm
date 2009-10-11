@@ -1,27 +1,11 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; 32-bit kernel startup code
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-; macros to handle leading underscores added by DOS/Windows compilers
-%macro  IMP 1
-%ifdef UNDERBARS
-    EXTERN _%1
-    %define %1 _%1
-%else
-    EXTERN %1
-%endif
-%endmacro
+global entry
+extern main, code, bss, end
 
 DS_MAGIC    equ 3544DA2Ah
 
-SECTION .text
-BITS 32
+section .text
+bits 32
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; entry point
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-GLOBAL entry
 entry:
     ; check if data segment linked, located, and loaded properly
     mov eax,[ds_magic]
@@ -47,7 +31,6 @@ ds_ok:
 sbat:
     ; zero the C language BSS
     ; 'bss' and 'end' are defined in the linker script file
-EXTERN bss, end
     mov edi,bss
     mov ecx,end
     sub ecx,edi
@@ -56,7 +39,6 @@ EXTERN bss, end
     
     mov esp,stack
     
-IMP main
     call main       ; call C code
     jmp $           ; freeze
 
@@ -73,10 +55,7 @@ MULTIBOOT_HEADER_MAGIC equ 0x1BADB002
 MULTIBOOT_HEADER_FLAGS equ MULTIBOOT_PAGE_ALIGN | MULTIBOOT_MEMORY_INFO | MULTIBOOT_AOUT_KLUDGE
 MULTIBOOT_CHECKSUM     equ -(MULTIBOOT_HEADER_MAGIC + MULTIBOOT_HEADER_FLAGS)
 
-; these are in the linker script file
-EXTERN code, bss, end
-
-ALIGN 4
+align 4
 mboot:
     dd MULTIBOOT_HEADER_MAGIC
     dd MULTIBOOT_HEADER_FLAGS
@@ -91,7 +70,7 @@ mboot:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-SECTION .data
+section .data
 
 ds_magic:
     dd DS_MAGIC
@@ -137,7 +116,7 @@ gdt_ptr:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-SECTION .bss
+section .bss
     resd 1024
 
 stack:
