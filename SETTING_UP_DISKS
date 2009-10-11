@@ -1,13 +1,12 @@
 
 After you have built the custom toolchain for i386-elf, run
 
-(cd hello_world; make)
-(cd echo; make)
-make images
+make grub.img
+make empty-disk
 
 In VirtualBox, create an other/unknown VM (no harddrive)
 
-Add both grub.img and cleese.img as floppies in Virtual Media Manager.
+Add both grub.img and empty.img as floppies in Virtual Media Manager.
 
 Mount grub.img as floppy and boot.
 
@@ -15,8 +14,13 @@ Once you have the prompt ready change the floppy to cleese.img. Then type in
 the shell:
 
     setup (fd0)
-    reboot
+
+Then run
+
+	make
+
+which will build the various kernels and create cleese.img.
 
 From that point on, just booting cleese.img floppy will work.
 
-If you rebuilt any kernels, run make update-image to update cleese.img
+If you rebuilt any kernels, run make update cleese.img
