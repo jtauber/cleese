@@ -53,4 +53,5 @@ SECTIONS
     
     /* symbols to mark end of kernel */
     end = .;
+    _end = .;
 }
