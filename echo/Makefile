@@ -1,14 +1,9 @@
-.SUFFIXES:	.boa
+include ../Makefile.common
 
-LDSCRIPT = cleese.ld
-NASM     = nasm -f elf
-CC       = i386-elf-gcc -Wall -O2 -nostdinc -fno-builtin
-LD       = i386-elf-ld -T $(LDSCRIPT) -nostdlib
-NM       = i386-elf-nm
-STRIP    = i386-elf-strip
-AS       = i386-elf-as
+INCLUDE_FLAGS = -I./include -I./python/Include
 
 KERNEL_OBJS =	\
+		kernel/kstart.o \
 		kernel/res.o \
 		kernel/main.o \
 		kernel/kernel_bytecode.o \
@@ -55,30 +50,10 @@ PYTHON_OBJS =	\
 MODULE_OBJS =	\
 		python/Modules/gcmodule.o
 
-OBJS =		\
+OBJS =	\
 		$(KERNEL_OBJS) \
 		$(MACH_OBJS) \
 		$(LIB_OBJS) \
 		$(OBJECT_OBJS) \
 		$(PYTHON_OBJS) \
 		$(MODULE_OBJS)
-
-all: KERNEL.BIN
-
-clean:
-	-rm -f KERNEL.BIN
-	-rm -f kernel.lst kernel.map
-	find . -name '*.o' -exec rm -f {} ';'
-	find . -name '*.s' -exec rm -f {} ';'
-
-.c.o:
-	$(CC) -c -I./include -I./python/Include -o $@ $<
-
-.boa.o:
-	python util/boa < $< | $(AS) -o $@
-
-
-KERNEL.BIN: kernel/kstart.o $(OBJS) $(LDSCRIPT) 
-	$(LD) -Map kernel.map -o $@ kernel/kstart.o $(OBJS)
-	$(NM) $@ | sort > kernel.lst
-	$(STRIP) $@

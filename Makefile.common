@@ -1,0 +1,31 @@
+.SUFFIXES: .asm .boa
+
+LDSCRIPT = kernel.ld
+NASM     = nasm -f elf
+CC       = i386-elf-gcc -Wall -O2 -nostdinc -fno-builtin
+LD       = i386-elf-ld -T $(LDSCRIPT) -nostdlib
+NM       = i386-elf-nm
+STRIP    = i386-elf-strip
+AS       = i386-elf-as
+
+all: KERNEL.BIN
+
+clean:
+	-rm -f KERNEL.BIN
+	-rm -f kernel.lst kernel.map
+	find . -name '*.o' -exec rm -f {} ';'
+	find . -name '*.s' -exec rm -f {} ';'
+
+KERNEL.BIN: $(OBJS) $(LDSCRIPT) 
+	$(LD) -Map kernel.map -o $@ $(OBJS)
+	$(NM) $@ | sort > kernel.lst
+	$(STRIP) $@
+
+.asm.o:
+	$(NASM) -o $@ $<
+
+.boa.o:
+	python util/boa < $< | $(AS) -o $@
+
+.c.o:
+	$(CC) -c $(INCLUDE_FLAGS) -o $@ $<
