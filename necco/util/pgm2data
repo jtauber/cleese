@@ -1,0 +1,1 @@
+pnmdepth 15 | pnmnoraw | tail +4 | tr " " "\n" | awk '{print $1+16 "," }' | fmt

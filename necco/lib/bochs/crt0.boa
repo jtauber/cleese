@@ -1,0 +1,60 @@
+#===============================================================================
+# 32-bit boot-agnostic kernel startup code / interrupt handlers
+#===============================================================================
+# 'ld -T cleese.ld' to generate a grub-bootable executable, then
+# 'objcopy -O binary' that executable to get a bootp-bootable file.
+#===============================================================================
+
+#-------------------------------------------------------------------------------
+# 'entry' should be the entry point for a grub kernel, and
+# placed at the start of the text section for a bootp kernel
+#-------------------------------------------------------------------------------
+
+def entry():
+	""" takes control from the bootloader """
+        db(0x0f,0x01,0x15)      # use our descriptor table (lgdt [gdt])
+        dd(gdt)
+
+        ax = 0x18		# load ds
+        ds = ax; es = ax; ss = ax           
+	xor(ax,ax)
+	fs = ax; gs = ax
+
+	db(0xea)		# load cs (jmp 10h:startC)
+	dd(startC); dw(0x10)
+
+def startC():
+	""" builds C environment and calls main() """
+
+        edi = bss               # zero out BSS
+        ecx = end
+        ecx -= edi
+        ecx >>= 2               # (assume sections are word aligned)
+        eax = 0
+        rep; stosl
+
+        esp = resb(0x1000)      # set up a stack
+        esp +=     0x0ffc
+
+        Py_FrozenMain(ebx)      # and call C code
+        dw(0xfeeb)              # infinite loop (jmp $-2)
+
+#-------------------------------------------------------------------------------
+# Multiboot header for GRUB bootloader. This must be in the first 8K
+# of the kernel file.
+#-------------------------------------------------------------------------------
+
+	align(4)
+	dd(0x1BADB002,          # magic
+           0x00010003,          # AOUT_KLUDGE(16)|MEMORY_INFO(1)|PAGE_ALIGN(0)
+           0xe4514ffb,          # checksum: -(magic + flags)
+	   offset(0xfffffff4),	# address of bootblock start
+           entry, bss, end,
+           entry)
+
+gdt = dw(0x20);  dd(gdt);  dw(0,        # overlay: len + address
+         0,     0,     0,     0,
+         0xffff,0,0x9a00,  0xcf,        # flat code descriptor
+         0xffff,0,0x9200,  0xcf)        # flat data descriptor
+
+#===============================================================================

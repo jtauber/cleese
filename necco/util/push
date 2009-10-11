@@ -1,0 +1,3 @@
+MTOOLSRC=disk/mtools.conf mtools -c mcopy -o $1 C:
+(cd disk; ln -fs $2.img a.img)
+rm -f $1

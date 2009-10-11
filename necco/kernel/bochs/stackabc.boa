@@ -1,0 +1,36 @@
+def initstack():
+	eax = [esp + 4]		# stack to build
+	edx = [esp + 8]		# PyFunction_Get_CODE(f)
+	ecx = [esp + 12]	# locals/globals
+
+	# build a call to PyEval_EvalCode(co, d, d) from -1
+	eax -= 0x10
+	[eax + 0xC] = ecx
+	[eax + 0x8] = ecx
+	[eax + 0x4] = edx
+	[eax + 0x0] = 0xffffffff
+
+	# now build the return frame:
+	# first the EIP, then a blank register set
+	eax -= 0x24
+	[eax + 0x20] = PyEval_EvalCode
+	xor(edx,edx)
+	[eax + 0x1C] = edx	# eax
+	[eax + 0x18] = edx	# ecx
+	[eax + 0x14] = edx	# edx
+	[eax + 0x10] = edx	# ebx
+	[eax + 0x0C] = edx	# (esp)
+	[eax + 0x08] = edx	# ebp
+	[eax + 0x04] = edx	# esi
+	[eax + 0x00] = edx	# edi
+
+def swapstacks():
+	pusha
+	eax = [esp + 0x24]		# src
+	edx = [esp + 0x28]		# dst
+	ecx = [esp + 0x2C]		# arg
+
+	[eax] = esp; esp = [edx]
+
+	[esp + 0x1C] = ecx		# set new eax to arg
+	popa

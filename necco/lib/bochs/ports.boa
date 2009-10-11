@@ -1,0 +1,19 @@
+def outb():
+	eax = [esp + 8]
+	edx = [esp + 4]
+	outb(dx, al)
+
+def inb():
+	xor(eax,eax)
+	edx = [esp + 4]
+	inb(al, dx)
+
+def outw():
+	eax = [esp + 8]
+	edx = [esp + 4]
+	outw(dx, ax)
+
+def inw():
+	xor(eax,eax)
+	edx = [esp + 4]
+	inw(ax, dx)

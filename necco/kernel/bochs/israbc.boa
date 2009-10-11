@@ -1,0 +1,111 @@
+#===============================================================================
+# spartan interrupt support
+#===============================================================================
+
+def initirqs():
+	""" initialize interrupts """
+	db(0x0f,0x01,0x1d)	# set up vectors (lidt [idt_desc])
+	dd(idt_desc)
+	sti			# enable interrupts
+
+#-------------------------------------------------------------------------------
+
+def ign():
+	""" ignored processor trap """
+	db(0xcf)		# (iret)
+
+def bpt():
+	cli; pusha
+	""" breakpoint """
+	ebx = [esp + 0x24]
+	printf("[%x: eax=%x]\n",ebx,eax)
+	popa; db(0xcf)
+
+def igf():
+	""" ignored processor trap w/ fault code """
+	esp += 4
+	db(0xcf)
+
+def gpf():
+	cli; pusha
+	""" general protection fault"""
+
+	xor(eax,eax)
+	esi = [esp + 0x24]
+	lodsw
+
+	if xor(eax,0x80cd) is z:	# linux system call: int $0x80
+		[esp + 0x24] = esi
+		fake_syscall(esp)
+		popa
+		esp += 4
+		db(0xcf)
+
+	eax = [esp + 0x20]
+	ebx = [esp + 0x24]
+	printf("[GPF:%x fault=%x]\n",ebx,eax)
+	dw(0xfeeb)
+
+#-------------------------------------------------------------------------------
+
+def icoda():
+	""" common interrupt exit code """
+	# clear the interrupt
+	al = 0x20	# EO1
+	outb(0x20,al)	# PIC1
+
+	# restore the state
+	esp += 4
+	popa
+	db(0xcf)	# iret
+
+#-------------------------------------------------------------------------------
+
+def igp():
+	""" ignored PIC interrupt """
+	cli; pusha
+	icoda
+
+def clk():
+	""" clock tick """
+	cli; pusha
+	clickticker
+	[isr_mask] |= 1
+	Py_AddPendingCall(python_isr, 0)
+	icoda
+
+def key():
+	""" keyboard """
+	cli; pusha
+	[isr_mask] |= 2
+	Py_AddPendingCall(python_isr, 0)
+	icoda
+
+def isrs_pending():
+	""" returns (and resets) the pending isr flag vector """
+	cli
+	eax = [isr_mask]
+	xor(edx,edx)
+	[isr_mask] = edx
+	sti
+
+#-------------------------------------------------------------------------------
+# due to the split offsets in the Intel interrupt table,
+# interrupt vectors must reside at 0x10:0x0010XXXX
+#-------------------------------------------------------------------------------
+
+idt_desc = dw(0x7f); dd(
+     dd(ign, 0x00108f00, ign, 0x00108f00, ign, 0x00108f00, bpt, 0x00108f00,
+	ign, 0x00108f00, ign, 0x00108f00, ign, 0x00108f00, ign, 0x00108f00,
+
+	clk, 0x00108f00, key, 0x00108f00, igp, 0x00108f00, igp, 0x00108f00,
+	igp, 0x00108f00, gpf, 0x00108f00, igp, 0x00108f00, igp, 0x00108f00))
+
+#===============================================================================
+
+def clickticker():
+	edx = [ticker]
+	if test(edx,edx) is nz:
+		eax = [edx]
+		inc(eax)
+		[edx] = eax
