@@ -11,7 +11,8 @@ cleese.img: hello_world/KERNEL.BIN echo/KERNEL.BIN
 	mv cleese.dmg cleese.img
 	mkdir -p mnt
 	mount_msdos -o nosync `hdid -nomount cleese.img` ./mnt
-	cp -r boot ./mnt
+	cp -r boot ./mnt # @@@ is this even needed?
+	cp menu.lst ./mnt/boot/grub
 	cp hello_world/KERNEL.BIN ./mnt/hello_world.bin 
 	cp echo/KERNEL.BIN ./mnt/echo.bin
 	umount -f ./mnt
@@ -20,6 +21,7 @@ cleese.img: hello_world/KERNEL.BIN echo/KERNEL.BIN
 update-image:
 	mkdir -p mnt
 	mount_msdos -o nosync `hdid -nomount cleese.img` ./mnt
+	cp menu.lst ./mnt/boot/grub
 	cp hello_world/KERNEL.BIN ./mnt/hello_world.bin 
 	cp echo/KERNEL.BIN ./mnt/echo.bin
 	umount -f ./mnt
