@@ -1,27 +1,27 @@
-INCLUDE_FLAGS = -I./Include
+INCLUDE_FLAGS = -I./python/Include
 
 OBJECT_OBJS =	\
-		Objects/frameobject.o \
-		Objects/intobject.o \
-		Objects/dictobject.o \
-		Objects/stringobject.o \
-		Objects/typeobject.o \
-		Objects/object.o \
-		Objects/tupleobject.o \
-		Objects/moduleobject.o
+		python/Objects/frameobject.o \
+		python/Objects/intobject.o \
+		python/Objects/dictobject.o \
+		python/Objects/stringobject.o \
+		python/Objects/typeobject.o \
+		python/Objects/object.o \
+		python/Objects/tupleobject.o \
+		python/Objects/moduleobject.o
 
 PYTHON_OBJS =	\
-		Python/pythonrun.o \
-		Python/pystate.o \
-		Python/import.o \
-		Python/marshal.o \
-		Python/ceval.o \
-		Python/compile.o
+		python/Python/pythonrun.o \
+		python/Python/pystate.o \
+		python/Python/import.o \
+		python/Python/marshal.o \
+		python/Python/ceval.o \
+		python/Python/compile.o
 
 MODULE_OBJS =	\
-		Modules/main.o \
-		Modules/M___main__.o \
-		Modules/gcmodule.o
+		python/Modules/main.o \
+		python/Modules/M___main__.o \
+		python/Modules/gcmodule.o
 
 LIB_OBJS =	\
 		lib/string.o \
@@ -34,7 +34,7 @@ MACH_OBJS =	\
 
 OBJS =	\
 	kstart.o \
-	Modules/python.o \
+	python/Modules/python.o \
 	$(OBJECT_OBJS) \
 	$(PYTHON_OBJS) \
 	$(MODULE_OBJS) \
