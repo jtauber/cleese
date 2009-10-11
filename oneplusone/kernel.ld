@@ -12,7 +12,6 @@ SECTIONS
         
         /* symbols to mark start of code segment */
         code = .;
-        _code = .;
         
         /* kernel code */
         *(.text)
@@ -29,7 +28,6 @@ SECTIONS
         
         /* symbols to mark start of data segment */
         data = .;
-        _data = .;
         
         /* kernel data */
         *(.data)
@@ -43,7 +41,6 @@ SECTIONS
         
         /* symbols to mark start of BSS segment */
         bss = .;
-        _bss = .;
         
         /* kernel BSS */
         *(.bss)
@@ -56,5 +53,4 @@ SECTIONS
     
     /* symbols to mark end of kernel */
     end = .;
-    _end = .;
 }
