@@ -16,4 +16,4 @@ while 1:
     ch = translate_scancode(get_scancode())
     if ch:
         print ch
-	tb[0] = ch; tb[1] = '\015'	# can't use % or pack yet
+    tb[0] = ch; tb[1] = '\015'  # can't use % or pack yet
