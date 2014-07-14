@@ -1,55 +1,46 @@
-First we download the binutils and gcc source:
- 
-    http://ftp.gnu.org/gnu/binutils/binutils-2.19.1.tar.gz
-    http://ftp.gnu.org/pub/gnu/gcc/gcc-4.4.1/gcc-4.4.1.tar.gz
- 
-On 10.5, binutils worked with:
- 
-    ./configure --target=i386-elf
-    make
-    sudo make install
- 
-Whereas 10.6 required:
- 
-    ./configure --target=i386-elf --disable-werror
-    make
-    sudo make install
- 
-To compile gcc, you need gmp and mpfr.
- 
-For gmp, download:
- 
-    http://ftp.gnu.org/gnu/gmp/gmp-4.3.1.tar.gz
- 
-and run
- 
-    ./configure
-    make
-    make check
-    sudo make install
- 
-For mpfr, download:
- 
-    http://www.mpfr.org/mpfr-current/mpfr-2.4.1.tar.gz
- 
-and run
- 
-    ./configure
-    make
-    make check
-    sudo make install
- 
-Next, I built gcc.
- 
-It seems to be important to build gcc outside the source directory, so create
-a directory (say gcc-build) parallel to the gcc-4.4.1 directory.
- 
-cd into it and do
- 
-    ../gcc-4.4.1/configure --target=i386-elf --enable-languages=c --disable-libssp
-    make
-    sudo make install
- 
-without either --enable-languages=c or --disable-libssp, make died for me.
- 
-And now we have binutils and gcc set up for cross-compiling to i386-elf target!
+# frustratingly, we need to have "real" gcc to build the i386-elf binutils/gcc
+
+brew install gcc
+
+# $PROJECT_HOME should be the parent directory under which you'll download
+# everything and build the toolchain
+
+cd $PROJECT_HOME
+mkdir toolchain
+
+# set up our environment variables
+
+export PREFIX=$PROJECT_HOME/toolchain
+export TARGET=i386-elf
+export CC=/usr/local/bin/gcc-4.8
+export CXX=/usr/local/bin/g++-4.8
+export LD=/usr/local/bin/gcc-4.8
+export CFLAGS=-Wno-error=deprecated-declarations
+
+# get binutils source
+
+curl -O http://ftp.gnu.org/gnu/binutils/binutils-2.24.tar.gz
+tar xvzf binutils-2.24.tar.gz 
+cd binutils-2.24
+
+# make binutils (for i386-elf)
+
+./configure --prefix=$PREFIX --target=$TARGET --disable-nls
+make
+make install
+
+cd ..
+
+# get gcc source
+
+curl -O http://ftp.gnu.org/gnu/gcc/gcc-4.9.0/gcc-4.9.0.tar.gz
+tar xvzf gcc-4.9.0.tar.gz 
+cd gcc-4.9.0
+
+# make gcc (for i386-elf)
+
+./configure --prefix=$PREFIX --target=$TARGET --disable-nls --enable-languages=c --without-headers
+make all-gcc
+make install-gcc
+
+export PATH=$PREFIX/bin:$PATH
